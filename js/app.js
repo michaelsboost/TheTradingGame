@@ -29,7 +29,12 @@ function setData() {
   if (localStorage.getItem('pastTrades')) {
     $('.tradehistory').removeClass('red');
     $('.tradehistory').html(localStorage.getItem('pastTrades'));
-    WinLossPerc();
+    if ($('.trade').is(':visible')) {
+      WinLossPerc();
+    } else {
+      winpercent.textContent = '0%';
+      winpercent.removeAttribute('class');
+    }
   }
 }
 setData();
