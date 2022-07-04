@@ -27,9 +27,9 @@ function setData() {
     $('#bet').attr('data-int', inMilliSec);
   }
   if (localStorage.getItem('pastTrades')) {
-    $('.tradehistory').removeClass('red');
     $('.tradehistory').html(localStorage.getItem('pastTrades'));
     if ($('.trade').is(':visible')) {
+      $('.tradehistory').removeClass('red');
       WinLossPerc();
     } else {
       winpercent.textContent = '0%';
