@@ -34,6 +34,7 @@ function setData() {
     } else {
       winpercent.textContent = '0%';
       winpercent.removeAttribute('class');
+      $('.tradehistory').addClass('red');
     }
   }
 }
