@@ -62,11 +62,11 @@ menuicon.onclick = function() {
 };
 closemenu.onclick = function() {
   $('.chart, .menubar, .trading').show();
-  $('.video, .videoplayer').html('<iframe src="https://www.youtube.com/embed/aVbSVMdjlDM" title="Short svgMotion Showreel" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>');
+  $('.video, .videoplayer').html('<iframe src="https://www.youtube.com/embed/b0Cg7Zr5oI0" title="Short svgMotion Showreel" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>');
 };
 closedialog.onclick = function() {
   $('.dialog').hide();
-  $('.video, .videoplayer').html('<iframe src="https://www.youtube.com/embed/aVbSVMdjlDM" title="Short svgMotion Showreel" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>');
+  $('.video, .videoplayer').html('<iframe src="https://www.youtube.com/embed/b0Cg7Zr5oI0" title="Short svgMotion Showreel" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>');
 };
 
 // open items from menu
