@@ -1,21 +1,168 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <title>Binary Options Trading Simulator</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta name="description" content="Day trade crypto with out risking any money! Test your trading methodology with the Crypto Paper Trader Binary Options Trading Simulator to see if your win percentages average out over a series of trades this way you'll know if you'll be a consistent profitable trader.">
+    <meta name="author" content="Michael Schwartz">
+    <meta http-equiv="X-UA-Compatible" content="IE=9" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="icon" type="image/vnd.microsoft.icon" href="favicon.ico">
+    <link rel="shortcut icon" href="apple-touch-icon.png" type="image/x-icon">
+    <link rel="stylesheet" href="libraries/alertifyjs/themes/alertify.core.css">
+    <link rel="stylesheet" href="libraries/alertifyjs/themes/alertify.default.css">
+    <script src="libraries/alertifyjs/js/alertify.min.js"></script>
+    <script src="libraries/jquery/jquery.js"></script>
+    <script src="libraries/jquery/jquery-migrate-1.2.1.min.js"></script>
+    <script src="libraries/sweetalert2/sweetalert2.all.min.js"></script>
+    <link rel="stylesheet" href="libraries/sweetalert2/sweetalert2.min.css">
+    <link rel="stylesheet" href="libraries/font-awesome/font-awesome.css" />
+    <link rel="stylesheet" href="libraries/font-awesome/macset.css" />
+    <link rel="stylesheet" href="css/style.css" />
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
-  <title>replit</title>
-  <link href="style.css" rel="stylesheet" type="text/css" />
-</head>
+    <meta property="og:url"         content="https://michaelsboost.com/crypto" />
+    <meta property="og:type"        content="website" />
+    <meta property="og:title"       content="Binary Options Trading Simulator" />
+    <meta property="og:description" content="Day trade crypto with out risking any money! Test your trading methodology with the Crypto Paper Trader Binary Options Trading Simulator to see if your win percentages average out over a series of trades this way you'll know if you'll be a consistent profitable trader." />
+    <meta property="og:image"       content="https://raw.githubusercontent.com/michaelsboost/Binary-Options-Simulator/gh-pages/header.png" />
+  </head>
+  <body>
+    <!-- opened and mobile menu -->
+    <div class="openedmenubar">
+      <div class="openedmenubarflex">
+        <a id="closemenu">
+          <i class="fa fa-times" style="transform: scale(2);"></i>
+        </a>
+        <a id="balance">
+          $1,000
+        </a>
+        <a id="winpercent">
+          0%
+        </a>
+        <a class="red" href="https://michaelsboost.com/donate/" target="_blank">
+          <i class="fa fa-heart" style="transform: scale(2);"></i>
+        </a>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="tradehistory red">
+        <h1 class="nohistory">No Trade History</h1>
+      </div>
+      <div class="video">
+        <iframe src="https://www.youtube.com/embed/aVbSVMdjlDM" title="Short svgMotion Showreel" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+      <div class="news">
+        <div class="tradingview-widget-container">
+          <div class="tradingview-widget-container__widget"></div>
+          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
+            {
+              "colorTheme": "dark",
+              "isTransparent": true,
+              "displayMode": "regular",
+              "width": "100%",
+              "height": "100%",
+              "locale": "en"
+            }
+          </script>
+        </div>
+      </div>
+    </div>
+    <div class="mobilemenu">
+      <div class="scroll">
+        <a data-open="history">
+          Trading History
+        </a>
+        <a data-open="about">
+          About
+        </a>
+        <a data-open="news">
+          News
+        </a>
+      </div>
+    </div>
+    
+    <!-- main app -->
+    <div class="chart">
+      <div class="tradingview-widget-container" id="tradingview_0b60e">
+        <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+      </div>
+    </div>
+    <div class="menubar">
+      <div class="menubarflex">
+        <a id="menuicon">
+          <img src="svgs/menu.svg">
+        </a>
+      </div>
 
-<body>
-  Hello world
-  <script src="script.js"></script>
+      <div id="cryptopairs" class="menubarflex scroll">
+        <a>BTC/USDT</a>
+        <a>ETH/USDT</a>
+        <a>BCH/USDT</a>
+        <a>SOL/USDT</a>
+        <a>XRP/USDT</a>
+        <a>WAVES/USDT</a>
+        <a>ADA/USDT</a>
+        <a>TRX/USDT</a>
+        <a>AVAX/USDT</a>
+        <a>LTC/USDT</a>
+        <a>DOT/USDT</a>
+        <a>DOGE/USDT</a>
+      </div>
+    </div>
+    <div class="trading">
+      <div class="tradingflex">
+        <a id="bidhigh">
+         <svg viewBox="0 0 256 256" preserveAspectRatio="xMidYMin">
+           <path d=" M 217.216 64.658 L 25.856 256 L 0 230.144 L 191.342 38.784 L 152.558 0 L 256 0 L 256 103.442 L 217.216 64.658 Z " fill="rgb(8,153,129)"/>
+          </svg>
+        </a>
+        <a id="wager">
+          $1,000
+        </a>
+        <a id="bet" class="neutral">
+          5s
+        </a>
+        <a id="bidlow">
+         <svg viewBox="0 0 256 256" preserveAspectRatio="xMidYMin">
+           <path d=" M 217.216 191.342 L 25.856 0 L 0 25.856 L 191.342 217.216 L 152.558 256 L 256 256 L 256 152.558 L 217.216 191.342 Z " fill="rgb(242,54,69)"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+    
+    <!-- dialog -->
+    <div class="dialog" style="display: none;">
+      <div class="scroll">
+        <div class="tradehistory red" style="display: none;">
+          <h1 class="nohistory">No Trade History</h1>
+        </div>
+        <div class="videoplayer" style="display: none;">
+          <iframe src="https://www.youtube.com/embed/aVbSVMdjlDM" title="Short svgMotion Showreel" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <div class="news" style="display: none;">
+          <div class="tradingview-widget-container">
+            <div class="tradingview-widget-container__widget"></div>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
+              {
+                "colorTheme": "dark",
+                "isTransparent": true,
+                "displayMode": "regular",
+                "width": "100%",
+                "height": "100%",
+                "locale": "en"
+              }
+            </script>
+          </div>
+        </div>
+      </div>
+      
+      <a id="closedialog">
+        <i class="fa fa-times"></i>
+      </a>
+    </div>
 
- <!--
-This script places a badge on your repl's full-browser view back to your repl's cover page. Try various colors for the theme: dark, light, red, orange, yellow, lime, green, teal, blue, blurple, magenta, pink!
--->
-<script src="https://replit.com/public/js/replit-badge.js" theme="blue" defer></script> 
-</body>
-
+    <script src="js/app.js"></script>
+    <script src="js/ui.js"></script>
+  </body>
 </html>
