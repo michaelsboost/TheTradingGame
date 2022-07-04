@@ -94,6 +94,9 @@ wager.onclick = function() {
   num = num.substr(1).replace(/,/g, '');
   num = parseInt(num);
   
+  // calculate 10% of the users balance
+  num = parseInt((10 / 100) * num);
+  
   Swal.fire({
     title: "What's your wager?",
     input: "number",
