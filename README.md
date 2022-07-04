@@ -1,7 +1,7 @@
 Binary Options Trading Simulator
 ===================
 
-Paper Trade aka Simulated Trading of Binary Options for the Crypto Market
+Day trade crypto with out risking any money! Test your trading methodology with the Crypto Paper Trader Binary Options Trading Simulator to see if your win percentages average out over a series of trades this way you'll know if you'll be a consistent profitable trader.
 
 ![](https://raw.githubusercontent.com/michaelsboost/BinaryOptionsSimulator/gh-pages/header.png)
 
