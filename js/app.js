@@ -1,5 +1,5 @@
 // variables
-var txt, num, commas, priceNow, countDownTimer, timeleft = 5, 
+var txt, num, minNum, commas, priceNow, countDownTimer, timeleft = 5, 
     rememberTxt = '5s', activeTrade = false, direction = 'up';
 
 // localStorage
@@ -101,13 +101,13 @@ wager.onclick = function() {
   num = parseInt(num);
   
   // calculate 10% of the users balance
-  num = parseInt((10 / 100) * num);
+  minNum = parseInt((10 / 100) * num);
   
   Swal.fire({
     title: "What's your wager?",
     input: "number",
-    inputValue: num,
-    inputPlaceholder: num,
+    inputValue: minNum,
+    inputPlaceholder: minNum,
     inputAttributes: {
       min: '1',
       max: num
