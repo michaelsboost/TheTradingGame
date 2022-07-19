@@ -66,7 +66,8 @@ iframe {
 }
 .menubarflex img {
   height: 100%;
-  transform: scale(.6);
+/*  transform: scale(.6);*/
+  transform: scale(.7);
 }
 .menubarflex.scroll {
   position: absolute;
@@ -167,6 +168,9 @@ iframe {
   text-align: center;
   border-right:1px solid #2a2e39;
   overflow: auto;
+  height: auto;
+  width: auto;
+  visibility: visible;
 }
 .video {
   top: 0;
@@ -187,6 +191,9 @@ iframe {
   right: 0;
   left: 50%;
   bottom: 0;
+  height: auto;
+  width: auto;
+  visibility: visible;
 }
 .mobilemenu {
   display: none;
@@ -212,7 +219,9 @@ iframe {
     bottom: 0;
   }
   .tradehistory, .news {
-    display: none;
+    visibility: hidden;
+    height: 0;
+    width: 0;
   }
 }
 .mobilemenu .scroll {
@@ -371,6 +380,15 @@ iframe {
   border-bottom: 1px solid #2a2e39;
   padding: 1em;
 }
+.trade > div > div {
+  padding: 5px 0;
+}
+.trade > div:nth-child(1) {
+  text-align: left;
+}
+.trade > div:nth-child(2) {
+  text-align: right;
+}
 .trade .currency {
   color: #285ff5;
 }
@@ -382,10 +400,10 @@ iframe {
   color: #f23645;
   transform: rotate(-45deg);
 }
-.trade .win, .trade .won {
+.trade .win, .trade .won, .trade .green {
   color: #089981;
 }
-.trade .loss, .trade .lost {
+.trade .loss, .trade .lost, .trade .red {
   color: #f23645;
 }
 

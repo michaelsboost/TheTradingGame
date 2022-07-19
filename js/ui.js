@@ -77,7 +77,11 @@ $('[data-open]').on('click', function() {
   var $this = $(this).attr('data-open');
   if ($this === 'history') {
     // show history
-    $('.dialog .tradehistory').show();
+    $('.dialog .tradehistory').show().css({
+      'visibility': 'visible',
+      'width': 'auto',
+      'height': 'auto',
+    });
     $('.dialog .tradehistory *').show();
   } else if ($this === 'about') {
     // show about
@@ -85,6 +89,11 @@ $('[data-open]').on('click', function() {
   } else if ($this === 'news') {
     // show news
     $('.dialog .news, .dialog .news .tradingview-widget-container').show();
+    $('.dialog .news').css({
+      'visibility': 'visible',
+      'width': 'auto',
+      'height': 'auto',
+    });
   } else {
     console.error('Error: Menu item unknown');
     alertify.error('Error: Menu item unknown');

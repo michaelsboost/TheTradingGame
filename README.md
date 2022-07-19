@@ -8,7 +8,7 @@ Day trade crypto with out risking any money! Test your trading methodology with 
 Version
 -------------
 
-1.000-release
+1.001-release
 
 License
 -------------
@@ -31,9 +31,6 @@ Development
 Want to contribute? Great!  
 
 You can submit a pull request or simply share the project :) 
-
-*As of Monday, July 11th, 2022 Binary Options Trading Simulator is no longer an active project.
-All updates as of that date and on are solely contributor based implementations.* 
 
 Of course Binary Options Trading Simulator is free and open source, so you can always fork the project and have fun :)  
 

@@ -1,6 +1,6 @@
 // variables
 var txt, num, minNum, commas, priceNow, countDownTimer, timeleft = 5, 
-    rememberTxt = '5s', activeTrade = false, direction = 'up';
+    rememberTxt = '5s', activeTrade = false, direction = 'up', openTrade, closeTrade;
 
 // localStorage
 function rememberData() {
@@ -42,9 +42,14 @@ setData();
 
 // info
 winpercent.onclick = function() {
+  var allTrades  = $('.grid .tradehistory .trade').length;
+  var winTrades  = $('.grid .tradehistory .trade[data-result=win]').length;
+  var lossTrades = $('.grid .tradehistory .trade[data-result=loss]').length;
+  num = parseInt(winTrades / allTrades * 100);
+  
   Swal.fire({
     title: "Win Percentage",
-    text: "This little number here shows you how profitable you are.",
+    text: "You've won "+ winTrades +" out of "+ allTrades +" total trades. Thus you are " + num + "% profitable.",
     icon: "info"
   })
 };
@@ -56,7 +61,7 @@ balance.onclick  = function() {
       title: "Are you sure you wish to reset your balance?",
       text: "This will erase everything!",
       input: "number",
-      inputValue: 500,
+      inputValue: 1000,
       inputAttributes: {
         min: '1'
       }
@@ -67,7 +72,13 @@ balance.onclick  = function() {
         commas = num.toLocaleString('en-US');
         commas = num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         this.textContent = '$' + commas;
-        wager.textContent = '$' + commas;
+        
+        // calculate 25% of the users balance
+        var newWager = parseInt(parseInt(num) * .25);
+        newWager = newWager.toLocaleString('en-US');
+        newWager = newWager.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        wager.textContent = "$" + newWager;
+        
         winpercent.textContent = '0%';
         winpercent.removeAttribute('class');
 
@@ -184,7 +195,7 @@ function rememberTime() {
 }
 function startOver() {
   balance.textContent = "$1,000";
-  wager.textContent = "$1,000";
+  wager.textContent = "$250";
   winpercent.textContent = "0%";
       
   // now clear the history
@@ -226,7 +237,7 @@ function wonTrade() {
   time = new Date().toLocaleString();
   
   // add new trade
-  $('.tradehistory').append('<div class="trade" data-result="win"><div><div class="currency">'+ $('#cryptopairs a.blue').text() +'</div><div class="bet"><i class="fa fa-arrow-'+ direction +'"></i> $'+ parseInt(currentBal) +'</div></div><div><div class="time">'+ time +'</div><div class="win">+'+ parseInt(currentWager) +'</div></div></div>');
+  $('.tradehistory').append('<div class="trade" data-result="win"><div><div class="currency"><i class="fa fa-btc"></i> '+ $('#cryptopairs a.blue').text() +'</div><div><i class="fa fa-envelope-open green"></i> '+ openTrade +'</div><div class="bet"><i class="fa fa-arrow-'+ direction +'"></i> $'+ parseInt(currentBal) +'</div></div><div><div class="time">'+ time +' <i class="fa fa-clock-o"></i></div><div>'+ closeTrade +' <i class="fa fa-envelope green"></i></div><div class="win">+'+ parseInt(currentWager) +' <i class="fa fa-usd"></i></div></div></div>');
   
   // apply new balance
   balance.textContent = parseInt(currentWager + currentBal);
@@ -254,7 +265,7 @@ function lostTrade() {
   time = new Date().toLocaleString();
   
   // add new trade
-  $('.tradehistory').append('<div class="trade" data-result="loss"><div><div class="currency">'+ $('#cryptopairs a.blue').text() +'</div><div class="bet"><i class="fa fa-arrow-'+ direction +'"></i> $'+ parseInt(currentBal) +'</div></div><div><div class="time">'+ time +'</div><div class="loss">-'+ parseInt(currentWager) +'</div></div></div>');
+  $('.tradehistory').append('<div class="trade" data-result="loss"><div><div class="currency"><i class="fa fa-btc"></i> '+ $('#cryptopairs a.blue').text() +'</div><div><i class="fa fa-envelope-open red"></i> '+ openTrade +'</div><div class="bet"><i class="fa fa-arrow-'+ direction +'"></i> $'+ parseInt(currentBal) +'</div></div><div><div class="time">'+ time +' <i class="fa fa-clock-o"></i></div><div>'+ closeTrade +' <i class="fa fa-envelope red"></i></div><div class="loss">-'+ parseInt(currentWager) +' <i class="fa fa-usd"></i></div></div></div>');
   
   // apply new balance
   balance.textContent = num;
@@ -313,13 +324,22 @@ bidhigh.onclick = function() {
   direction = 'up';
   
   if (!activeTrade) {
+    if (!currentPrice) {
+      alertify.error("Sorry :( Unable to get the price. Try again!");
+      return false;
+    }
     priceNow = currentPrice;
     $('.tradingflex a').attr('disabled', true);
     activeTrade = true;
     watchTimer();
-    console.log('Going long');
-    console.log('In at price ' + priceNow);
+    openTrade = priceNow;
+    console.log('Long at price ' + openTrade);
+//    alertify.log('Long at ' + openTrade);
     setTimeout(function() {
+      closeTrade = currentPrice;
+      console.log('Closed at price ' + closeTrade);
+//      alertify.log('Closed at ' + closeTrade);
+      
       if (priceNow < currentPrice) {
         alertify.success('Yay! You Won! Keep it up!');
         stopTimer();
@@ -331,7 +351,6 @@ bidhigh.onclick = function() {
         alertify.error('Oh No! You Lost! Better luck next time.');
         activeTrade = false;
       }
-      console.log('Finished at price ' + currentPrice);
       $('.tradingflex a').removeAttr('disabled');
     }, parseInt($('#bet').attr('data-int')))
   } else {
@@ -348,13 +367,22 @@ bidlow.onclick = function() {
   direction = 'down';
   
   if (!activeTrade) {
+    if (!currentPrice) {
+      alertify.error("Sorry :( Unable to get the price. Try again!");
+      return false;
+    }
     priceNow = currentPrice;
     $('.tradingflex a').attr('disabled', true);
     activeTrade = true;
     watchTimer();
-    console.log('Going short');
-    console.log('In at price ' + priceNow);
+    openTrade = priceNow;
+    console.log('Shorting at price ' + openTrade);
+//    alertify.log('Shorting at ' + openTrade);
     setTimeout(function() {
+      closeTrade = currentPrice;
+      console.log('Closed at price ' + closeTrade);
+//      alertify.log('Closed at ' + closeTrade);
+      
       if (priceNow > currentPrice) {
         alertify.success('Yay! You Won! Keep it up!');
         stopTimer();
@@ -366,7 +394,6 @@ bidlow.onclick = function() {
         alertify.error('Oh No! You Lost! Better luck next time.');
         activeTrade = false;
       }
-      console.log('Finished at price ' + currentPrice);
       $('.tradingflex a').removeAttr('disabled');
     }, parseInt($('#bet').attr('data-int')))
   } else {
