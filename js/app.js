@@ -1,6 +1,8 @@
 // variables
-var txt, num, minNum, commas, priceNow, countDownTimer, timeleft = 5, 
-    rememberTxt = '5s', activeTrade = false, direction = 'up', openTrade, closeTrade;
+var txt, num, minNum, commas, priceNow,
+    countDownTimer, timeleft = 5, payback = 80,
+    rememberTxt = '5s', activeTrade = false,
+    direction = 'up', openTrade, closeTrade;
 
 // localStorage
 function rememberData() {
@@ -40,18 +42,36 @@ function setData() {
 }
 setData();
 
-// info
+// win percent
 winpercent.onclick = function() {
   var allTrades  = $('.grid .tradehistory .trade').length;
   var winTrades  = $('.grid .tradehistory .trade[data-result=win]').length;
   var lossTrades = $('.grid .tradehistory .trade[data-result=loss]').length;
+  if (allTrades === 0) {
+    Swal.fire({
+      html: "<h1>Win Percentage</h1><span>You are 0% profitable.<br><br><br>All trades have a 80% payback.<br>You would owe approximately $0 in taxes.</span>"
+    });
+    return false;
+  }
+  
   num = parseInt(winTrades / allTrades * 100);
+  var tradeVals = []
+  var taxNum = parseInt(winTrades / allTrades * 100);
+
+  for(i = 0; i < $('.grid .tradehistory .trade[data-result=win] .win').length; i++) {
+    var str = $('.grid .tradehistory .trade[data-result=win] .win')[i].textContent;
+    str = str.substr(1);
+    tradeVals.push(parseInt(str));
+  }
+  
+  var sum = tradeVals.reduce(add, 0);
+  function add(accumulator, a) {
+    return accumulator + a;
+  }
   
   Swal.fire({
-    title: "Win Percentage",
-    text: "You've won "+ winTrades +" out of "+ allTrades +" total trades. Thus you are " + num + "% profitable.",
-    icon: "info"
-  })
+    html: "<h1>Win Percentage</h1><span>You are " + num + "% profitable.<br>You've won "+ winTrades +" out of "+ allTrades +" total trades.<br><br><br>All trades have a 80% payback.<br>You would owe approximately $"+ parseInt(parseInt(sum) / 2) +" in taxes.</span>"
+  });
 };
 
 // change your balance
@@ -233,6 +253,9 @@ function wonTrade() {
   num = num.split('\n').join('').replace(/ /g, '');
   num = num.substr(1).replace(/,/g, '');
   currentWager = parseInt(num);
+  
+  // current wager has 80% payback
+  currentWager = parseInt(currentWager / 100 * payback);
   
   time = new Date().toLocaleString();
   
