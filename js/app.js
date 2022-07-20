@@ -69,8 +69,12 @@ winpercent.onclick = function() {
     return accumulator + a;
   }
   
+  sum = parseInt(parseInt(sum) / 2);
+  commas = sum.toLocaleString('en-US');
+  commas = sum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  
   Swal.fire({
-    html: "<h1>Win Percentage</h1><span>You are " + num + "% profitable.<br>You've won "+ winTrades +" out of "+ allTrades +" total trades.<br><br><br>All trades have a 80% payback.<br>You would owe approximately $"+ parseInt(parseInt(sum) / 2) +" in taxes.</span>"
+    html: "<h1>Win Percentage</h1><span>You are " + num + "% profitable.<br>You've won "+ winTrades +" out of "+ allTrades +" total trades.<br><br><br>All trades have a 80% payback.<br>You would owe approximately $"+ commas +" in taxes.</span>"
   });
 };
 
