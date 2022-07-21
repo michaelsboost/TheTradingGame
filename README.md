@@ -1,14 +1,14 @@
-Binary Options Trading Simulator
+The Trading Game
 ===================
 
-Day trade crypto with out risking any money! Test your trading methodology with the Crypto Paper Trader Binary Options Trading Simulator to see if your win percentages average out over a series of trades this way you'll know if you'll be a consistent profitable trader.
+Day trade crypto with out risking any money! Test your trading methodology with the Crypto Paper Trader The Trading Game to see if your win percentages average out over a series of trades this way you'll know if you'll be a consistent profitable trader.
 
-![](https://raw.githubusercontent.com/michaelsboost/BinaryOptionsSimulator/gh-pages/header.png)
+![](https://raw.githubusercontent.com/michaelsboost/TheTradingGame/gh-pages/header.png)
 
 Version
 -------------
 
-1.002-release
+1.003-release
 
 License
 -------------
@@ -18,7 +18,7 @@ MIT
 Tech
 -------------
 
-Binary Options Trading Simulator uses a number of open source projects to work properly:
+The Trading Game uses a number of open source projects to work properly:
 
 * [Normalize](https://github.com/necolas/normalize.css) - CSS reset library
 * [jQuery](http://jquery.com/) - duh
@@ -32,14 +32,14 @@ Want to contribute? Great!
 
 You can submit a pull request or simply share the project :) 
 
-*As of Monday, July 19th, 2022 Binary Options Trading Simulator is no longer an active project.
+*As of Monday, July 20th, 2022 The Trading Game is no longer an active project.
 All updates as of that date and on are solely contributor based implementations.* 
 
-Of course Binary Options Trading Simulator is free and open source, so you can always fork the project and have fun :)  
+Of course The Trading Game is free and open source, so you can always fork the project and have fun :)  
 
 [![ko-fi](https://az743702.vo.msecnd.net/cdn/kofi2.png?v=0)](https://ko-fi.com/michaelsboost)  
 
-If Binary Options Trading Simulator was at all helpful for you. You can show your appreciation a few ways...  
+If The Trading Game was at all helpful for you. You can show your appreciation a few ways...  
 
 1) Check out my Graphic Design Course: https://michaelsboost.com/graphicdesign  
 2) Registering on my store as a customer: https://michaelsboost.com/store  

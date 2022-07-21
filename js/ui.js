@@ -1,12 +1,12 @@
 // variables
-var version = '1.002-release', currentPrice,
+var version = '1.003-release', currentPrice,
     defaultHash = 'BTCUSDT',
     hash, $val, $this, timer, i;
 
 // about the app
 info.onclick = function() {
   Swal.fire({
-    html: '<img src="svgs/menulogo.svg" style="isolation:isolate; width: 50%; cursor: pointer;" viewBox="0 0 512 512" onclick="window.open(\'https://github.com/michaelsboost/BinaryOptionsSimulator\', \'_blank\')"><br><h1>'+ document.title +'</h1><h5>Version '+ version +'</h5><a href="https://github.com/michaelsboost/BinaryOptionsSimulator/blob/gh-pages/LICENSE" target="_blank">Open Source License</a>'
+    html: '<img src="svgs/menulogo.svg" style="isolation:isolate; width: 50%; cursor: pointer;" viewBox="0 0 512 512" onclick="window.open(\'https://github.com/michaelsboost/TheTradingGame/\', \'_blank\')"><br><h1>'+ document.title +'</h1><h5>Version '+ version +'</h5><a href="https://github.com/michaelsboost/TheTradingGame/blob/gh-pages/LICENSE" target="_blank">Open Source License</a>'
   });
   
   $('.swal2-container img').on('dragstart', function(e) { e.preventDefault(); });
