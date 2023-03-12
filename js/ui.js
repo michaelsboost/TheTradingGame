@@ -63,6 +63,7 @@ if (!hash) {
     "container_id": "tradingview_0b60e"
   });
   watchTicker();
+  alert("As of Monday, July 20th, 2022 The Crypto Paper Trader's are no longer under development. Why? The Public API no longer works and I don't have the time to update this project therefore I'm abandoning it. However you can still view it, use it, fork it and do whatever you wish to it.");
 }
 
 // open/close the menu
