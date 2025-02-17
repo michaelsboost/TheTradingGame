@@ -1,179 +1,130 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" data-theme="dark">
   <head>
     <title>The Trading Game</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, interactive-widget=resizes-content">
     <meta name="description" content="Day trade crypto with out risking any money! Test your trading methodology with the Crypto Paper Trader Binary Options Trading Simulator to see if your win percentages average out over a series of trades this way you'll know if you'll be a consistent profitable trader.">
     <meta name="author" content="Michael Schwartz">
-    <meta http-equiv="X-UA-Compatible" content="IE=9" />
-    <link rel="apple-touch-icon" href="apple-touch-icon.png">
-    <link rel="icon" type="image/vnd.microsoft.icon" href="favicon.ico">
-    <link rel="shortcut icon" href="apple-touch-icon.png" type="image/x-icon">
-    <link rel="stylesheet" href="libraries/alertifyjs/themes/alertify.core.css">
-    <link rel="stylesheet" href="libraries/alertifyjs/themes/alertify.default.css">
-    <script src="libraries/alertifyjs/js/alertify.min.js"></script>
-    <script src="libraries/jquery/jquery.js"></script>
-    <script src="libraries/jquery/jquery-migrate-1.2.1.min.js"></script>
-    <script src="libraries/sweetalert2/sweetalert2.all.min.js"></script>
-    <link rel="stylesheet" href="libraries/sweetalert2/sweetalert2.min.css">
-    <link rel="stylesheet" href="libraries/font-awesome/font-awesome.css" />
-    <link rel="stylesheet" href="libraries/font-awesome/macset.css" />
-    <link rel="stylesheet" href="css/style.css" />
-
-    <meta property="og:url"         content="https://michaelsboost.com/TheTradingGame" />
-    <meta property="og:type"        content="website" />
-    <meta property="og:title"       content="The Trading Game" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="The Trading Game">
+    <meta name="theme-color" content="hsl(205deg 18.75% 87.45%)">
+    <meta name="apple-mobile-web-app-title" content="The Trading Game">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="msapplication-starturl" content="./index.html">
+    <meta name="msapplication-navbutton-color" content="hsl(205deg 18.75% 87.45%)">
+    <meta property="og:url" content="https://michaelsboost.com/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="The Trading Game" />
     <meta property="og:description" content="Day trade crypto with out risking any money! Test your trading methodology with the Crypto Paper Trader Binary Options Trading Simulator to see if your win percentages average out over a series of trades this way you'll know if you'll be a consistent profitable trader." />
-    <meta property="og:image"       content="https://raw.githubusercontent.com/michaelsboost/TheTradingGame/gh-pages/header.png" />
+    <link rel="manifest" href="manifest.json">
+    <link rel="shortcut icon" type="image/x-icon" href="imgs/logo.svg">
+    <link rel="icon" type="image/svg+xml" href="imgs/logo.svg" />
+    <link rel="apple-touch-icon" href="imgs/logo.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Arvo:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="dist/bundle.css">
   </head>
   <body>
-    <!-- opened and mobile menu -->
-    <div class="openedmenubar">
-      <div class="openedmenubarflex">
-        <a id="info">
-          <svg viewBox="0 0 128 128" style="height: 19px; position: relative; top: 2px; transform-origin: 50% 50%; transform: scale(1.7);">
-            <circle vector-effect="non-scaling-stroke" cx="64" cy="63.99999999999992" r="7.367346938775501" fill="rgb(178,181,190)" />
-            <path d=" M 23.695 23.695 Q 43.436 3.954 54.404 54.404 Q 3.954 43.436 23.695 23.695 Z " fill="rgb(178,181,190)" />
-            <path d=" M 104.305 104.305 Q 124.046 84.564 73.596 73.596 Q 84.564 124.046 104.305 104.305 Z " fill="rgb(178,181,190)" />
-            <path d=" M 23.695 104.305 Q 43.436 124.046 54.404 73.596 Q 3.954 84.564 23.695 104.305 Z " fill="rgb(178,181,190)" />
-            <path d=" M 104.305 23.695 Q 124.046 43.436 73.596 54.404 Q 84.564 3.954 104.305 23.695 Z " fill="rgb(178,181,190)" />
-            <path d=" M 121 64 Q 121 91.918 77.571 64 Q 121 36.082 121 64 Z " fill="rgb(178,181,190)" />
-            <path d=" M 7 64 Q 7 91.918 50.429 64 Q 7 36.082 7 64 Z " fill="rgb(178,181,190)" />
-            <path d=" M 64 121 Q 91.918 121 64 77.571 Q 36.082 121 64 121 Z " fill="rgb(178,181,190)" />
-            <path d=" M 64 7 Q 91.918 7 64 50.429 Q 36.082 7 64 7 Z " fill="rgb(178,181,190)" />
-          </svg>
-        </a>
-        <a id="balance">
-          $1,000
-        </a>
-        <a id="winpercent">
-          0%
-        </a>
-        <a id="closemenu">
-          <i class="fa fa-times" style="transform: scale(2);"></i>
-        </a>
-      </div>
-    </div>
-    <div class="grid">
-      <div class="tradehistory red">
-        <h1 class="nohistory">No Trade History</h1>
-      </div>
-      <div class="video">
-        <iframe src="https://www.youtube.com/embed/b0Cg7Zr5oI0" title="Short svgMotion Showreel" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-      </div>
-      <div class="news">
-        <div class="tradingview-widget-container">
-          <div class="tradingview-widget-container__widget"></div>
-          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
-            {
-              "colorTheme": "dark",
-              "isTransparent": true,
-              "displayMode": "regular",
-              "width": "100%",
-              "height": "100%",
-              "locale": "en"
-            }
-          </script>
-        </div>
-      </div>
-    </div>
-    <div class="mobilemenu">
-      <div class="scroll">
-        <a data-open="history">
-          Trading History
-        </a>
-        <a data-open="about">
-          About
-        </a>
-        <a data-open="news">
-          News
-        </a>
-      </div>
-    </div>
-    
-    <!-- main app -->
-    <div class="chart">
-      <div class="tradingview-widget-container" id="tradingview_0b60e">
-        <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-      </div>
-    </div>
-    <div class="menubar">
-      <div class="menubarflex">
-        <a id="menuicon">
-<!--          <img src="svgs/menu.svg">-->
-          <img src="svgs/menulogo.svg">
-        </a>
-      </div>
+    <header class="absolute inset-0 text-center grid grid-cols-1 items-center">
+      <hgroup>
+        <h1 class="mb-2 text-[#ffffff00]">The Trading Game</h1>
+        <h2 class="text-[#ffffff00]">Day trade crypto with out risking any money! Test your trading methodology with the Crypto Paper Trader Binary Options Trading Simulator to see if your win percentages average out over a series of trades this way you'll know if you'll be a consistent profitable trader.</h2>
+      </hgroup>
+    </header>
 
-      <div id="cryptopairs" class="menubarflex scroll">
-        <a>BTC/USDT</a>
-        <a>ETH/USDT</a>
-        <a>BCH/USDT</a>
-        <a>SOL/USDT</a>
-        <a>XRP/USDT</a>
-        <a>WAVES/USDT</a>
-        <a>ADA/USDT</a>
-        <a>TRX/USDT</a>
-        <a>AVAX/USDT</a>
-        <a>LTC/USDT</a>
-        <a>DOT/USDT</a>
-        <a>DOGE/USDT</a>
-      </div>
-    </div>
-    <div class="trading">
-      <div class="tradingflex">
-        <a id="bidhigh">
-         <svg viewBox="0 0 256 256" preserveAspectRatio="xMidYMin">
-           <path d=" M 217.216 64.658 L 25.856 256 L 0 230.144 L 191.342 38.784 L 152.558 0 L 256 0 L 256 103.442 L 217.216 64.658 Z " fill="rgb(8,153,129)"/>
-          </svg>
-        </a>
-        <a id="wager">
-          $250
-        </a>
-        <a id="bet" class="neutral">
-          5s
-        </a>
-        <a id="bidlow">
-         <svg viewBox="0 0 256 256" preserveAspectRatio="xMidYMin">
-           <path d=" M 217.216 191.342 L 25.856 0 L 0 25.856 L 191.342 217.216 L 152.558 256 L 256 256 L 256 152.558 L 217.216 191.342 Z " fill="rgb(242,54,69)"/>
-          </svg>
-        </a>
-      </div>
-    </div>
-    
-    <!-- dialog -->
-    <div class="dialog" style="display: none;">
-      <div class="scroll">
-        <div class="tradehistory red" style="display: none;">
-          <h1 class="nohistory">No Trade History</h1>
-        </div>
-        <div class="videoplayer" style="display: none;">
-          <iframe src="https://www.youtube.com/embed/b0Cg7Zr5oI0" title="Short svgMotion Showreel" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </div>
-        <div class="news" style="display: none;">
-          <div class="tradingview-widget-container">
-            <div class="tradingview-widget-container__widget"></div>
-            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
-              {
-                "colorTheme": "dark",
-                "isTransparent": true,
-                "displayMode": "regular",
-                "width": "100%",
-                "height": "100%",
-                "locale": "en"
-              }
-            </script>
-          </div>
-        </div>
-      </div>
+    <div class="absolute inset-0 bg-[#14152f] text-white flex flex-col">
+      <div class="absolute inset-0 flex flex-col">
+        <header class="flex-shrink flex justify-between p-2 px-4">
+          <a href="https://github.com/michaelsboost/TheTradingGame" target="_blank" role="button" class="bg-transparent border-0 shadow-none">
+            <!-- logo -->
+            <svg class="w-10 -mt-1 -ml-5" xmlns="http://www.w3.org/2000/svg" style="isolation:isolate" viewBox="0 0 128 128" fill="currentColor"><g><circle cx="64" cy="63.99999999999992" r="7.367346938775501"></circle><path d=" M 23.695 23.695 Q 43.436 3.954 54.404 54.404 Q 3.954 43.436 23.695 23.695 Z "></path><path d=" M 104.305 104.305 Q 124.046 84.564 73.596 73.596 Q 84.564 124.046 104.305 104.305 Z "></path><path d=" M 23.695 104.305 Q 43.436 124.046 54.404 73.596 Q 3.954 84.564 23.695 104.305 Z "></path><path d=" M 104.305 23.695 Q 124.046 43.436 73.596 54.404 Q 84.564 3.954 104.305 23.695 Z "></path><path d=" M 121 64 Q 121 91.918 77.571 64 Q 121 36.082 121 64 Z "></path><path d=" M 7 64 Q 7 91.918 50.429 64 Q 7 36.082 7 64 Z "></path><path d=" M 64 121 Q 91.918 121 64 77.571 Q 36.082 121 64 121 Z "></path><path d=" M 64 7 Q 91.918 7 64 50.429 Q 36.082 7 64 7 Z "></path></g></svg>
       
-      <a id="closedialog">
-        <i class="fa fa-times"></i>
-      </a>
+            <span class="ml-2 arvo-bold hidden sm:inline-block">The Trading Game</span>
+          </a>
+      
+          <div class="flex items-center gap-4">
+          <!-- balance -->
+          <button data-active="false" id="balance" class="flex items-center bg-[#1c1d38] border-solid border-3 border-[#232541] rounded-full px-2">
+            <svg class="w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><path fill="currentColor" d="M200 168a48.05 48.05 0 0 1-48 48h-16v16a8 8 0 0 1-16 0v-16h-16a48.05 48.05 0 0 1-48-48a8 8 0 0 1 16 0a32 32 0 0 0 32 32h48a32 32 0 0 0 0-64h-40a48 48 0 0 1 0-96h8V24a8 8 0 0 1 16 0v16h8a48.05 48.05 0 0 1 48 48a8 8 0 0 1-16 0a32 32 0 0 0-32-32h-32a32 32 0 0 0 0 64h40a48.05 48.05 0 0 1 48 48"></path></svg>
+            <!-- active balance -->
+            <span class="px-2">1,000</span>
+          </button>
+      
+            <!-- history button -->
+            <button data-active="false" id="historyBtn" class="bg-[#e8453a] border-[#e8453a] shadow-none">
+              <svg class="w-5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="isolation:isolate" viewBox="0 0 409.6 409.6"><path d=" M 345.6 140.8 C 374.344 140.888 396.752 163.232 396.8 192 C 396.8 192 396.8 308 396.8 308 C 396.744 342.464 368.064 371.144 333.6 371.2 C 333.6 371.2 101.6 371.2 101.6 371.2 C 101.6 371.2 92.8 370.368 92.8 370.368 C 92.8 370.368 85.6 370.368 85.6 370.368 C 70.072 368.784 53.408 365.232 41.6 354.328 C 20.808 335.12 21.904 305.16 21.6 279.2 C 21.6 279.2 20.8 267.2 20.8 267.2 C 20.8 267.2 20.8 140.8 20.8 140.8 C 20.8 140.8 21.6 128.8 21.6 128.8 C 21.6 128.8 21.6 112.8 21.6 112.8 C 21.6 112.8 22.328 104.8 22.328 104.8 C 23.752 85.352 27.752 66.008 44 53.216 C 58.096 42.112 74.808 40.304 92 39.128 C 92 39.128 100.8 38.4 100.8 38.4 C 100.8 38.4 144 38.4 144 38.4 C 144 38.4 239.2 38.4 239.2 38.4 C 239.2 38.4 248.8 39.232 248.8 39.232 C 248.8 39.232 256 39.232 256 39.232 C 272.584 40.912 290.4 45.032 302.264 57.632 C 313.672 69.744 317.528 86.312 319.168 102.4 C 319.168 102.4 319.168 109.6 319.168 109.6 C 319.168 109.6 320 119.2 320 119.2 C 320 119.2 320 303.2 320 303.2 C 320.008 307.528 319.912 310.752 322.736 314.384 C 329.008 322.48 339.912 321.272 344.344 312 C 345.712 309.144 345.592 306.272 345.6 303.2 L 345.6 140.8 Z  M 99.2 124.104 C 89.416 127.464 86.2 139.192 93.768 146.088 C 97.408 149.4 102.568 149.592 107.2 149.6 C 107.2 149.6 236 149.6 236 149.6 C 240.744 149.544 244.392 149.032 247.912 145.512 C 253.976 139.456 252.44 129.04 244.8 125.16 C 242.208 123.848 239.608 124.008 236.8 124.104 C 236.8 124.104 145.6 124.104 145.6 124.104 L 99.2 124.104 Z  M 100 192.088 C 89.496 194.88 86.448 206.48 92.976 213.512 C 96.728 217.552 100.528 217.592 105.6 217.6 C 105.6 217.6 237.6 217.6 237.6 217.6 C 252.128 217.4 254.856 203.16 248.488 196.168 C 244.952 192.288 240.84 192.008 236 192.088 C 236 192.088 146.4 192.088 146.4 192.088 L 100 192.088 Z  M 101.6 260.12 C 87.376 263.024 86.504 277.312 95.216 283.48 C 98.448 285.776 101.056 285.592 104.8 285.6 C 104.8 285.6 168 285.6 168 285.6 C 171.872 285.592 175.008 285.72 178.328 283.32 C 184.216 279.056 184.96 269.296 179.832 264.168 C 175.936 260.272 170.752 260.008 165.6 260.12 L 101.6 260.12 Z "></path></svg>
+            </button>
+          </div>
+        </header>
+        <main class="flex-grow">
+          <div class="tradingview-widget-container" id="tradingview_0b60e">
+            <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+          </div>
+        </main>
+        <footer class="flex-shrink flex justify-between p-4 gap-4 overflow-x-auto">
+          <!-- buy button -->
+          <button data-active="false" id="buy" class="flex items-center bg-[#019b6b] border-[#019b6b] shadow-none">
+            <svg class="w-4" xmlns="http://www.w3.org/2000/svg" style="isolation:isolate" viewBox="0 0 256 256" fill="currentColor"><path d="M 0 168.381 L 66.301 102.065 C 73.447 94.894 85.06 94.894 92.206 102.065 L 128 137.905 L 193.524 72.381 L 176.762 72.381 C 166.663 72.381 158.476 64.194 158.476 54.095 C 158.476 43.996 166.663 35.81 176.762 35.81 L 237.714 35.81 C 247.813 35.81 256 43.996 256 54.095 L 256 115.048 C 256 125.147 247.813 133.333 237.714 133.333 C 227.615 133.333 219.429 125.147 219.429 115.048 L 219.429 98.286 L 140.937 176.792 C 133.791 183.963 122.179 183.963 115.032 176.792 L 79.238 140.952 L 0 220.19"></path></svg>
+          </button>
+          <!-- wager button -->
+          <button data-active="false" id="wager" class="flex items-center bg-[#1c1d38] border-solid border-3 border-[#232541] rounded-full">100</button>
+          <!-- duration -->
+          <button data-active="false" id="duration" class="flex items-center bg-[#1c1d38] border-solid border-3 border-[#232541] rounded-full px-2">
+            <!-- hour duration -->
+            <span id="durH" class="px-2">00h:</span>
+            <!-- minute duration -->
+            <span id="durM" class="px-2">00m:</span>
+            <!-- second duration -->
+            <span id="durS" class="px-2">05s</span>
+          </button>
+          <!-- sell button -->
+          <button data-active="false" id="sell" class="flex items-center bg-[#e8453a] border-[#e8453a] shadow-none">
+            <svg class="w-4" xmlns="http://www.w3.org/2000/svg" style="isolation:isolate" viewBox="0 0 256 256" fill="currentColor"><path d="M 0 87.619 L 66.301 153.935 C 73.447 161.106 85.06 161.106 92.206 153.935 L 128 118.095 L 193.524 183.619 L 176.762 183.619 C 166.663 183.619 158.476 191.806 158.476 201.905 C 158.476 212.004 166.663 220.19 176.762 220.19 L 237.714 220.19 C 247.813 220.19 256 212.004 256 201.905 L 256 140.952 C 256 130.853 247.813 122.667 237.714 122.667 C 227.615 122.667 219.429 130.853 219.429 140.952 L 219.429 157.714 L 140.937 79.208 C 133.791 72.037 122.179 72.037 115.032 79.208 L 79.238 115.048 L 0 35.81"></path></svg>
+          </button>
+        </footer>
+      </div>
+
+      <dialog id="modalHistory">
+        <article class="rounded-md">
+          <header class="flex justify-between items-center">
+            <h1 class="text-2xl font-thin m-0 capitalize">
+              trading history
+            </h1>
+            <button class="text-xs w-auto px-3 py-2 m-0 capitalize rounded-md bg-transparent border-0 shadow-none" aria-label="Close" onclick="this.closest('dialog').close()">
+              <svg class="w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1" d="M6 18L18 6m0 12L6 6"></path>
+              </svg>
+            </button>
+          </header>
+          <main class="font-thin relative">
+            <div class="flex flex-col" style="height: 60vh;">
+              <!-- Scrollable Trading History -->
+              <ul id="tradingHistory" class="px-0" style="overflow-y: auto; flex-grow: 1; max-height: 50vh;"></ul>
+      
+              <!-- Sticky Win Rate Section -->
+              <ul class="my-0 pt-2 px-0" style="background: var(--pico-card-background-color); position: sticky; bottom: 0;">
+                <li class="list-none flex justify-between">
+                  <div class="flex flex-col">
+                    <span>Win rate</span>
+                  </div>
+                  <div class="flex flex-col text-right">
+                    <span id="winrate">100%</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </main>
+          <footer>
+            <button class="text-xs w-auto px-3 py-2 m-0 capitalize rounded-md bg-transparent border border-gray-600 shadow-none" aria-label="Close" onclick="this.closest('dialog').close()">
+              close
+            </button>
+          </footer>
+        </article>
+      </dialog>
     </div>
 
-    <script src="js/app.js"></script>
-    <script src="js/ui.js"></script>
+    <!-- <script src="src/script.js" type="module"></script> -->
+    <script src="dist/script.js" type="module"></script>
   </body>
 </html>
