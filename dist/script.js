@@ -132,6 +132,17 @@ function executeTrade(direction, tradeButton) {
   App.activeTrade = true;
   tradeDirection = direction;
   initialTradePrice = currentPrice; // Store valid price
+  
+  // Update start price display
+  const startPriceDisplay = document.getElementById('startPrice');
+  const currentPriceDisplay = document.getElementById('currentPrice');
+  if (startPriceDisplay) {
+    startPriceDisplay.textContent = `Start: $${formatNumberWithCommas(initialTradePrice.toFixed(2))}`;
+  }
+  if (currentPriceDisplay) {
+    currentPriceDisplay.classList.remove('text-[#019b6b]', 'text-[#e8453a]');
+    currentPriceDisplay.classList.add(direction === 'buy' ? 'text-[#019b6b]' : 'text-[#e8453a]');
+  }
 
   clearTimeout(timer);
   timer = setInterval(buildTicker, 1000);
@@ -183,7 +194,20 @@ function endTrade(tradeButton) {
   // Reset duration display
   document.getElementById('durH').textContent = `${String(App.duration.hour).padStart(2, '0')}h:`;
   document.getElementById('durM').textContent = `${String(App.duration.minute).padStart(2, '0')}m:`;
-  document.getElementById('durS').textContent = `${String(App.duration.second).padStart(2, '0')}s:`;
+  document.getElementById('durS').textContent = `${String(App.duration.second).padStart(2, '0')}s`;
+
+  // Clear start price display after trade ends
+  const startPriceDisplay = document.getElementById('startPrice');
+  if (startPriceDisplay) {
+    startPriceDisplay.textContent = '';
+  }
+  
+  // Reset current price display color
+  const currentPriceDisplay = document.getElementById('currentPrice');
+  if (currentPriceDisplay) {
+    currentPriceDisplay.classList.remove('text-[#019b6b]', 'text-[#e8453a]');
+    currentPriceDisplay.classList.add('text-[#019b6b]');
+  }
 
   const finalPrice = currentPrice;
   let tradeOutcome = "Loss";
@@ -276,11 +300,25 @@ function buildTicker() {
           const data = JSON.parse(request.responseText);
           if (data.price && parseFloat(data.price) > 0) {
             currentPrice = parseFloat(data.price);
+            // Update price display
+            const priceDisplay = document.getElementById('currentPrice');
+            if (priceDisplay) {
+              priceDisplay.textContent = `$${formatNumberWithCommas(currentPrice.toFixed(2))}`;
+              
+              // Update color based on price movement if in active trade
+              if (App.activeTrade && initialTradePrice) {
+                const priceChange = currentPrice - initialTradePrice;
+                const isPositive = (tradeDirection === 'buy' && priceChange > 0) || 
+                                 (tradeDirection === 'sell' && priceChange < 0);
+                priceDisplay.classList.remove('text-[#019b6b]', 'text-[#e8453a]');
+                priceDisplay.classList.add(isPositive ? 'text-[#019b6b]' : 'text-[#e8453a]');
+              }
+            }
             console.log("Updated BTC Price:", currentPrice);
-            resolve(currentPrice); // Resolve promise only when price is set
+            resolve(currentPrice);
           } else {
             console.warn("Invalid price received:", data);
-            resolve(null); // Resolve with null so we can retry
+            resolve(null);
           }
         } catch (error) {
           console.error("Error parsing JSON:", error);
