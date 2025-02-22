@@ -14,6 +14,29 @@ let currentPrice = null; // Ensure global scope
 let countdownTimer = null; // Global variable for countdown
 let timer = 0; // Define timer
 
+// Get market from URL parameters
+const urlParams = new URLSearchParams(window.location.search);
+const market = urlParams.get('market') || 'BTCUSD';
+
+// Market symbol mapping
+const marketSymbols = {
+  'BTCUSD': 'COINBASE:BTCUSD',
+  'ETHUSD': 'COINBASE:ETHUSD',
+  'XRPUSD': 'BINANCE:XRPUSDT',
+  'ADAUSD': 'BINANCE:ADAUSD',
+  'DJIA': 'DJ:DJI',
+  'Nasdaq': 'NASDAQ:NDX',
+  'SP500': 'SP:SPX',
+  'EURUSD': 'FX:EURUSD',
+  'GBPUSD': 'FX:GBPUSD',
+  'USDJPY': 'FX:USDJPY',
+  'AUDUSD': 'FX:AUDUSD',
+  'USDCAD': 'FX:USDCAD',
+  'XAUUSD': 'OANDA:XAUUSD',
+  'WTI': 'NYMEX:CL1!',
+  'XAGUSD': 'OANDA:XAGUSD'
+};
+
 // Utility Functions (General Helpers)
 function formatNumberWithCommas(number) {
   return new Intl.NumberFormat().format(number);
@@ -183,7 +206,7 @@ function endTrade(tradeButton) {
   // Reset duration display
   document.getElementById('durH').textContent = `${String(App.duration.hour).padStart(2, '0')}h:`;
   document.getElementById('durM').textContent = `${String(App.duration.minute).padStart(2, '0')}m:`;
-  document.getElementById('durS').textContent = `${String(App.duration.second).padStart(2, '0')}s:`;
+  document.getElementById('durS').textContent = `${String(App.duration.second).padStart(2, '0')}s`;
 
   const finalPrice = currentPrice;
   let tradeOutcome = "Loss";
@@ -204,7 +227,7 @@ function endTrade(tradeButton) {
   App.balance += adjustment;
 
   const tradeRecord = {
-    currency: 'BTC/USDT',
+    currency: market,
     date: new Date().toLocaleString(),
     balance: `$${App.balance.toLocaleString()}`,
     adjustment: `${adjustment > 0 ? '+' : ''}${adjustment}`
@@ -266,7 +289,7 @@ function endTrade(tradeButton) {
 }
 function buildTicker() {
   return new Promise((resolve, reject) => {
-    const url = 'https://data-api.binance.vision/api/v3/ticker/price?symbol=BTCUSDT';
+    const url = `https://data-api.binance.vision/api/v3/ticker/price?symbol=${market}`;
     const request = new XMLHttpRequest();
 
     request.open('GET', url, true);
@@ -276,7 +299,7 @@ function buildTicker() {
           const data = JSON.parse(request.responseText);
           if (data.price && parseFloat(data.price) > 0) {
             currentPrice = parseFloat(data.price);
-            console.log("Updated BTC Price:", currentPrice);
+            console.log("Updated price:", currentPrice);
             resolve(currentPrice); // Resolve promise only when price is set
           } else {
             console.warn("Invalid price received:", data);
@@ -468,27 +491,19 @@ renderHistory();
 new TradingView.widget({
   "width": "100%",
   "height": "100%",
-  "symbol": "COINBASE:BTCUSD",
+  "symbol": marketSymbols[market] || "COINBASE:BTCUSD",
   "interval": "1",
-  "timezone": "America/Chicago",
+  "timezone": "Etc/UTC",
   "theme": "dark",
   "style": "1",
   "locale": "en",
   "toolbar_bg": "#f1f3f6",
   "enable_publishing": false,
   "hide_side_toolbar": false,
-  "allow_symbol_change": false,
+  "allow_symbol_change": true,
+  "details": true,
   "hotlist": true,
   "calendar": true,
-  "details": true,
-  "studies": [
-    // "BB@tv-basicstudies",
-    // "MAExp@tv-basicstudies",
-    "VWAP@tv-basicstudies"
-  ],
-  "news": [
-    "headlines"
-  ],
   "container_id": "tradingview_0b60e"
 });
 
