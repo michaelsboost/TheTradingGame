@@ -33,7 +33,7 @@ const marketSymbols = {
   'AUDUSD': 'FOREXCOM:AUDUSD',
   'USDCAD': 'FOREXCOM:USDCAD',
   'XAUUSD': 'FOREXCOM:XAUUSD',
-  'WTI': 'NYMEX:CL1!',
+  'WTI': 'CFI:WTI',
   'XAGUSD': 'FOREXCOM:XAGUSD'
 };
 
@@ -65,7 +65,7 @@ function showNotification(title, body, type) {
 }
 function checkConnection() {
   return new Promise((resolve) => {
-    const apiKey = '4P32WKX4TILQP48M';
+    const apiKey = '';
     const symbol = 'IBM'; // Using IBM as a test symbol for connection check
     const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&entitlement=realtime&apikey=${apiKey}`;
 
@@ -304,7 +304,7 @@ function endTrade(tradeButton) {
 }
 function buildTicker() {
   return new Promise((resolve, reject) => {
-    const apiKey = '4P32WKX4TILQP48M';
+    const apiKey = '';
     // Use the market variable, but map it to Alpha Vantage symbols if necessary
     const alphaVantageSymbol = marketSymbols[market] || market;
     const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${alphaVantageSymbol}&entitlement=realtime&apikey=${apiKey}`;
