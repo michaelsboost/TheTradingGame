@@ -156,112 +156,70 @@
           <section class="mb-12" data-aos="fade-up">
             <h2 class="text-3xl font-semibold mb-6 text-center title-3d">Equity Indices</h2>
             <div class="space-y-4 flex flex-col items-center">
-              <button
-                onclick="navigateToChart('DJIA')"
-                class="card"
-              >
+              <button onclick="navigateToChart('DJIA')" class="card">
                 <span class="card-content">Dow Jones 30</span>
               </button>
-              <button
-                onclick="navigateToChart('Nasdaq')"
-                class="card"
-              >
+              <button onclick="navigateToChart('Nasdaq')" class="card">
                 <span class="card-content">Nasdaq 100</span>
               </button>
-              <button
-                onclick="navigateToChart('SP500')"
-                class="card"
-              >
+              <button onclick="navigateToChart('SP500')" class="card">
                 <span class="card-content">S&amp;P 500 Index</span>
               </button>
             </div>
           </section>
+
           <!-- Forex Section -->
           <section class="mb-12" data-aos="fade-up" data-aos-delay="100">
             <h2 class="text-3xl font-semibold mb-6 text-center title-3d">Forex</h2>
             <div class="space-y-4 flex flex-col items-center">
-              <button
-                onclick="navigateToChart('EURUSD')"
-                class="card"
-              >
+              <button onclick="navigateToChart('EURUSD')" class="card">
                 <span class="card-content">EUR/USD</span>
               </button>
-              <button
-                onclick="navigateToChart('GBPUSD')"
-                class="card"
-              >
+              <button onclick="navigateToChart('GBPUSD')" class="card">
                 <span class="card-content">GBP/USD</span>
               </button>
-              <button
-                onclick="navigateToChart('USDJPY')"
-                class="card"
-              >
+              <button onclick="navigateToChart('USDJPY')" class="card">
                 <span class="card-content">USD/JPY</span>
               </button>
-              <button
-                onclick="navigateToChart('AUDUSD')"
-                class="card"
-              >
+              <button onclick="navigateToChart('AUDUSD')" class="card">
                 <span class="card-content">AUD/USD</span>
               </button>
-              <button
-                onclick="navigateToChart('USDCAD')"
-                class="card"
-              >
+              <button onclick="navigateToChart('USDCAD')" class="card">
                 <span class="card-content">USD/CAD</span>
               </button>
             </div>
           </section>
+
           <!-- Commodities Section -->
           <section class="mb-12" data-aos="fade-up" data-aos-delay="200">
             <h2 class="text-3xl font-semibold mb-6 text-center title-3d">Commodities</h2>
             <div class="space-y-4 flex flex-col items-center">
-              <button
-                onclick="navigateToChart('XAUUSD')"
-                class="card"
-              >
+              <button onclick="navigateToChart('XAUUSD')" class="card">
                 <span class="card-content">Gold (XAU/USD)</span>
               </button>
-              <button
-                onclick="navigateToChart('WTI')"
-                class="card"
-              >
-                <span class="card-content">Crude Oil (WTI)</span>
-              </button>
-              <button
-                onclick="navigateToChart('XAGUSD')"
-                class="card"
-              >
+              <button onclick="navigateToChart('XAGUSD')" class="card">
                 <span class="card-content">Silver (XAG/USD)</span>
+              </button>
+              <button onclick="navigateToChart('WTI')" class="card">
+                <span class="card-content">WTI Crude Oil</span>
               </button>
             </div>
           </section>
+
           <!-- Crypto Section -->
           <section class="mb-12" data-aos="fade-up" data-aos-delay="300">
             <h2 class="text-3xl font-semibold mb-6 text-center title-3d">Crypto</h2>
             <div class="space-y-4 flex flex-col items-center">
-              <button
-                onclick="navigateToChart('BTCUSD')"
-                class="card"
-              >
+              <button onclick="navigateToChart('BTCUSD')" class="card">
                 <span class="card-content">Bitcoin (BTC/USD)</span>
               </button>
-              <button
-                onclick="navigateToChart('ETHUSD')"
-                class="card"
-              >
+              <button onclick="navigateToChart('ETHUSD')" class="card">
                 <span class="card-content">Ethereum (ETH/USD)</span>
               </button>
-              <button
-                onclick="navigateToChart('XRPUSD')"
-                class="card"
-              >
+              <button onclick="navigateToChart('XRPUSD')" class="card">
                 <span class="card-content">Ripple (XRP/USD)</span>
               </button>
-              <button
-                onclick="navigateToChart('ADAUSD')"
-                class="card"
-              >
+              <button onclick="navigateToChart('ADAUSD')" class="card">
                 <span class="card-content">Cardano (ADA/USD)</span>
               </button>
             </div>
@@ -279,9 +237,11 @@
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
     <script>
       AOS.init({ 
+        duration: 800,
         once: true,
-        duration: 1000
+        offset: 100
       });
+      
       function navigateToChart(market) {
         window.location.href = `index.html?market=${market}`;
       }

@@ -18,23 +18,23 @@ let timer = 0; // Define timer
 const urlParams = new URLSearchParams(window.location.search);
 const market = urlParams.get('market') || 'BTCUSD';
 
-// Market symbol mapping
+// Market symbol mapping with TradingView prefixes
 const marketSymbols = {
-  'BTCUSD': 'BTCUSD',
-  'ETHUSD': 'ETHUSD',
-  'XRPUSD': 'XRPUSD',
-  'ADAUSD': 'ADAUSD',
-  'DJIA': 'DJI',
-  'Nasdaq': 'NDX',
-  'SP500': 'SPX',
-  'EURUSD': 'EURUSD',
-  'GBPUSD': 'GBPUSD',
-  'USDJPY': 'USDJPY',
-  'AUDUSD': 'AUDUSD',
-  'USDCAD': 'USDCAD',
-  'XAUUSD': 'XAUUSD',
-  'WTI': 'CL=F',
-  'XAGUSD': 'XAGUSD'
+  'BTCUSD': 'COINBASE:BTCUSD',
+  'ETHUSD': 'COINBASE:ETHUSD',
+  'XRPUSD': 'COINBASE:XRPUSD',
+  'ADAUSD': 'COINBASE:ADAUSD',
+  'DJIA': 'FOREXCOM:DJI',
+  'Nasdaq': 'NASDAQ:NDX',
+  'SP500': 'FOREXCOM:SPX',
+  'EURUSD': 'FOREXCOM:EURUSD',
+  'GBPUSD': 'FOREXCOM:GBPUSD',
+  'USDJPY': 'FOREXCOM:USDJPY',
+  'AUDUSD': 'FOREXCOM:AUDUSD',
+  'USDCAD': 'FOREXCOM:USDCAD',
+  'XAUUSD': 'FOREXCOM:XAUUSD',
+  'WTI': 'NYMEX:CL1!',
+  'XAGUSD': 'FOREXCOM:XAGUSD'
 };
 
 // Utility Functions (General Helpers)
@@ -508,23 +508,43 @@ function renderHistory() {
   winrateElement.innerHTML = `<span class="${winRateClass}">${winRate}%</span>`;
 }
 renderHistory();
-new TradingView.widget({
-  "width": "100%",
-  "height": "100%",
-  "symbol": marketSymbols[market] || "COINBASE:BTCUSD",
-  "interval": "1",
-  "timezone": "Etc/UTC",
-  "theme": "dark",
-  "style": "1",
-  "locale": "en",
-  "toolbar_bg": "#f1f3f6",
-  "enable_publishing": false,
-  "hide_side_toolbar": false,
-  "allow_symbol_change": true,
-  "details": true,
-  "hotlist": true,
-  "calendar": true,
-  "container_id": "tradingview_0b60e"
+
+// Initialize TradingView widget with dynamic configuration
+function initTradingViewWidget() {
+  const widgetConfig = {
+    "width": "100%",
+    "height": "100%",
+    "symbol": marketSymbols[market] || "COINBASE:BTCUSD",
+    "interval": "1",
+    "timezone": "Asia/Kuala_Lumpur",
+    "theme": "dark",
+    "style": "1",
+    "locale": "en",
+    "toolbar_bg": "#f1f3f6",
+    "enable_publishing": false,
+    "withdateranges": true,
+    "hide_side_toolbar": false,
+    "allow_symbol_change": true,
+    "details": true,
+    "hotlist": true,
+    "calendar": false,
+    "studies": [
+      "STD;Average%1Directional%1Index",
+      "STD;MACD"
+    ],
+    "container_id": "tradingview_0b60e",
+    "show_popup_button": true,
+    "popup_width": "1000",
+    "popup_height": "650"
+  };
+
+  new TradingView.widget(widgetConfig);
+}
+
+// Initialize widget when document is ready
+document.addEventListener('DOMContentLoaded', () => {
+  renderAppState();
+  initTradingViewWidget();
 });
 
 // Event Listeners (DOM Interaction)

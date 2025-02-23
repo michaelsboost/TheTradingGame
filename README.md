@@ -1,58 +1,94 @@
-The Trading Game
-===================
+# The Trading Game 📈
 
-Day trade crypto without risking any money! The Trading Game is a binary options day trading simulator that allows you to test your trading methodology and risk management skills. By tracking your win percentages over a series of trades, you can determine if your strategy is consistently profitable before trading with real money.
+A real-time trading simulator that lets you practice trading various financial instruments without risking real money. Perfect for learning trading strategies and testing your market intuition.
 
-![](https://raw.githubusercontent.com/michaelsboost/TheTradingGame/gh-pages/header.png)
+![The Trading Game](header.png)
 
-Version
--------------
+## Features 🚀
 
-2.0.0
+- **Multi-Asset Trading**: Practice trading across different markets:
+  - 💹 Equity Indices (Dow Jones 30, Nasdaq 100, S&P 500)
+  - 💱 Forex (EUR/USD, GBP/USD, USD/JPY, and more)
+  - 🏆 Commodities (Gold, Silver, WTI Crude Oil)
+  - ₿ Cryptocurrencies (Bitcoin, Ethereum, Ripple, Cardano)
 
-License
--------------
+- **Professional Trading Interface**:
+  - Real-time price charts powered by TradingView
+  - Technical indicators (ADX, MACD)
+  - Customizable timeframes
+  - Interactive chart tools
 
-MIT
+- **Trading Features**:
+  - Adjustable trade duration (hours, minutes, seconds)
+  - Customizable wager amounts
+  - Real-time profit/loss tracking
+  - Trade history with performance statistics
 
-Tech
--------------
+- **User Experience**:
+  - Modern, responsive design
+  - Dark theme for comfortable trading
+  - Animated transitions
+  - Mobile-friendly interface
 
-The Trading Game uses a number of open-source projects to function properly:
+## How to Play 🎮
 
-* [PicoCSS](https://picocss.com/) - Minimalist CSS framework for clean styling
-* [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework for rapid UI development
-* [TradingView](https://www.tradingview.com/widget/advanced-chart/) - Used to display the advanced trading chart
-* [Binance API](https://binance-docs.github.io/apidocs/spot/en/#change-log) - Used to fetch the current price of the selected cryptocurrency
-* [LocalStorage] - Used to persist user data across sessions
+1. **Select Your Market**:
+   - Visit the landing page
+   - Choose from various trading instruments
+   - Click on your preferred market to start trading
 
-Features
--------------
+2. **Set Your Trade Parameters**:
+   - Adjust your wager amount (default: $100)
+   - Set trade duration (default: 5 seconds)
+   - Monitor current price movements
 
-- **Real-Time Trading Simulation**: Experience day trading without financial risk.
-- **Risk Management Insights**: Learn about trade management, win/loss ratios, and profitability.
-- **LocalStorage Support**: Your balance, trade history, and settings are saved across sessions.
-- **Dynamic UI**: Adjust trade duration, wager, and balance with a user-friendly modal interface.
-- **Paper Trading**: Test different trading strategies before implementing them in real markets.
+3. **Make Your Trade**:
+   - Click "Buy" if you think the price will go up
+   - Click "Sell" if you think the price will go down
+   - Wait for the trade duration to complete
 
-Development
--------------
+4. **Track Your Performance**:
+   - View your trade history
+   - Monitor your win rate
+   - Track your balance changes
 
-Want to contribute? Great!  
+## Getting Started 🛠️
 
-You can submit a pull request or simply share the project!
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/TheTradingGame.git
+   ```
 
-As of Sunday, February 16, 2025, The Trading Game is no longer actively maintained. All future updates and enhancements will be community-driven.
+2. Open `landing.html` in your web browser to start trading
 
-Of course, The Trading Game is free and open-source, so feel free to fork the project and have fun!  
+## Technical Details 🔧
 
-[![ko-fi](https://az743702.vo.msecnd.net/cdn/kofi2.png?v=0)](https://ko-fi.com/michaelsboost)  
+- **Frontend Technologies**:
+  - HTML5
+  - CSS3 (Tailwind CSS)
+  - JavaScript (Vanilla)
+  - TradingView Charting Library
 
-If The Trading Game has been helpful for you, consider supporting the project:
+- **Features**:
+  - Local storage for saving game state
+  - Real-time price updates
+  - Responsive design with Tailwind CSS
+  - AOS (Animate On Scroll) for smooth animations
 
-1) Register on my store as a customer: [https://michaelsboost.com/store](https://michaelsboost.com/store)  
-2) Buy me a coffee: [http://ko-fi.com/michaelsboost](http://ko-fi.com/michaelsboost)  
-3) Purchase one of my t-shirts: [https://michaelsboost.com/gear](https://michaelsboost.com/gear)  
-4) Purchase my art: [https://deviantart.com/michaelsboost/prints](https://deviantart.com/michaelsboost/prints)  
-5) Donate via PayPal: [https://michaelsboost.com/donate](https://michaelsboost.com/donate)  
-6) Donate via SquareCash: [https://cash.me/$michaelsboost](https://cash.me/$michaelsboost)  
+## Contributing 🤝
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License 📝
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments 👏
+
+- TradingView for their excellent charting library
+- Alpha Vantage for market data
+- Icons and design inspiration from various open-source projects
+
+## Disclaimer ⚠️
+
+This is a simulation game for educational purposes only. No real money is involved. Trading financial instruments carries significant risks, and you should never trade with money you cannot afford to lose.
