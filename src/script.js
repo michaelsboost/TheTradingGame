@@ -20,21 +20,21 @@ const market = urlParams.get('market') || 'BTCUSD';
 
 // Market symbol mapping
 const marketSymbols = {
-  'BTCUSD': 'COINBASE:BTCUSD',
-  'ETHUSD': 'COINBASE:ETHUSD',
-  'XRPUSD': 'BINANCE:XRPUSDT',
-  'ADAUSD': 'BINANCE:ADAUSD',
-  'DJIA': 'DJ:DJI',
-  'Nasdaq': 'NASDAQ:NDX',
-  'SP500': 'SP:SPX',
-  'EURUSD': 'FX:EURUSD',
-  'GBPUSD': 'FX:GBPUSD',
-  'USDJPY': 'FX:USDJPY',
-  'AUDUSD': 'FX:AUDUSD',
-  'USDCAD': 'FX:USDCAD',
-  'XAUUSD': 'OANDA:XAUUSD',
-  'WTI': 'NYMEX:CL1!',
-  'XAGUSD': 'OANDA:XAGUSD'
+  'BTCUSD': 'BTCUSD',
+  'ETHUSD': 'ETHUSD',
+  'XRPUSD': 'XRPUSD',
+  'ADAUSD': 'ADAUSD',
+  'DJIA': 'DJI',
+  'Nasdaq': 'NDX',
+  'SP500': 'SPX',
+  'EURUSD': 'EURUSD',
+  'GBPUSD': 'GBPUSD',
+  'USDJPY': 'USDJPY',
+  'AUDUSD': 'AUDUSD',
+  'USDCAD': 'USDCAD',
+  'XAUUSD': 'XAUUSD',
+  'WTI': 'CL=F',
+  'XAGUSD': 'XAGUSD'
 };
 
 // Utility Functions (General Helpers)
@@ -65,14 +65,29 @@ function showNotification(title, body, type) {
 }
 function checkConnection() {
   return new Promise((resolve) => {
-    const url = 'https://data-api.binance.vision/api/v3/ticker/price?symbol=BTCUSDT';
+    const apiKey = '4P32WKX4TILQP48M';
+    const symbol = 'IBM'; // Using IBM as a test symbol for connection check
+    const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&entitlement=realtime&apikey=${apiKey}`;
+
     const request = new XMLHttpRequest();
 
     request.open('GET', url, true);
     request.onload = function() {
       if (request.status === 200) {
-        console.log("Connection established.");
-        resolve(true);
+        try {
+          const data = JSON.parse(request.responseText);
+          // Check if the response contains an error message
+          if (data["Error Message"] || data["Note"]) {
+            console.error("Connection failed:", data["Error Message"] || data["Note"]);
+            resolve(false);
+          } else {
+            console.log("Connection established.");
+            resolve(true);
+          }
+        } catch (error) {
+          console.error("Error parsing JSON:", error);
+          resolve(false);
+        }
       } else {
         console.error("Connection failed with status:", request.status);
         resolve(false);
@@ -289,7 +304,10 @@ function endTrade(tradeButton) {
 }
 function buildTicker() {
   return new Promise((resolve, reject) => {
-    const url = `https://data-api.binance.vision/api/v3/ticker/price?symbol=${market}`;
+    const apiKey = '4P32WKX4TILQP48M';
+    // Use the market variable, but map it to Alpha Vantage symbols if necessary
+    const alphaVantageSymbol = marketSymbols[market] || market;
+    const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${alphaVantageSymbol}&entitlement=realtime&apikey=${apiKey}`;
     const request = new XMLHttpRequest();
 
     request.open('GET', url, true);
@@ -297,13 +315,15 @@ function buildTicker() {
       if (request.status === 200) {
         try {
           const data = JSON.parse(request.responseText);
-          if (data.price && parseFloat(data.price) > 0) {
-            currentPrice = parseFloat(data.price);
+          // Alpha Vantage returns data in a "Global Quote" object
+          const globalQuote = data["Global Quote"];
+          if (globalQuote && globalQuote["05. price"]) {
+            currentPrice = parseFloat(globalQuote["05. price"]);
             console.log("Updated price:", currentPrice);
-            resolve(currentPrice); // Resolve promise only when price is set
+            resolve(currentPrice);
           } else {
             console.warn("Invalid price received:", data);
-            resolve(null); // Resolve with null so we can retry
+            resolve(null); // Resolve with null to retry
           }
         } catch (error) {
           console.error("Error parsing JSON:", error);
