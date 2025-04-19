@@ -1,12 +1,15 @@
 {
+  "id": "com.michaelsboost.thetradinggame",
+  "name": "TheTradingGame",
+  "short_name": "TheTradingGame",
+  "description": "Day trade crypto with out risking any money! Test your trading methodology with the Crypto Paper Trader Binary Options Trading Simulator to see if your win percentages average out over a series of trades this way you'll know if you'll be a consistent profitable trader.",
+  "lang": "en-US",
+  "dir": "ltr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
   "theme_color": "#13171f",
   "background_color": "#13171f",
-  "display": "standalone",
-  "start_url": "./index.html",
-  "lang": "en-US",
-  "name": "thetradinggame",
-  "short_name": "thetradinggame",
-  "description": "Day trade crypto with out risking any money! Test your trading methodology with the Crypto Paper Trader Binary Options Trading Simulator to see if your win percentages average out over a series of trades this way you'll know if you'll be a consistent profitable trader.",
   "icons": [
     {
       "src": "./imgs/logo-192x192.png",
@@ -31,6 +34,17 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
+    }
+  ],
+  "categories": [
+    "finance",
+    "security"
+  ],
+  "prefer_related_applications": true,
+  "related_applications": [
+    {
+      "platform": "play",
+      "id": "com.michaelsboost.thetradinggame"
     }
   ]
 }
