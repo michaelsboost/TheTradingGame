@@ -1,7 +1,7 @@
 🎮 The Trading Game — Binary Options Simulator
 ============================
 
-![](https://raw.githubusercontent.com/michaelsboost/TheTradingGame/main/imgs/screenshot.jpeg)
+![](https://raw.githubusercontent.com/michaelsboost/TheTradingGame/gh-pages/imgs/screenshot.jpeg)
 
 ## 🌟 Overview
 **The Trading Game** is a **binary options trading simulator** that lets you practice high-speed decision-making without risking real money. It’s designed to sharpen your instincts, help you analyze trade performance, and build confidence in your edge.
