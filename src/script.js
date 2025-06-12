@@ -287,22 +287,29 @@ const Chart = (() => {
     state.openTrades.forEach(trade => {
       const drawLine = (price, color, label, trade) => {
         const y = height - (price - min) * scaleY - padding;
-
+    
         ctx.strokeStyle = color;
         ctx.lineWidth = 2;
         ctx.beginPath();
         ctx.moveTo(0, y);
         ctx.lineTo(width, y);
         ctx.stroke();
-
+    
         let dollar = '';
-
         ctx.fillStyle = color;
         ctx.font = "11px sans-serif";
         ctx.textAlign = "left";
         ctx.fillText(`${label} ${price.toFixed(2)}${dollar}`, 8, y - 4);
+    
+        // Add countdown timer for this trade
+        const remaining = Math.max(0, (trade.entryTime + trade.duration - Date.now()) / 1000);
+        const countdown = `${Math.floor(remaining)}s`;
+        ctx.textAlign = "left";
+        ctx.fillStyle = "#fff";
+        ctx.font = "10px sans-serif";
+        ctx.fillText(countdown, 8, y + 12); // 8px from left, slightly below the entry label
       };
-
+    
       drawLine(trade.entry, trade.type === 'buy' ? '#0f0' : '#f00', 'Entry', trade);
     });
 
@@ -348,13 +355,12 @@ const Trades = (() => {
   }
 
   function place(type, state) {
-    if (state.activeTrade) {
-      showTradeMessage("Trade already in progress.");
+    // Check if user has enough balance to place this trade
+    if (state.balance < state.wager) {
+      showTradeMessage("❌ Insufficient balance to place trade.");
       return;
     }
-  
-    state.activeTrade = true;
-    toggleTradeButtons(true);
+    
     const entry = state.currentPrice;
     const durationMs = (state.duration.hour * 3600 + state.duration.minute * 60 + state.duration.second) * 1000;
   
@@ -365,65 +371,57 @@ const Trades = (() => {
       entryTime: Date.now(),
       duration: durationMs
     };
+    state.balance -= state.wager;
   
     state.openTrades.push(trade);
-
-    // Countdown display using individual span elements
-    const hEl = document.getElementById("durH");
-    const mEl = document.getElementById("durM");
-    const sEl = document.getElementById("durS");
-    
-    if (hEl && mEl && sEl) {
-      const totalSeconds = durationMs / 1000;
-      let timeLeft = totalSeconds;
-    
-      if (window.countdownTimer) clearInterval(window.countdownTimer); // clear any previous countdown
-    
-      function updateTime() {
-        const hours = Math.floor(timeLeft / 3600);
-        const minutes = Math.floor((timeLeft % 3600) / 60);
-        const seconds = Math.floor(timeLeft % 60);
-    
-        hEl.textContent = `${String(hours).padStart(2, '0')}h:`;
-        mEl.textContent = `${String(minutes).padStart(2, '0')}m:`;
-        sEl.textContent = `${String(seconds).padStart(2, '0')}s`;
-    
-        if (timeLeft <= 0) {
-          clearInterval(window.countdownTimer);
-          return;
-        }
-    
-        timeLeft--;
-      }
-    
-      updateTime(); // initial call
-      window.countdownTimer = setInterval(updateTime, 1000);
-    }
-
   
     setTimeout(() => resolveTrade(trade, state), durationMs);
   }
 
   function resolveTrade(trade, state) {
     const exit = state.currentPrice;
-    const won = (trade.type === "buy" && exit > trade.entry) || (trade.type === "sell" && exit < trade.entry);
-    const pnl = won ? trade.wager : -trade.wager;
+  
+    const isBuy = trade.type === "buy";
+    const isSell = trade.type === "sell";
+  
+    let exitResult = "Loss";
+    let pnl = 0;
+  
+    const payoutMultiplier = 1.8;
+  
+    if ((isBuy && exit > trade.entry) || (isSell && exit < trade.entry)) {
+      exitResult = "Win";
+      pnl = trade.wager * (payoutMultiplier - 1); // Only profit
+      state.balance += trade.wager + pnl; // Return wager + profit
+    } else if (exit === trade.entry) {
+      exitResult = "Break Even";
+      pnl = 0;
+      state.balance += trade.wager; // Return wager
+    }
+    // Else: Loss – wager already deducted
   
     state.trades.push({
       ...trade,
       exit,
-      pnl,
-      exitResult: won ? "Win" : "Loss",
+      pnl: exitResult === "Loss" ? -trade.wager : pnl,
+      exitResult,
       time: new Date().toLocaleTimeString()
     });
   
-    state.balance += pnl;
-    state.openTrades = [];
-    state.activeTrade = false;
-    toggleTradeButtons(false);
-    saveStateToLocalStorage();
+    const index = state.openTrades.indexOf(trade);
+    if (index > -1) state.openTrades.splice(index, 1);
   
-    showTradeMessage(`${won ? "✅ You won!" : "❌ You lost"} Payout: ${pnl > 0 ? "+" : ""}$${pnl.toFixed(2)}`);
+    saveStateToLocalStorage();
+    Stats.update(state);
+    Chart.draw(state);
+  
+    showTradeMessage(
+      exitResult === "Win"
+        ? `✅ You won! Profit: +$${pnl.toFixed(2)}`
+        : exitResult === "Break Even"
+        ? `⚖️ Trade ended break even.`
+        : `❌ You lost $${trade.wager.toFixed(2)}`
+    );
   }
 
   return { place, resolveTrade };
