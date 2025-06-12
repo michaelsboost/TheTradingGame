@@ -3,24 +3,63 @@
   
 @tailwind components;
 @tailwind utilities;
+/* === Root Variables: Define all core colors and design tokens here === */
+:root {
+  --bg-dark: #14152f;       /* Main background dark tone */
+  --bg-darker: #0e0f20;     /* Even darker tone for deep sections */
+  --bg-panel: #1c1d38;      /* Panel/card background */
+  --bg-body: #0f172a;       /* Actual <body> background (was hardcoded) */
+
+  --text-color: #ffffff;    /* Default text color */
+
+  --green: #00c853;         /* Positive/Buy indicator */
+  --red: #ff3d00;           /* Negative/Sell indicator */
+  --yellow: #ffd600;        /* Warning or neutral attention */
+  --blue: #2962ff;          /* Informational tone */
+  --purple: #8b5cf6;        /* Highlight or accent */
+  
+  --card-border: #334155;   /* Border for panels or cards */
+  --card-bg: #1e293b;       /* Background color for trading cards */
+  --border-radius: 12px;    /* Standard radius for rounded corners */
+}
+
+/* === Global Body Styling === */
+body {
+  background-color: var(--bg-body);
+  color: var(--text-color);
+  font-family: 'Inter', sans-serif;
+}
+
+/* === Trading Card Panel Styling === */
+.trading-card {
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--card-border);
+}
+
+/* === Chart Container === */
+#chart {
+  height: 400px;
+  width: 100%;
+}
+
+/* === Typography: Arvo Font Variants === */
+/* You can use these as utility classes when specific font styles are needed */
 .arvo-regular {
   font-family: "Arvo", serif;
   font-weight: 400;
   font-style: normal;
 }
-
 .arvo-bold {
   font-family: "Arvo", serif;
   font-weight: 700;
   font-style: normal;
 }
-
 .arvo-regular-italic {
   font-family: "Arvo", serif;
   font-weight: 400;
   font-style: italic;
 }
-
 .arvo-bold-italic {
   font-family: "Arvo", serif;
   font-weight: 700;

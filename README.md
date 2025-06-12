@@ -1,58 +1,98 @@
-The Trading Game
-===================
+🎮 The Trading Game — Binary Options Simulator
+============================
 
-Day trade crypto without risking any money! The Trading Game is a binary options day trading simulator that allows you to test your trading methodology and risk management skills. By tracking your win percentages over a series of trades, you can determine if your strategy is consistently profitable before trading with real money.
+![](https://raw.githubusercontent.com/michaelsboost/TheTradingGame/main/imgs/screenshot.jpeg)
 
-![](https://raw.githubusercontent.com/michaelsboost/TheTradingGame/gh-pages/header.png)
+## 🌟 Overview
+**The Trading Game** is a **binary options trading simulator** that lets you practice high-speed decision-making without risking real money. It’s designed to sharpen your instincts, help you analyze trade performance, and build confidence in your edge.
 
-Version
--------------
+There’s **no prop firm structure**, **no contract sizing**, and no margin rules — just **pure binary trade logic**: you bet an amount, predict direction, and find out if you're right.
 
-2.0.0
+> **🛠️ Built Using [kodeWeave](https://michaelsboost.github.io/kodeWeave/)**  
+> Browser-based, fast, and works offline. No install. No sign-up.
 
-License
--------------
+## 🚀 Launch the App
+🌍 Try it live: [The Trading Game](https://michaelsboost.github.io/TheTradingGame/)
 
-MIT
+Zero setup. Runs directly in your browser.
 
-Tech
--------------
+## 🛠️ Key Features  
 
-The Trading Game uses a number of open-source projects to function properly:
+### **🎯 Binary Options Logic**
+- Fixed payouts — win or lose based on direction
+- Choose duration: 30s, 60s, 90s, etc.
+- Simple entry → expiration logic
+- No contracts or margin calculations — just your wager and outcome
 
-* [PicoCSS](https://picocss.com/) - Minimalist CSS framework for clean styling
-* [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework for rapid UI development
-* [TradingView](https://www.tradingview.com/widget/advanced-chart/) - Used to display the advanced trading chart
-* [Binance API](https://binance-docs.github.io/apidocs/spot/en/#change-log) - Used to fetch the current price of the selected cryptocurrency
-* [LocalStorage] - Used to persist user data across sessions
+### **📈 Performance Dashboard**
+- Tracks:
+  - Net Winnings
+  - Win Rate
+  - Average Win/Loss
+  - Best/Worst Trade
+  - Average Trade Duration
+  - Max Win/Loss Streaks
+  - Most Common Trade Duration
+- One-click backup + restore with `.json` support
 
-Features
--------------
+### **🧠 Realistic Chart Simulation**
+- Simulated stock-style price action
+- Reflects a natural market flow for more realistic training
+- Directional trades update in real time until expiration
 
-- **Real-Time Trading Simulation**: Experience day trading without financial risk.
-- **Risk Management Insights**: Learn about trade management, win/loss ratios, and profitability.
-- **LocalStorage Support**: Your balance, trade history, and settings are saved across sessions.
-- **Dynamic UI**: Adjust trade duration, wager, and balance with a user-friendly modal interface.
-- **Paper Trading**: Test different trading strategies before implementing them in real markets.
+### **💾 Local Save System**
+- Progress and stats are saved in your browser
+- No sign-up, no server — 100% private
+- Backup and restore using exportable JSON files
 
-Development
--------------
+## 📂 Planned Features (TODO)
+ - **📐 Drawing Tools** – Add trendlines, zones, and chart markups
+ - **🤖 Strategy Bots** – Train against bots using real trading strategies
+ - **📈 Indicator Overlays** – Add momentum, S/R, and volatility tools
+ - **📘 Trade Journal View** – Filter and analyze your historical trades
+ - **🏆 Leaderboard –** See how your streaks stack up against bots
 
-Want to contribute? Great!  
+(No replay system — built to run fast and store data locally)
 
-You can submit a pull request or simply share the project!
+## ⚡ **Getting Started**
+### **1️⃣ Install & Run Locally**
+```sh
+# Clone the repository
+git clone https://github.com/michaelsboost/TheTradingGame.git
+cd TheTradingGame
 
-As of Sunday, February 16, 2025, The Trading Game is no longer actively maintained. All future updates and enhancements will be community-driven.
+# Open index.html in a browser
+```
 
-Of course, The Trading Game is free and open-source, so feel free to fork the project and have fun!  
+### **2️⃣ Dependencies**
+- [Tailwind](https://tailwindcss.com/) + [Pico CSS](https://picocss.com/) for styling
+- Vanilla JS – No frameworks, just pure JavaScript
+- [kodeWeave](https://michaelsboost.github.io/kodeWeave/) – Used for all prototyping and building
 
-[![ko-fi](https://az743702.vo.msecnd.net/cdn/kofi2.png?v=0)](https://ko-fi.com/michaelsboost)  
+## 🧠 Contributing
+The Trading Game is open for contribution!  
 
-If The Trading Game has been helpful for you, consider supporting the project:
+- Fork the repository
+- Create a new branch: (`feature/add-chart-tools`)
+- Submit a Pull Request
 
-1) Register on my store as a customer: [https://michaelsboost.com/store](https://michaelsboost.com/store)  
-2) Buy me a coffee: [http://ko-fi.com/michaelsboost](http://ko-fi.com/michaelsboost)  
-3) Purchase one of my t-shirts: [https://michaelsboost.com/gear](https://michaelsboost.com/gear)  
-4) Purchase my art: [https://deviantart.com/michaelsboost/prints](https://deviantart.com/michaelsboost/prints)  
-5) Donate via PayPal: [https://michaelsboost.com/donate](https://michaelsboost.com/donate)  
-6) Donate via SquareCash: [https://cash.me/$michaelsboost](https://cash.me/$michaelsboost)  
+Contributors welcome!
+
+## 📜 License
+Licensed under the MIT License — free to use, remix, and distribute.
+
+Developed by: [Michael Schwartz](https://michaelsboost.com/)  
+Maintained by: The open-source community
+
+## **☕ Support This Project**
+If The Trading Game was helpful for you, consider showing your appreciation in the following ways:
+
+- 🎨 Check out my Graphic Design Course: https://michaelsboost.com/graphicdesign  
+- 🛒 Register as a customer on my store: https://michaelsboost.com/store  
+- ☕ Buy me a coffee: http://ko-fi.com/michaelsboost  
+- 👕 Purchase a T-Shirt: https://michaelsboost.com/gear  
+- 🖼️ Buy my art prints: https://deviantart.com/michaelsboost/prints 
+- 💰 Donate via PayPal: https://michaelsboost.com/donate 
+- 💵 Donate via Cash App: https://cash.me/$michaelsboost  
+
+Your support is greatly appreciated and helps fund this & future projects! 🚀
