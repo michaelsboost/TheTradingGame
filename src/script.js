@@ -430,17 +430,28 @@ const Trades = (() => {
 // === STATS + UI MODULE ===
 const Stats = (() => {
   function update(state) {
+    const { balance, wager, duration } = Core.state;
+  
+    // ⏱️ Update Duration Display
+    document.getElementById('durH').textContent = `${String(duration.hour).padStart(2, '0')}h:`;
+    document.getElementById('durM').textContent = `${String(duration.minute).padStart(2, '0')}m:`;
+    document.getElementById('durS').textContent = `${String(duration.second).padStart(2, '0')}s`;
+  
+    // 💰 Update Balance Display
+    document.getElementById('balance').querySelector('span').textContent = balance.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  
+    // 🎯 Update Wager Display
+    document.getElementById('wager').textContent = wager.toLocaleString();
+      
     // === 1. Profit + Progress ===
     const profit = state.balance - state.startBalance;
     const openPNL = state.openTrades.reduce((acc, trade) => {
       const won = (trade.type === "buy" && state.currentPrice > trade.entry) || (trade.type === "sell" && state.currentPrice < trade.entry);
       return acc + (won ? trade.wager : -trade.wager);
     }, 0);
-
-    document.getElementById('balance').querySelector('span').textContent = `${state.balance.toLocaleString(undefined, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    })}`;
 
     // === 5. Win Rate & Trade Stats ===
     const wins = state.trades.filter(t => t.pnl > 0);
@@ -621,51 +632,6 @@ document.addEventListener("keydown", (e) => {
 });
 
 // === BUTTON EVENT HANDLERS ===
-document.getElementById('balance').onclick = () => {
-  Modal.render({
-    title: `Reset Your Balance`,
-    content: `
-      <p class="text-sm text-center mb-4 text-yellow-500">🕹️ Start a new run — all previous trades will vanish!</p>
-      <input id="balanceInput" type="number" min="1" step="1" placeholder="1,000" value="${Core.state.startBalance}">
-    `,
-    onLoad() {
-      // Add event listener for the 'Enter' key
-      document.getElementById('balanceInput').focus();
-      document.getElementById('balanceInput').onkeydown = function(e) {
-        if (e.key === 'Enter') {
-          // Trigger a click on the Confirm button
-          this.closest('dialog').querySelector('footer button[data-modal=confirm]').click();
-          e.preventDefault();
-        }
-      };
-    },
-    onConfirm() {
-      Core.clearStorage();
-      
-      // Get the input value and update the balance
-      const newBalance = parseInt(document.getElementById('balanceInput').value, 10);
-      if (!isNaN(newBalance)) {
-        Core.state.startBalance = newBalance;
-        Core.state.balance = newBalance;
-        Core.state.trades = [];
-
-        // Update the balance display
-        document.getElementById('balance').querySelector('span').textContent = Core.state.balance.toLocaleString(undefined, {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
-        });
-
-        saveStateToLocalStorage();
-      }
-    }
-  });
-}
-document.getElementById("buy").onclick = () => {
-  Trades.place("buy", Core.state);
-};
-document.getElementById("sell").onclick = () => {
-  Trades.place("sell", Core.state);
-};
 document.getElementById('performance').onclick = () => {
   const state = Core.state;
   const trades = state.trades;
@@ -843,6 +809,139 @@ document.getElementById('performance').onclick = () => {
       }, 50); // slight delay to ensure DOM is mounted
     }
   });
+};
+document.getElementById('balance').onclick = () => {
+  Modal.render({
+    title: `Reset Your Balance`,
+    content: `
+      <p class="text-sm text-center mb-4 text-yellow-500">🕹️ Start a new run — all previous trades will vanish!</p>
+      <input id="balanceInput" type="number" min="1" step="1" placeholder="1,000" value="${Core.state.startBalance}">
+    `,
+    onLoad() {
+      // Add event listener for the 'Enter' key
+      document.getElementById('balanceInput').focus();
+      document.getElementById('balanceInput').onkeydown = function(e) {
+        if (e.key === 'Enter') {
+          // Trigger a click on the Confirm button
+          this.closest('dialog').querySelector('footer button[data-modal=confirm]').click();
+          e.preventDefault();
+        }
+      };
+    },
+    onConfirm() {
+      Core.clearStorage();
+      
+      // Get the input value and update the balance
+      const newBalance = parseInt(document.getElementById('balanceInput').value, 10);
+      if (!isNaN(newBalance)) {
+        Core.state.startBalance = newBalance;
+        Core.state.balance = newBalance;
+        Core.state.trades = [];
+
+        // Update the balance display
+        document.getElementById('balance').querySelector('span').textContent = Core.state.balance.toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
+
+        saveStateToLocalStorage();
+      }
+    }
+  });
+}
+document.getElementById("buy").onclick = () => {
+  Trades.place("buy", Core.state);
+};
+document.getElementById('wager').onclick = () => {
+  Modal.render({
+    title: `Set Your Wager`,
+    content: `
+      <input
+        id="wagerInput"
+        type="number"
+        min="1"
+        step="1"
+        placeholder="250"
+        value="${Core.state.wager}"
+        class="w-full p-2 border border-gray-600 rounded text-center"
+      >
+    `,
+    onLoad() {
+      const input = document.getElementById('wagerInput');
+      const confirmBtn = document.querySelector('dialog footer button:last-child');
+      confirmBtn.setAttribute('data-modal', 'confirm');
+
+      input.focus();
+      input.onkeydown = (e) => {
+        if (e.key === 'Enter') {
+          confirmBtn.click();
+          e.preventDefault();
+        }
+      };
+    },
+    onConfirm() {
+      const newWager = parseInt(document.getElementById('wagerInput').value, 10);
+      if (!isNaN(newWager) && newWager > 0) {
+        Core.state.wager = newWager;
+
+        document.getElementById('wager').textContent = Core.state.wager;
+        saveStateToLocalStorage();
+      } else {
+        showTradeMessage("❌ Invalid wager amount.");
+      }
+    }
+  });
+};
+document.getElementById('duration').onclick = () => {
+  Modal.render({
+    title: `Set Trade Duration`,
+    content: `
+      <div class="text-center">
+        <div class="grid grid-cols-3 gap-2">
+          <input class="duration-input" id="durationHours" type="number" min="0" placeholder="00" value="${Core.state.duration.hour}" class="p-2 border border-gray-600 rounded">
+          <input class="duration-input" id="durationMinutes" type="number" min="0" max="59" placeholder="00" value="${Core.state.duration.minute}" class="p-2 border border-gray-600 rounded">
+          <input class="duration-input" id="durationSeconds" type="number" min="1" max="59" placeholder="00" value="${Core.state.duration.second}" class="p-2 border border-gray-600 rounded">
+        </div>
+        <div class="grid grid-cols-3 gap-2 text-sm text-gray-400">
+          <span>Hours</span>
+          <span>Minutes</span>
+          <span>Seconds</span>
+        </div>
+      </div>
+    `,
+    onLoad() {
+      const confirmBtn = document.querySelector('dialog footer button:last-child');
+      const inputs = document.querySelectorAll('.duration-input');
+
+      function updateConfirmState() {
+        const h = parseInt(document.getElementById('durationHours').value) || 0;
+        const m = parseInt(document.getElementById('durationMinutes').value) || 0;
+        const s = parseInt(document.getElementById('durationSeconds').value) || 0;
+        confirmBtn.disabled = (h === 0 && m === 0 && s === 0);
+      }
+
+      inputs.forEach(input => input.addEventListener('input', updateConfirmState));
+      updateConfirmState(); // Initial state
+    },
+    onConfirm() {
+      const h = parseInt(document.getElementById('durationHours').value) || 0;
+      const m = parseInt(document.getElementById('durationMinutes').value) || 0;
+      const s = parseInt(document.getElementById('durationSeconds').value) || 0;
+      if (h === 0 && m === 0 && s === 0) return;
+
+      Core.state.duration = { hour: h, minute: m, second: s };
+
+      // Update display
+      durH.textContent = `${String(h).padStart(2, '0')}h:`;
+      durM.textContent = `${String(m).padStart(2, '0')}m:`;
+      durS.textContent = `${String(s).padStart(2, '0')}s`;
+
+      saveStateToLocalStorage();
+    }
+  });
+};
+document.getElementById("sell").onclick = () => {
+  Trades.place("sell", Core.state);
 };
 
 window.addEventListener('DOMContentLoaded', () => loadStateFromLocalStorage());
