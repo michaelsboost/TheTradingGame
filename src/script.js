@@ -283,7 +283,7 @@ const Chart = (() => {
       ctx.fillRect(x + 1, bodyTop, candleWidth - 2, bodyHeight);
     });
 
-    // === Trade Lines with P&L ===
+    // === Trade Lines - Entry @ Price ===
     state.openTrades.forEach(trade => {
       const drawLine = (price, color, label, trade) => {
         const y = height - (price - min) * scaleY - padding;
@@ -302,7 +302,9 @@ const Chart = (() => {
         ctx.fillText(`${label} ${price.toFixed(2)}${dollar}`, 8, y - 4);
     
         // Add countdown timer for this trade
-        const remaining = Math.max(0, (trade.entryTime + trade.duration - Date.now()) / 1000);
+        const remaining = trade.endTime
+        ? Math.max(0, (trade.endTime - Date.now()) / 1000)
+        : 0;
         const countdown = `${Math.floor(remaining)}s`;
         ctx.textAlign = "left";
         ctx.fillStyle = "#fff";
@@ -335,25 +337,6 @@ const Chart = (() => {
 
 // === TRADES MODULE ===
 const Trades = (() => {
-  function toggleTradeButtons(disabled) {
-    const buttons = [
-      document.getElementById("balance"),
-      document.getElementById("performance"),
-      document.getElementById("buy"),
-      document.getElementById("sell"),
-      document.getElementById("wager"),
-      document.getElementById("duration")
-    ];
-  
-    buttons.forEach(btn => {
-      if (btn) {
-        btn.disabled = disabled;
-        btn.classList.toggle("opacity-50", disabled);
-        btn.classList.toggle("cursor-not-allowed", disabled);
-      }
-    });
-  }
-
   function place(type, state) {
     // Check if user has enough balance to place this trade
     if (state.balance < state.wager) {
@@ -364,18 +347,22 @@ const Trades = (() => {
     const entry = state.currentPrice;
     const durationMs = (state.duration.hour * 3600 + state.duration.minute * 60 + state.duration.second) * 1000;
   
+    const now = Date.now();
     const trade = {
       type,
       entry,
       wager: state.wager,
-      entryTime: Date.now(),
-      duration: durationMs
+      entryTime: now,
+      duration: durationMs,
+      endTime: now + durationMs
     };
+
     state.balance -= state.wager;
   
     state.openTrades.push(trade);
   
     setTimeout(() => resolveTrade(trade, state), durationMs);
+    saveStateToLocalStorage();
   }
 
   function resolveTrade(trade, state) {
@@ -409,7 +396,8 @@ const Trades = (() => {
     });
   
     const index = state.openTrades.indexOf(trade);
-    if (index > -1) state.openTrades.splice(index, 1);
+    // if (index > -1) state.openTrades.splice(index, 1);
+    if (index !== -1) state.openTrades.splice(index, 1);
   
     saveStateToLocalStorage();
     Stats.update(state);
@@ -602,8 +590,11 @@ function formatMs(ms) {
 function saveStateToLocalStorage() {
   const stateCopy = { ...Core.state };
 
-  // Remove volatile open trades
-  stateCopy.openTrades = [];
+  // Saves the remaining time until each trade resolves
+  stateCopy.openTrades = stateCopy.openTrades.map(t => ({
+    ...t,
+    remainingTime: t.entryTime + t.duration - Date.now()
+  }));
 
   try {
     localStorage.setItem("TheTradingGame", JSON.stringify(stateCopy));
@@ -619,6 +610,20 @@ function loadStateFromLocalStorage() {
 
       // Restore safely
       Object.assign(Core.state, parsed);
+
+      // Resumes and resolves trades
+      Core.state.openTrades.forEach(trade => {
+        const now = Date.now();
+        const timeLeft = trade.endTime - now;
+
+        if (timeLeft <= 0) {
+          // Trade should already be resolved
+          Trades.resolveTrade(trade, Core.state);
+        } else {
+          // Still pending, resume timer
+          setTimeout(() => Trades.resolveTrade(trade, Core.state), timeLeft);
+        }
+      });
     } catch (err) {
       console.error("Failed to load state:", err);
     }
@@ -757,6 +762,7 @@ document.getElementById('performance').onclick = () => {
     title: "🎯 Performance Card",
     content,
     CloseLabel: "Close",
+    ConfirmLabel: "Reset",
     onLoad: () => {
       setTimeout(() => {
         const exportBtn = document.getElementById("exportBackupBtn");
@@ -807,6 +813,21 @@ document.getElementById('performance').onclick = () => {
           reader.readAsText(file);
         });
       }, 50); // slight delay to ensure DOM is mounted
+    },
+    onConfirm: () => {
+      Core.clearStorage();
+      
+      // Get the input value and update the balance
+      Core.state.balance = Core.state.startBalance;
+      Core.state.trades = [];
+
+      // Update the balance display
+      document.getElementById('balance').querySelector('span').textContent = Core.state.balance.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+
+      saveStateToLocalStorage();
     }
   });
 };
