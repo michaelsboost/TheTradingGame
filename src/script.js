@@ -5,6 +5,8 @@ const Core = (() => {
     startBalance: 1000,
     balance: 1000,
     wager: 100,
+    wagerIsPercent: false, // default: false = dollar amount
+    wagerPercent: 1, // default percent if percent-based (1% of balance)
     duration: { hour: 0, minute: 0, second: 5 },
     trades: [],
     openTrades: [],
@@ -338,8 +340,14 @@ const Chart = (() => {
 // === TRADES MODULE ===
 const Trades = (() => {
   function place(type, state) {
+    let actualWager = state.wagerIsPercent
+      ? (state.balance * (state.wagerPercent / 100))
+      : state.wager;
+
+    actualWager = Math.min(actualWager, state.balance); // cap at balance
+
     // Check if user has enough balance to place this trade
-    if (state.balance < state.wager) {
+    if (state.balance < actualWager) {
       showTradeMessage("❌ Insufficient balance to place trade.");
       return;
     }
@@ -351,13 +359,13 @@ const Trades = (() => {
     const trade = {
       type,
       entry,
-      wager: state.wager,
+      wager: actualWager,
       entryTime: now,
       duration: durationMs,
       endTime: now + durationMs
     };
 
-    state.balance -= state.wager;
+    state.balance -= actualWager;
   
     state.openTrades.push(trade);
   
@@ -432,7 +440,9 @@ const Stats = (() => {
     });
   
     // 🎯 Update Wager Display
-    document.getElementById('wager').textContent = wager.toLocaleString();
+    document.getElementById('wager').textContent = state.wagerIsPercent
+      ? `${state.wagerPercent.toFixed(1)}% ($${(state.balance * state.wagerPercent / 100).toFixed(2)})`
+      : `$${state.wager.toFixed(2)}`;
       
     // === 1. Profit + Progress ===
     const profit = state.balance - state.startBalance;
@@ -580,13 +590,13 @@ function showTradeMessage(msg) {
   }
 }
 function formatMs(ms) {
-    const sec = ms / 1000;
-    if (sec < 30) return "< 30s";
-    if (sec < 60) return "30s - 1m";
-    if (sec < 180) return "1-3m";
-    if (sec < 600) return "3-10m";
-    return "> 10m";
-  }
+  const sec = ms / 1000;
+  if (sec < 30) return "< 30s";
+  if (sec < 60) return "30s - 1m";
+  if (sec < 180) return "1-3m";
+  if (sec < 600) return "3-10m";
+  return "> 10m";
+}
 function saveStateToLocalStorage() {
   const stateCopy = { ...Core.state };
 
@@ -873,43 +883,95 @@ document.getElementById('balance').onclick = () => {
 document.getElementById("buy").onclick = () => {
   Trades.place("buy", Core.state);
 };
-document.getElementById('wager').onclick = () => {
+const wagerButton = document.getElementById('wager');
+wagerButton.onclick = () => {
   Modal.render({
     title: `Set Your Wager`,
     content: `
-      <input
-        id="wagerInput"
-        type="number"
-        min="1"
-        step="1"
-        placeholder="250"
-        value="${Core.state.wager}"
-        class="w-full p-2 border border-gray-600 rounded text-center"
-      >
+      <div class="text-sm text-center text-gray-300 space-y-4">
+        <div>
+          <label class="block mb-1">
+            <input type="radio" name="wagerType" value="dollar" ${!Core.state.wagerIsPercent ? "checked" : ""}>
+            💵 Dollar Amount
+          </label>
+          <input
+            id="wagerInputDollar"
+            type="number"
+            min="1"
+            step="1"
+            placeholder="250"
+            value="${Core.state.wager}"
+            class="w-full p-2 border border-gray-600 rounded text-center"
+          >
+        </div>
+
+        <div>
+          <label class="block mb-1">
+            <input type="radio" name="wagerType" value="percent" ${Core.state.wagerIsPercent ? "checked" : ""}>
+            📈 Percent of Balance
+          </label>
+          <input
+            id="wagerInputPercent"
+            type="number"
+            min="0.1"
+            max="100"
+            step="0.1"
+            placeholder="1"
+            value="${Core.state.wagerPercent}"
+            class="w-full p-2 border border-gray-600 rounded text-center"
+          >
+        </div>
+      </div>
     `,
     onLoad() {
-      const input = document.getElementById('wagerInput');
-      const confirmBtn = document.querySelector('dialog footer button:last-child');
-      confirmBtn.setAttribute('data-modal', 'confirm');
+      const dollarInput = document.getElementById("wagerInputDollar");
+      const percentInput = document.getElementById("wagerInputPercent");
+      const radios = document.querySelectorAll("input[name=wagerType]");
 
-      input.focus();
-      input.onkeydown = (e) => {
-        if (e.key === 'Enter') {
-          confirmBtn.click();
-          e.preventDefault();
-        }
+      const updateInputs = () => {
+        const selected = document.querySelector("input[name=wagerType]:checked").value;
+        dollarInput.disabled = selected !== "dollar";
+        percentInput.disabled = selected !== "percent";
       };
+
+      radios.forEach(r => r.addEventListener("change", updateInputs));
+      updateInputs();
+
+      // Optional: Enter to confirm
+      [dollarInput, percentInput].forEach(input => {
+        input.onkeydown = (e) => {
+          if (e.key === 'Enter') {
+            const confirmBtn = document.querySelector("dialog footer button:last-child");
+            if (confirmBtn) confirmBtn.click();
+            e.preventDefault();
+          }
+        };
+      });
     },
     onConfirm() {
-      const newWager = parseInt(document.getElementById('wagerInput').value, 10);
-      if (!isNaN(newWager) && newWager > 0) {
-        Core.state.wager = newWager;
+      const wagerType = document.querySelector("input[name=wagerType]:checked").value;
 
-        document.getElementById('wager').textContent = Core.state.wager;
-        saveStateToLocalStorage();
+      if (wagerType === "dollar") {
+        const value = parseFloat(document.getElementById("wagerInputDollar").value);
+        if (!isNaN(value) && value > 0) {
+          Core.state.wagerIsPercent = false;
+          Core.state.wager = value;
+        } else {
+          showTradeMessage("❌ Please enter a valid dollar amount.");
+          return;
+        }
       } else {
-        showTradeMessage("❌ Invalid wager amount.");
+        const value = parseFloat(document.getElementById("wagerInputPercent").value);
+        if (!isNaN(value) && value > 0 && value <= 100) {
+          Core.state.wagerIsPercent = true;
+          Core.state.wagerPercent = value;
+        } else {
+          showTradeMessage("❌ Please enter a valid percent (0.1 – 100).");
+          return;
+        }
       }
+
+      saveStateToLocalStorage();
     }
   });
 };

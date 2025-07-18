@@ -1,1 +1,1030 @@
-const e=(()=>{const e={activeTrade:!1,startBalance:1e3,balance:1e3,wager:100,duration:{hour:0,minute:0,second:5},trades:[],openTrades:[],currentPrice:1e5,candles:(()=>{const e=[];let t=1e5,n=1;for(let o=0;o<100;o++){const a=3,r=t,l=Math.random()*a,i=Math.random()>.3?n:-n,s=r+l*i,c=Math.max(r,s)+Math.random(),d=Math.min(r,s)-Math.random();t=s,n=i,e.push({open:r,close:s,high:c,low:d,timestamp:Date.now()-1e3*(100-o)})}return e})()};return setInterval((function(){const n=(2*Math.random()-1).toFixed(2);e.currentPrice=parseFloat((e.currentPrice+parseFloat(n)).toFixed(2));const a=e.candles[e.candles.length-1],r=Date.now();!a||r-a.timestamp>1e3?e.candles.push({open:e.currentPrice,high:e.currentPrice,low:e.currentPrice,close:e.currentPrice,timestamp:r}):(a.high=Math.max(a.high,e.currentPrice),a.low=Math.min(a.low,e.currentPrice),a.close=e.currentPrice),e.candles.length>200&&e.candles.shift(),o.update(e),t.draw(e)}),100),{state:e,clearStorage:function(){localStorage.removeItem("TheTradingGame"),sessionStorage.removeItem("TheTradingGame"),document.cookie.split(";").forEach((function(e){e.trim().startsWith("TheTradingGame")&&(document.cookie=e.trim().split("=")[0]+"=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/")})),"caches"in window&&caches.keys().then((function(e){e.forEach((function(e){"TheTradingGame-cache"===e&&caches.delete(e)}))})),"serviceWorker"in navigator&&navigator.serviceWorker.getRegistrations().then((function(e){e.forEach((function(e){e.scope.includes("TheTradingGame")&&e.unregister()}))}))}}})(),t=(()=>{const t=document.getElementById("chart"),n=t.getContext("2d");let o=1,a=0,r=!1,l=0,i=null,s=0;function c(n){const{x:c,y:d}=function(e){const n=t.getBoundingClientRect();return e.touches?{x:e.touches[0].clientX-n.left,y:e.touches[0].clientY-n.top}:{x:e.clientX-n.left,y:e.clientY-n.top}}(n);i=null;const u=e.state,m=t.height,p=Math.floor(60/o),g=Math.max(0,u.candles.length-p-Math.floor(a)),h=u.candles.slice(g,g+p),f=Math.max(...h.map((e=>e.high))),x=Math.min(...h.map((e=>e.low))),y=(m-20)/(f-x);u.openTrades.forEach((e=>{const t=(t,n)=>{const o=m-(t-x)*y-10;Math.abs(o-d)<6&&(i={trade:e,key:n},s=o-d)};t(e.stop,"stop"),t(e.target,"target")})),i||(r=!0,l=n.touches?n.touches[0].clientX:n.clientX)}function d(){r=!1,i=null}function u(n){if(!t)return;const c=e.state,d=t.getBoundingClientRect(),u=n.touches?n.touches[0].clientX:n.clientX,m=(n.touches?n.touches[0].clientY:n.clientY)-d.top,p=t.height,g=Math.floor(60/o),h=Math.max(0,c.candles.length-g-Math.floor(a)),f=c.candles.slice(h,h+g),x=Math.max(...f.map((e=>e.high))),y=Math.min(...f.map((e=>e.low)));if(i){const e=(p-(m+s)-10)/((p-20)/(x-y))+y;i.trade[i.key]=parseFloat(e.toFixed(2))}else if(r){a+=(u-l)/5,a=Math.max(0,Math.min(a,200)),l=u}}return t.addEventListener("wheel",(e=>{e.preventDefault();const t=e.deltaY>0?.9:1.1;o*=t,o=Math.max(.5,Math.min(o,10))})),t.addEventListener("mousedown",c),t.addEventListener("touchstart",c),t.addEventListener("mousemove",u),t.addEventListener("touchmove",u,{passive:!1}),t.addEventListener("mouseup",d),t.addEventListener("touchend",d),t.addEventListener("mouseleave",d),{draw:function(e){if(!t||!n)return;t.width=t.offsetWidth,t.height=t.offsetHeight;const r=t.width,l=t.height,i=10;n.clearRect(0,0,r,l);const s=Math.floor(60/o),c=Math.max(0,e.candles.length-s-Math.floor(a)),d=e.candles.slice(c,c+s);if(d.length<2)return;const u=Math.max(...d.map((e=>e.high))),m=Math.min(...d.map((e=>e.low))),p=(l-20)/(u-m),g=(r-60)/d.length;n.strokeStyle="#333",n.fillStyle="#888",n.font="10px sans-serif",n.textAlign="right",n.textBaseline="middle";for(let e=0;e<=10;e++){const t=i+(l-20)*e/10,o=u-(u-m)*e/10;n.beginPath(),n.moveTo(0,t),n.lineTo(r,t),n.stroke(),n.fillText(o.toFixed(2),r-4,t)}d.forEach(((e,t)=>{const o=t*g,a=l-(e.open-m)*p-i,r=l-(e.close-m)*p-i,s=l-(e.high-m)*p-i,c=l-(e.low-m)*p-i,d=e.close>=e.open;n.strokeStyle=d?"#089a81":"#f33645",n.fillStyle=d?"#089a81":"#f33645",n.beginPath(),n.moveTo(o+g/2,s),n.lineTo(o+g/2,c),n.stroke();const u=d?r:a,h=Math.max(1,Math.abs(a-r));n.fillRect(o+1,u,g-2,h)})),e.openTrades.forEach((e=>{((e,t,o,a)=>{const s=l-(e-m)*p-i;n.strokeStyle=t,n.lineWidth=2,n.beginPath(),n.moveTo(0,s),n.lineTo(r,s),n.stroke();n.fillStyle=t,n.font="11px sans-serif",n.textAlign="left",n.fillText(`${o} ${e.toFixed(2)}`,8,s-4);const c=a.endTime?Math.max(0,(a.endTime-Date.now())/1e3):0,d=`${Math.floor(c)}s`;n.textAlign="left",n.fillStyle="#fff",n.font="10px sans-serif",n.fillText(d,8,s+12)})(e.entry,"buy"===e.type?"#0f0":"#f00","Entry",e)}));const h=l-(e.currentPrice-m)*p-i;n.fillStyle="#111",n.strokeStyle="#0ff",n.lineWidth=1,n.beginPath(),n.rect(r-60,h-10,55,20),n.fill(),n.stroke(),n.fillStyle="#0ff",n.font="12px sans-serif",n.textAlign="center",n.textBaseline="middle",n.fillText(e.currentPrice.toFixed(2),r-60+27.5,h)}}})(),n=(()=>{function e(e,n){const a=n.currentPrice,i="buy"===e.type,s="sell"===e.type;let c="Loss",d=0;i&&a>e.entry||s&&a<e.entry?(c="Win",d=.8*e.wager,n.balance+=e.wager+d):a===e.entry&&(c="Break Even",d=0,n.balance+=e.wager),n.trades.push({...e,exit:a,pnl:"Loss"===c?-e.wager:d,exitResult:c,time:(new Date).toLocaleTimeString()});const u=n.openTrades.indexOf(e);-1!==u&&n.openTrades.splice(u,1),l(),o.update(n),t.draw(n),r("Win"===c?`✅ You won! Profit: +$${d.toFixed(2)}`:"Break Even"===c?"⚖️ Trade ended break even.":`❌ You lost $${e.wager.toFixed(2)}`)}return{place:function(t,n){if(n.balance<n.wager)return void r("❌ Insufficient balance to place trade.");const o=n.currentPrice,a=1e3*(3600*n.duration.hour+60*n.duration.minute+n.duration.second),i=Date.now(),s={type:t,entry:o,wager:n.wager,entryTime:i,duration:a,endTime:i+a};n.balance-=n.wager,n.openTrades.push(s),setTimeout((()=>e(s,n)),a),l()},resolveTrade:e}})(),o={update:function(t){const{balance:n,wager:o,duration:a}=e.state;document.getElementById("durH").textContent=`${String(a.hour).padStart(2,"0")}h:`,document.getElementById("durM").textContent=`${String(a.minute).padStart(2,"0")}m:`,document.getElementById("durS").textContent=`${String(a.second).padStart(2,"0")}s`,document.getElementById("balance").querySelector("span").textContent=n.toLocaleString(void 0,{minimumFractionDigits:2,maximumFractionDigits:2}),document.getElementById("wager").textContent=o.toLocaleString(),t.balance,t.startBalance,t.openTrades.reduce(((e,n)=>e+("buy"===n.type&&t.currentPrice>n.entry||"sell"===n.type&&t.currentPrice<n.entry?n.wager:-n.wager)),0);const r=t.trades.filter((e=>e.pnl>0)),l=t.trades.length,i=l?(r.length/l*100).toFixed(1)+"%":"0%";document.getElementById("totalTrades").textContent=l,document.getElementById("winlossratio").textContent=i,document.getElementById("history").querySelector("tbody").innerHTML=t.trades.map((e=>`\n      <tr>\n        <td>${e.time}</td>\n        <td>${e.type}</td>\n        <td>${e.entry.toFixed(2)}</td>\n        <td>${e.exit.toFixed(2)}</td>\n        <td style="color:${e.pnl>=0?"limegreen":"red"}">${e.pnl.toFixed(2)}</td>\n        <td>${(e.duration/1e3).toFixed(1)}s</td>\n        <td>${e.exitResult||"Manual"}</td>\n      </tr>\n    `)).reverse().join("")}},a={render:function({large:e,title:t="Are you sure you want to proceed?",content:n,CloseLabel:o,ConfirmLabel:a,onLoad:r,onClose:l,onConfirm:i}){const s="text-xs w-auto px-3 py-2 m-0 capitalize rounded-md",c=`<article class="${e?"flex flex-col h-3/4":""} rounded-md">\n      <header class="${e?"flex-none":""} flex justify-between items-center">\n        <h1 class="text-lg font-thin m-0">${t}</h1>\n        <button class="${s} bg-transparent border-0" style="color: unset;" aria-label="Close"><svg class="w-3" viewBox="0 0 384 512">\n        <path fill="currentColor" d="M342.6 150.6c12.5-12.5 12.5-32.8 \n        0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5\n        -45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 \n        32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 \n        12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/>\n      </svg></button>\n      </header>\n      <main class="font-thin ${e?"flex-grow":""}">\n        ${n||""}\n      </main>\n      <footer ${e?'class="flex-none"':""}>\n        <button class="${s} bg-transparent border border-gray-600" aria-label="Close">${o||"close"}</button>\n        ${i?`<button class="${s}" aria-label="Confirm">${a||"confirm"}</button>`:""}\n      </footer>\n    </article>`,d=document.createElement("dialog");d.open=!0,d.innerHTML=c,document.body.appendChild(d),r&&"function"==typeof r&&r();const u=d.querySelector("header button"),m=d.querySelector("footer button:first-child"),p=d.querySelector("footer button:last-child"),g=()=>{document.body.removeChild(d)};u.onclick=()=>{l&&l(),g()},m.onclick=()=>{l&&l(),g()},i&&p&&(p.onclick=()=>{i(),g()})}};function r(e){if(!("Notification"in window)){console.log("This browser does not support system notifications");const t=document.getElementById("tradeMessage");return void(t&&(t.textContent=e,setTimeout((()=>{t.textContent=""}),3e3)))}"granted"===Notification.permission?new Notification("Trading Alert",{body:e}):"denied"!==Notification.permission&&Notification.requestPermission().then((t=>{"granted"===t&&new Notification("Trading Alert",{body:e})}));const t=document.getElementById("tradeMessage");t&&(t.textContent=e,setTimeout((()=>{t.textContent=""}),3e3))}function l(){const t={...e.state};t.openTrades=t.openTrades.map((e=>({...e,remainingTime:e.entryTime+e.duration-Date.now()})));try{localStorage.setItem("TheTradingGame",JSON.stringify(t))}catch(e){console.error("Failed to save state:",e)}}document.addEventListener("keydown",(t=>{"b"===t.key.toLowerCase()&&n.place("buy",e.state),"s"===t.key.toLowerCase()&&n.place("sell",e.state)})),document.getElementById("performance").onclick=()=>{const n=e.state.trades,r=n.filter((e=>e.pnl>0)),i=n.filter((e=>e.pnl<0)),s=n.reduce(((e,t)=>e+t.pnl),0),c=n.length?(r.length/n.length*100).toFixed(1)+"%":"0%",d=r.length?r.reduce(((e,t)=>e+t.pnl),0)/r.length:0,u=i.length?i.reduce(((e,t)=>e+t.pnl),0)/i.length:0,m=n.length?n.reduce(((e,t)=>t.pnl>e.pnl?t:e)):null,p=n.length>1?n.reduce(((e,t)=>t.pnl<e.pnl?t:e)):null,g=n.length?n.reduce(((e,t)=>e+t.duration),0)/n.length:0;let h=0,f=0,x=0,y=null;for(let e of n){const t=e.pnl>0;null===y||t===y?x++:x=1,y=t,t?h=Math.max(h,x):f=Math.max(f,x)}const b={};n.forEach((e=>{const t=`${(e.duration/1e3).toFixed(0)}s`;b[t]=(b[t]||0)+1}));const v=Object.entries(b).sort(((e,t)=>t[1]-e[1]))[0]?.[0]||"--",w=`\n    <div class="trading-card rounded-xl p-5">\n      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 text-sm text-slate-300">\n        ${[{label:"Net Winnings",value:`$${s.toFixed(2)}`,class:s>=0?"text-green-400":"text-red-400"},{label:"Total Trades",value:n.length},{label:"Win Rate",value:c},{label:"Avg Win",value:`$${d.toFixed(2)}`},{label:"Avg Loss",value:`$${u.toFixed(2)}`},{label:"Best Trade",value:m?m.pnl>=0?`+$${m.pnl.toFixed(2)}`:`-$${Math.abs(m.pnl).toFixed(2)}`:"--",class:m?m.pnl>=0?"text-green-400":"text-red-400":""},{label:"Worst Trade",value:p?p.pnl>=0?`+$${p.pnl.toFixed(2)}`:`-$${Math.abs(p.pnl).toFixed(2)}`:"--",class:p?p.pnl>=0?"text-green-400":"text-red-400":""},{label:"Avg Trade Duration",value:`${(g/1e3).toFixed(1)}s`},{label:"Most Used Duration",value:v},{label:"Max Win Streak",value:`${h} wins`},{label:"Max Loss Streak",value:`${f} losses`}].map((e=>`\n          <div>\n            <span class="text-slate-500 block">${e.label}</span>\n            <span class="font-bold ${e.class??""}">${e.value}</span>\n          </div>\n        `)).join("")}\n      </div>\n\n      <div class="grid grid-cols-2 gap-3 mt-4 text-sm">\n        <button id="importBackupBtn" class="bg-green-600 text-white text-sm px-4 py-2 rounded-md text-center cursor-pointer w-full sm:w-auto border-0">\n          <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">\n            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"></path>\n          </svg>\n          Import Backup (.json)\n        </button>\n        <button id="exportBackupBtn" class="bg-blue-600 text-white text-sm px-4 py-2 rounded-md text-center cursor-pointer w-full sm:w-auto border-0">\n          <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">\n            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"></path>\n          </svg>\n          Export Backup (.json)\n        </button>\n      </div>\n      <input type="file" id="importBackupInput" accept=".json" class="hidden" />\n    </div>\n  `;a.render({title:"🎯 Performance Card",content:w,CloseLabel:"Close",ConfirmLabel:"Reset",onLoad:()=>{setTimeout((()=>{const n=document.getElementById("exportBackupBtn"),a=document.getElementById("importBackupBtn"),r=document.getElementById("importBackupInput");a.addEventListener("click",(()=>{r.click()})),n.addEventListener("click",(()=>{const t={...e.state,openTrades:[]},n=JSON.stringify(t,null,2),o=new Blob([n],{type:"application/json"}),a=URL.createObjectURL(o),r=document.createElement("a");r.href=a,r.download=`trading-backup-${(new Date).toISOString().split("T")[0]}.json`,r.click(),URL.revokeObjectURL(a)})),r.addEventListener("change",(n=>{const a=n.target.files[0];if(!a)return;const r=new FileReader;r.onload=n=>{try{const a=JSON.parse(n.target.result);if(!a||"object"!=typeof a||!a.trades)return void alert("Invalid backup file.");Object.assign(e.state,a),e.state.openTrades=[],l(),o.update(e.state),t.draw(e.state),document.querySelector("dialog[open] footer button:first-child").onclick()}catch(e){alert("❌ Failed to import backup.")}},r.readAsText(a)}))}),50)},onConfirm:()=>{e.clearStorage(),e.state.balance=e.state.startBalance,e.state.trades=[],document.getElementById("balance").querySelector("span").textContent=e.state.balance.toLocaleString(void 0,{minimumFractionDigits:2,maximumFractionDigits:2}),l()}})},document.getElementById("balance").onclick=()=>{a.render({title:"Reset Your Balance",content:`\n      <p class="text-sm text-center mb-4 text-yellow-500">🕹️ Start a new run — all previous trades will vanish!</p>\n      <input id="balanceInput" type="number" min="1" step="1" placeholder="1,000" value="${e.state.startBalance}">\n    `,onLoad(){document.getElementById("balanceInput").focus(),document.getElementById("balanceInput").onkeydown=function(e){"Enter"===e.key&&(this.closest("dialog").querySelector("footer button[data-modal=confirm]").click(),e.preventDefault())}},onConfirm(){e.clearStorage();const t=parseInt(document.getElementById("balanceInput").value,10);isNaN(t)||(e.state.startBalance=t,e.state.balance=t,e.state.trades=[],document.getElementById("balance").querySelector("span").textContent=e.state.balance.toLocaleString(void 0,{minimumFractionDigits:2,maximumFractionDigits:2}),l())}})},document.getElementById("buy").onclick=()=>{n.place("buy",e.state)},document.getElementById("wager").onclick=()=>{a.render({title:"Set Your Wager",content:`\n      <input\n        id="wagerInput"\n        type="number"\n        min="1"\n        step="1"\n        placeholder="250"\n        value="${e.state.wager}"\n        class="w-full p-2 border border-gray-600 rounded text-center"\n      >\n    `,onLoad(){const e=document.getElementById("wagerInput"),t=document.querySelector("dialog footer button:last-child");t.setAttribute("data-modal","confirm"),e.focus(),e.onkeydown=e=>{"Enter"===e.key&&(t.click(),e.preventDefault())}},onConfirm(){const t=parseInt(document.getElementById("wagerInput").value,10);!isNaN(t)&&t>0?(e.state.wager=t,document.getElementById("wager").textContent=e.state.wager,l()):r("❌ Invalid wager amount.")}})},document.getElementById("duration").onclick=()=>{a.render({title:"Set Trade Duration",content:`\n      <div class="text-center">\n        <div class="grid grid-cols-3 gap-2">\n          <input class="duration-input" id="durationHours" type="number" min="0" placeholder="00" value="${e.state.duration.hour}" class="p-2 border border-gray-600 rounded">\n          <input class="duration-input" id="durationMinutes" type="number" min="0" max="59" placeholder="00" value="${e.state.duration.minute}" class="p-2 border border-gray-600 rounded">\n          <input class="duration-input" id="durationSeconds" type="number" min="1" max="59" placeholder="00" value="${e.state.duration.second}" class="p-2 border border-gray-600 rounded">\n        </div>\n        <div class="grid grid-cols-3 gap-2 text-sm text-gray-400">\n          <span>Hours</span>\n          <span>Minutes</span>\n          <span>Seconds</span>\n        </div>\n      </div>\n    `,onLoad(){const e=document.querySelector("dialog footer button:last-child");function t(){const t=parseInt(document.getElementById("durationHours").value)||0,n=parseInt(document.getElementById("durationMinutes").value)||0,o=parseInt(document.getElementById("durationSeconds").value)||0;e.disabled=0===t&&0===n&&0===o}document.querySelectorAll(".duration-input").forEach((e=>e.addEventListener("input",t))),t()},onConfirm(){const t=parseInt(document.getElementById("durationHours").value)||0,n=parseInt(document.getElementById("durationMinutes").value)||0,o=parseInt(document.getElementById("durationSeconds").value)||0;0===t&&0===n&&0===o||(e.state.duration={hour:t,minute:n,second:o},durH.textContent=`${String(t).padStart(2,"0")}h:`,durM.textContent=`${String(n).padStart(2,"0")}m:`,durS.textContent=`${String(o).padStart(2,"0")}s`,l())}})},document.getElementById("sell").onclick=()=>{n.place("sell",e.state)},window.addEventListener("DOMContentLoaded",(()=>function(){const t=localStorage.getItem("TheTradingGame");if(t)try{const o=JSON.parse(t);Object.assign(e.state,o),e.state.openTrades.forEach((t=>{const o=Date.now(),a=t.endTime-o;a<=0?n.resolveTrade(t,e.state):setTimeout((()=>n.resolveTrade(t,e.state)),a)}))}catch(e){console.error("Failed to load state:",e)}}()));
+// === CORE MODULE ===
+const Core = (() => {
+  const state = {
+    activeTrade: false,
+    startBalance: 1000,
+    balance: 1000,
+    wager: 100,
+    wagerIsPercent: false, // default: false = dollar amount
+    wagerPercent: 1, // default percent if percent-based (1% of balance)
+    duration: { hour: 0, minute: 0, second: 5 },
+    trades: [],
+    openTrades: [],
+    currentPrice: 100000,
+    candles: (() => {
+      const candles = [];
+      let price = 100000;
+      let trend = 1;
+      for (let i = 0; i < 100; i++) {
+        const volatility = 3;
+        const open = price;
+        const bodySize = Math.random() * volatility;
+        const direction = Math.random() > 0.3 ? trend : -trend;
+        const close = open + bodySize * direction;
+        const high = Math.max(open, close) + Math.random();
+        const low = Math.min(open, close) - Math.random();
+        price = close;
+        trend = direction;
+        candles.push({ open, close, high, low, timestamp: Date.now() - (1000 * (100 - i)) });
+      }
+      return candles;
+    })(),
+  };
+
+  function clearStorage() {
+    // Clear local storage
+    localStorage.removeItem('TheTradingGame');
+  
+    // Clear session storage specific to TheTradingGame (if you use a specific key)
+    sessionStorage.removeItem('TheTradingGame');
+  
+    // Clear cookies specific to TheTradingGame
+    document.cookie.split(";").forEach(function(c) {
+      if (c.trim().startsWith('TheTradingGame')) {
+        document.cookie = c.trim().split("=")[0] + 
+                          '=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/';
+      }
+    });
+  
+    // Clear service worker caches specific to TheTradingGame
+    if ('caches' in window) {
+      caches.keys().then(function(names) {
+        names.forEach(function(name) {
+          if (name === 'TheTradingGame-cache') {
+            caches.delete(name);
+          }
+        });
+      });
+    }
+  
+    // Unregister service workers specific to TheTradingGame
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function(registrations) {
+        registrations.forEach(function(registration) {
+          if (registration.scope.includes('TheTradingGame')) {
+            registration.unregister();
+          }
+        });
+      });
+    }
+  }
+
+  function simulateTick() {
+    const { challenge } = state;
+  
+    // Adjust volatility based on speed
+    let changeFactor = 2;
+  
+    // Simulate price change
+    const change = (Math.random() * changeFactor - changeFactor / 2).toFixed(2);
+    state.currentPrice = parseFloat((state.currentPrice + parseFloat(change)).toFixed(2));
+  
+    const last = state.candles[state.candles.length - 1];
+    const now = Date.now();
+  
+    if (!last || now - last.timestamp > 1000) {
+      state.candles.push({
+        open: state.currentPrice,
+        high: state.currentPrice,
+        low: state.currentPrice,
+        close: state.currentPrice,
+        timestamp: now
+      });
+    } else {
+      last.high = Math.max(last.high, state.currentPrice);
+      last.low = Math.min(last.low, state.currentPrice);
+      last.close = state.currentPrice;
+    }
+  
+    if (state.candles.length > 200) state.candles.shift();
+  
+    Stats.update(state);
+    Chart.draw(state);
+  }
+
+  setInterval(simulateTick, 100);
+
+  return { state, clearStorage };
+})();
+
+// === CHART MODULE ===
+const Chart = (() => {
+  const canvas = document.getElementById("chart");
+  const ctx = canvas.getContext("2d");
+
+  let scaleX = 1;
+  let offsetX = 0;
+  let isDragging = false;
+  let lastX = 0;
+  let selectedLine = null;
+  let dragOffset = 0;
+
+  // Zoom
+  canvas.addEventListener("wheel", (e) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? 0.9 : 1.1;
+    scaleX *= delta;
+    scaleX = Math.max(0.5, Math.min(scaleX, 10));
+  });
+
+  // Drag
+  function getXYFromEvent(e) {
+    const rect = canvas.getBoundingClientRect();
+    if (e.touches) {
+      return {
+        x: e.touches[0].clientX - rect.left,
+        y: e.touches[0].clientY - rect.top
+      };
+    }
+    return {
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top
+    };
+  }
+  
+  function handleDown(e) {
+    const { x, y } = getXYFromEvent(e);
+    selectedLine = null;
+  
+    const state = Core.state;
+    const height = canvas.height;
+    const padding = 10;
+    const viewCount = Math.floor(60 / scaleX);
+    const start = Math.max(0, state.candles.length - viewCount - Math.floor(offsetX));
+    const candles = state.candles.slice(start, start + viewCount);
+    const max = Math.max(...candles.map(c => c.high));
+    const min = Math.min(...candles.map(c => c.low));
+    const scaleY = (height - 2 * padding) / (max - min);
+  
+    state.openTrades.forEach(trade => {
+      const test = (price, key) => {
+        const py = height - (price - min) * scaleY - padding;
+        if (Math.abs(py - y) < 6) {
+          selectedLine = { trade, key };
+          dragOffset = py - y;
+        }
+      };
+      test(trade.stop, 'stop');
+      test(trade.target, 'target');
+    });
+  
+    if (!selectedLine) {
+      isDragging = true;
+      lastX = e.touches ? e.touches[0].clientX : e.clientX;
+    }
+  }
+  
+  function handleUpLeave() {
+    isDragging = false;
+    selectedLine = null;
+  }
+  
+  function handleMove(e) {
+    if (!canvas) return;
+    const state = Core.state;
+    const rect = canvas.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    const y = clientY - rect.top;
+  
+    const height = canvas.height;
+    const padding = 10;
+    const viewCount = Math.floor(60 / scaleX);
+    const start = Math.max(0, state.candles.length - viewCount - Math.floor(offsetX));
+    const candles = state.candles.slice(start, start + viewCount);
+    const max = Math.max(...candles.map(c => c.high));
+    const min = Math.min(...candles.map(c => c.low));
+    const scaleY = (height - 2 * padding) / (max - min);
+  
+    if (selectedLine) {
+      const newPrice = ((height - (y + dragOffset) - padding) / scaleY) + min;
+      selectedLine.trade[selectedLine.key] = parseFloat(newPrice.toFixed(2));
+    } else if (isDragging) {
+      const dx = clientX - lastX;
+      offsetX += dx / 5;
+      offsetX = Math.max(0, Math.min(offsetX, 200));
+      lastX = clientX;
+    }
+  }
+  
+  canvas.addEventListener("mousedown", handleDown);
+  canvas.addEventListener("touchstart", handleDown);
+  
+  canvas.addEventListener("mousemove", handleMove);
+  canvas.addEventListener("touchmove", handleMove, { passive: false });
+  
+  canvas.addEventListener("mouseup", handleUpLeave);
+  canvas.addEventListener("touchend", handleUpLeave);
+  
+  canvas.addEventListener("mouseleave", handleUpLeave);
+
+  function draw(state) {
+    if (!canvas || !ctx) return;
+
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+    const width = canvas.width;
+    const height = canvas.height;
+    const padding = 10;
+    const labelMargin = 60;
+
+    ctx.clearRect(0, 0, width, height);
+
+    const viewCount = Math.floor(60 / scaleX);
+    const start = Math.max(0, state.candles.length - viewCount - Math.floor(offsetX));
+    const candles = state.candles.slice(start, start + viewCount);
+    if (candles.length < 2) return;
+
+    const max = Math.max(...candles.map(c => c.high));
+    const min = Math.min(...candles.map(c => c.low));
+    const scaleY = (height - 2 * padding) / (max - min);
+    const candleWidth = (width - labelMargin) / candles.length;
+
+    // === Grid + Right-Aligned Labels ===
+    ctx.strokeStyle = "#333";
+    ctx.fillStyle = "#888";
+    ctx.font = "10px sans-serif";
+    ctx.textAlign = "right";
+    ctx.textBaseline = "middle";
+
+    const steps = 10;
+    for (let i = 0; i <= steps; i++) {
+      const y = padding + ((height - 2 * padding) * i / steps);
+      const price = max - ((max - min) * i / steps);
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(width, y);
+      ctx.stroke();
+      ctx.fillText(price.toFixed(2), width - 4, y);
+    }
+
+    // === Candlesticks ===
+    candles.forEach((c, i) => {
+      const x = i * candleWidth;
+
+      const openY = height - (c.open - min) * scaleY - padding;
+      const closeY = height - (c.close - min) * scaleY - padding;
+      const highY = height - (c.high - min) * scaleY - padding;
+      const lowY = height - (c.low - min) * scaleY - padding;
+
+      const isBullish = c.close >= c.open;
+      // TradingView Colors
+      ctx.strokeStyle = isBullish ? "#089a81" : "#f33645";
+      ctx.fillStyle = isBullish ? "#089a81" : "#f33645";
+      // Grayscale Colors
+      // ctx.strokeStyle = isBullish ? "#fff" : "#000";
+      // ctx.fillStyle = isBullish ? "#fff" : "#000";
+
+      ctx.beginPath();
+      ctx.moveTo(x + candleWidth / 2, highY);
+      ctx.lineTo(x + candleWidth / 2, lowY);
+      ctx.stroke();
+
+      const bodyTop = isBullish ? closeY : openY;
+      const bodyHeight = Math.max(1, Math.abs(openY - closeY));
+      ctx.fillRect(x + 1, bodyTop, candleWidth - 2, bodyHeight);
+    });
+
+    // === Trade Lines - Entry @ Price ===
+    state.openTrades.forEach(trade => {
+      const drawLine = (price, color, label, trade) => {
+        const y = height - (price - min) * scaleY - padding;
+    
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
+        ctx.stroke();
+    
+        let dollar = '';
+        ctx.fillStyle = color;
+        ctx.font = "11px sans-serif";
+        ctx.textAlign = "left";
+        ctx.fillText(`${label} ${price.toFixed(2)}${dollar}`, 8, y - 4);
+    
+        // Add countdown timer for this trade
+        const remaining = trade.endTime
+        ? Math.max(0, (trade.endTime - Date.now()) / 1000)
+        : 0;
+        const countdown = `${Math.floor(remaining)}s`;
+        ctx.textAlign = "left";
+        ctx.fillStyle = "#fff";
+        ctx.font = "10px sans-serif";
+        ctx.fillText(countdown, 8, y + 12); // 8px from left, slightly below the entry label
+      };
+    
+      drawLine(trade.entry, trade.type === 'buy' ? '#0f0' : '#f00', 'Entry', trade);
+    });
+
+    // === Live Price Box (Right Side) ===
+    const liveY = height - (state.currentPrice - min) * scaleY - padding;
+    ctx.fillStyle = "#111";
+    ctx.strokeStyle = "#0ff";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.rect(width - labelMargin, liveY - 10, 55, 20);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = "#0ff";
+    ctx.font = "12px sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(state.currentPrice.toFixed(2), width - labelMargin + 27.5, liveY);
+  }
+
+  return { draw };
+})();
+
+// === TRADES MODULE ===
+const Trades = (() => {
+  function place(type, state) {
+    let actualWager = state.wagerIsPercent
+      ? (state.balance * (state.wagerPercent / 100))
+      : state.wager;
+
+    actualWager = Math.min(actualWager, state.balance); // cap at balance
+
+    // Check if user has enough balance to place this trade
+    if (state.balance < actualWager) {
+      showTradeMessage("❌ Insufficient balance to place trade.");
+      return;
+    }
+    
+    const entry = state.currentPrice;
+    const durationMs = (state.duration.hour * 3600 + state.duration.minute * 60 + state.duration.second) * 1000;
+  
+    const now = Date.now();
+    const trade = {
+      type,
+      entry,
+      wager: actualWager,
+      entryTime: now,
+      duration: durationMs,
+      endTime: now + durationMs
+    };
+
+    state.balance -= actualWager;
+  
+    state.openTrades.push(trade);
+  
+    setTimeout(() => resolveTrade(trade, state), durationMs);
+    saveStateToLocalStorage();
+  }
+
+  function resolveTrade(trade, state) {
+    const exit = state.currentPrice;
+  
+    const isBuy = trade.type === "buy";
+    const isSell = trade.type === "sell";
+  
+    let exitResult = "Loss";
+    let pnl = 0;
+  
+    const payoutMultiplier = 1.8;
+  
+    if ((isBuy && exit > trade.entry) || (isSell && exit < trade.entry)) {
+      exitResult = "Win";
+      pnl = trade.wager * (payoutMultiplier - 1); // Only profit
+      state.balance += trade.wager + pnl; // Return wager + profit
+    } else if (exit === trade.entry) {
+      exitResult = "Break Even";
+      pnl = 0;
+      state.balance += trade.wager; // Return wager
+    }
+    // Else: Loss – wager already deducted
+  
+    state.trades.push({
+      ...trade,
+      exit,
+      pnl: exitResult === "Loss" ? -trade.wager : pnl,
+      exitResult,
+      time: new Date().toLocaleTimeString()
+    });
+  
+    const index = state.openTrades.indexOf(trade);
+    // if (index > -1) state.openTrades.splice(index, 1);
+    if (index !== -1) state.openTrades.splice(index, 1);
+  
+    saveStateToLocalStorage();
+    Stats.update(state);
+    Chart.draw(state);
+  
+    showTradeMessage(
+      exitResult === "Win"
+        ? `✅ You won! Profit: +$${pnl.toFixed(2)}`
+        : exitResult === "Break Even"
+        ? `⚖️ Trade ended break even.`
+        : `❌ You lost $${trade.wager.toFixed(2)}`
+    );
+  }
+
+  return { place, resolveTrade };
+})();
+
+// === STATS + UI MODULE ===
+const Stats = (() => {
+  function update(state) {
+    const { balance, wager, duration } = Core.state;
+  
+    // ⏱️ Update Duration Display
+    document.getElementById('durH').textContent = `${String(duration.hour).padStart(2, '0')}h:`;
+    document.getElementById('durM').textContent = `${String(duration.minute).padStart(2, '0')}m:`;
+    document.getElementById('durS').textContent = `${String(duration.second).padStart(2, '0')}s`;
+  
+    // 💰 Update Balance Display
+    document.getElementById('balance').querySelector('span').textContent = balance.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  
+    // 🎯 Update Wager Display
+    document.getElementById('wager').textContent = state.wagerIsPercent
+      ? `${state.wagerPercent.toFixed(1)}% ($${(state.balance * state.wagerPercent / 100).toFixed(2)})`
+      : `$${state.wager.toFixed(2)}`;
+      
+    // === 1. Profit + Progress ===
+    const profit = state.balance - state.startBalance;
+    const openPNL = state.openTrades.reduce((acc, trade) => {
+      const won = (trade.type === "buy" && state.currentPrice > trade.entry) || (trade.type === "sell" && state.currentPrice < trade.entry);
+      return acc + (won ? trade.wager : -trade.wager);
+    }, 0);
+
+    // === 5. Win Rate & Trade Stats ===
+    const wins = state.trades.filter(t => t.pnl > 0);
+    const total = state.trades.length;
+    const winRate = total ? ((wins.length / total) * 100).toFixed(1) + '%' : '0%';
+
+    document.getElementById("totalTrades").textContent = total;
+    document.getElementById("winlossratio").textContent = winRate;
+
+    // === 6. Trade History Table ===
+    const historyEl = document.getElementById("history").querySelector("tbody");
+    historyEl.innerHTML = state.trades.map(t => `
+      <tr>
+        <td>${t.time}</td>
+        <td>${t.type}</td>
+        <td>${t.entry.toFixed(2)}</td>
+        <td>${t.exit.toFixed(2)}</td>
+        <td style="color:${t.pnl >= 0 ? 'limegreen' : 'red'}">${t.pnl.toFixed(2)}</td>
+        <td>${(t.duration / 1000).toFixed(1)}s</td>
+        <td>${t.exitResult || 'Manual'}</td>
+      </tr>
+    `).reverse().join("");
+  }
+
+  return { update };
+})();
+
+// === MODAL MODULE ===
+const Modal = (() => {
+  function render({
+    large,
+    title = "Are you sure you want to proceed?",
+    content,
+    CloseLabel,
+    ConfirmLabel,
+    onLoad,
+    onClose,
+    onConfirm
+  }) {
+    const hClass = "text-lg font-thin m-0";
+    const buttonClass = "text-xs w-auto px-3 py-2 m-0 capitalize rounded-md";
+    const svgClass = "w-3";
+    const times = `<svg class="${svgClass}" viewBox="0 0 384 512">
+        <path fill="currentColor" d="M342.6 150.6c12.5-12.5 12.5-32.8 
+        0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5
+        -45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 
+        32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 
+        12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/>
+      </svg>`;
+
+    const html = `<article class="${large ? 'flex flex-col h-3/4' : ''} rounded-md">
+      <header class="${large ? 'flex-none' : ''} flex justify-between items-center">
+        <h1 class="${hClass}">${title}</h1>
+        <button class="${buttonClass} bg-transparent border-0" style="color: unset;" aria-label="Close">${times}</button>
+      </header>
+      <main class="font-thin ${large ? 'flex-grow' : ''}">
+        ${content || ''}
+      </main>
+      <footer ${large ? 'class="flex-none"' : ''}>
+        <button class="${buttonClass} bg-transparent border border-gray-600" aria-label="Close">${CloseLabel || 'close'}</button>
+        ${onConfirm ? `<button class="${buttonClass}" aria-label="Confirm">${ConfirmLabel || 'confirm'}</button>` : ''}
+      </footer>
+    </article>`;
+
+    const modal = document.createElement('dialog');
+    modal.open = true;
+    modal.innerHTML = html;
+    document.body.appendChild(modal);
+
+    if (onLoad && typeof onLoad === 'function') onLoad();
+
+    const timesBtn = modal.querySelector('header button');
+    const closeBtn = modal.querySelector('footer button:first-child');
+    const confirmBtn = modal.querySelector('footer button:last-child');
+
+    const closeModal = () => {
+      document.body.removeChild(modal);
+    };
+
+    timesBtn.onclick = () => {
+      if (onClose) onClose();
+      closeModal();
+    };
+
+    closeBtn.onclick = () => {
+      if (onClose) onClose();
+      closeModal();
+    };
+
+    if (onConfirm && confirmBtn) {
+      confirmBtn.onclick = () => {
+        onConfirm();
+        closeModal();
+      };
+    }
+  }
+
+  return { render };
+})();
+
+// Utility Functions (General Helpers)
+function showTradeMessage(msg) {
+  // First check if the browser supports notifications
+  if (!("Notification" in window)) {
+    console.log("This browser does not support system notifications");
+    // Fallback to existing method if no notification support
+    const el = document.getElementById("tradeMessage");
+    if (el) {
+      el.textContent = msg;
+      setTimeout(() => { el.textContent = ""; }, 3000);
+    }
+    return;
+  }
+
+  // Check if permission has been granted
+  if (Notification.permission === "granted") {
+    // If it's okay, create a notification
+    new Notification("Trading Alert", {
+      body: msg
+    });
+  }
+  // Otherwise, ask for permission first
+  else if (Notification.permission !== "denied") {
+    Notification.requestPermission().then(permission => {
+      if (permission === "granted") {
+        new Notification("Trading Alert", {
+          body: msg
+        });
+      }
+    });
+  }
+  
+  // Also show in the UI as fallback
+  const el = document.getElementById("tradeMessage");
+  if (el) {
+    el.textContent = msg;
+    setTimeout(() => { el.textContent = ""; }, 3000);
+  }
+}
+function formatMs(ms) {
+  const sec = ms / 1000;
+  if (sec < 30) return "< 30s";
+  if (sec < 60) return "30s - 1m";
+  if (sec < 180) return "1-3m";
+  if (sec < 600) return "3-10m";
+  return "> 10m";
+}
+function saveStateToLocalStorage() {
+  const stateCopy = { ...Core.state };
+
+  // Saves the remaining time until each trade resolves
+  stateCopy.openTrades = stateCopy.openTrades.map(t => ({
+    ...t,
+    remainingTime: t.entryTime + t.duration - Date.now()
+  }));
+
+  try {
+    localStorage.setItem("TheTradingGame", JSON.stringify(stateCopy));
+  } catch (err) {
+    console.error("Failed to save state:", err);
+  }
+}
+function loadStateFromLocalStorage() {
+  const stored = localStorage.getItem("TheTradingGame");
+  if (stored) {
+    try {
+      const parsed = JSON.parse(stored);
+
+      // Restore safely
+      Object.assign(Core.state, parsed);
+
+      // Resumes and resolves trades
+      Core.state.openTrades.forEach(trade => {
+        const now = Date.now();
+        const timeLeft = trade.endTime - now;
+
+        if (timeLeft <= 0) {
+          // Trade should already be resolved
+          Trades.resolveTrade(trade, Core.state);
+        } else {
+          // Still pending, resume timer
+          setTimeout(() => Trades.resolveTrade(trade, Core.state), timeLeft);
+        }
+      });
+    } catch (err) {
+      console.error("Failed to load state:", err);
+    }
+  }
+}
+
+// === INPUT EVENT HANDLERS ===
+document.addEventListener("keydown", (e) => {
+  if (e.key.toLowerCase() === "b") Trades.place("buy", Core.state);
+  if (e.key.toLowerCase() === "s") Trades.place("sell", Core.state);
+});
+
+// === BUTTON EVENT HANDLERS ===
+document.getElementById('performance').onclick = () => {
+  const state = Core.state;
+  const trades = state.trades;
+  const wins = trades.filter(t => t.pnl > 0);
+  const losses = trades.filter(t => t.pnl < 0);
+  const netWinnings = trades.reduce((sum, t) => sum + t.pnl, 0);
+  const winRate = trades.length ? ((wins.length / trades.length) * 100).toFixed(1) + '%' : '0%';
+  const avgWin = wins.length ? wins.reduce((a, b) => a + b.pnl, 0) / wins.length : 0;
+  const avgLoss = losses.length ? losses.reduce((a, b) => a + b.pnl, 0) / losses.length : 0;
+
+  const bestTrade = trades.length ? trades.reduce((a, b) => b.pnl > a.pnl ? b : a) : null;
+  const worstTrade = trades.length > 1 ? trades.reduce((a, b) => b.pnl < a.pnl ? b : a) : null;
+
+  // Average trade duration
+  const avgDuration = trades.length ? trades.reduce((a, b) => a + b.duration, 0) / trades.length : 0;
+  
+  // Consecutive streaks
+  let maxWinStreak = 0, maxLossStreak = 0;
+  let currentStreak = 0, lastResult = null;
+  
+  for (let t of trades) {
+    const isWin = t.pnl > 0;
+    if (lastResult === null || isWin === lastResult) {
+      currentStreak++;
+    } else {
+      currentStreak = 1;
+    }
+    lastResult = isWin;
+  
+    if (isWin) maxWinStreak = Math.max(maxWinStreak, currentStreak);
+    else maxLossStreak = Math.max(maxLossStreak, currentStreak);
+  }
+  
+  // Most common trade duration
+  const durationCounts = {};
+  trades.forEach(t => {
+    const key = `${(t.duration / 1000).toFixed(0)}s`;
+    durationCounts[key] = (durationCounts[key] || 0) + 1;
+  });
+  const mostCommonDuration = Object.entries(durationCounts)
+    .sort((a, b) => b[1] - a[1])[0]?.[0] || '--';
+
+  const stats = [
+    {
+      label: "Net Winnings",
+      value: `$${netWinnings.toFixed(2)}`,
+      class: netWinnings >= 0 ? "text-green-400" : "text-red-400"
+    },
+    {
+      label: "Total Trades",
+      value: trades.length
+    },
+    {
+      label: "Win Rate",
+      value: winRate
+    },
+    {
+      label: "Avg Win",
+      value: `$${avgWin.toFixed(2)}`
+    },
+    {
+      label: "Avg Loss",
+      value: `$${avgLoss.toFixed(2)}`
+    },
+    {
+      label: "Best Trade",
+      value: bestTrade ? (bestTrade.pnl >= 0 ? `+$${bestTrade.pnl.toFixed(2)}` : `-$${Math.abs(bestTrade.pnl).toFixed(2)}`) : '--',
+      class: bestTrade ? (bestTrade.pnl >= 0 ? "text-green-400" : "text-red-400") : ""
+    },
+    {
+      label: "Worst Trade",
+      value: worstTrade ? (worstTrade.pnl >= 0 ? `+$${worstTrade.pnl.toFixed(2)}` : `-$${Math.abs(worstTrade.pnl).toFixed(2)}`) : '--',
+      class: worstTrade ? (worstTrade.pnl >= 0 ? "text-green-400" : "text-red-400") : ""
+    },
+    {
+      label: "Avg Trade Duration",
+      value: `${(avgDuration / 1000).toFixed(1)}s`
+    },
+    {
+      label: "Most Used Duration",
+      value: mostCommonDuration
+    },
+    {
+      label: "Max Win Streak",
+      value: `${maxWinStreak} wins`
+    },
+    {
+      label: "Max Loss Streak",
+      value: `${maxLossStreak} losses`
+    }
+  ];
+
+  const content = `
+    <div class="trading-card rounded-xl p-5">
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 text-sm text-slate-300">
+        ${stats.map(stat => `
+          <div>
+            <span class="text-slate-500 block">${stat.label}</span>
+            <span class="font-bold ${stat.class ?? ''}">${stat.value}</span>
+          </div>
+        `).join('')}
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 mt-4 text-sm">
+        <button id="importBackupBtn" class="bg-green-600 text-white text-sm px-4 py-2 rounded-md text-center cursor-pointer w-full sm:w-auto border-0">
+          <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"></path>
+          </svg>
+          Import Backup (.json)
+        </button>
+        <button id="exportBackupBtn" class="bg-blue-600 text-white text-sm px-4 py-2 rounded-md text-center cursor-pointer w-full sm:w-auto border-0">
+          <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"></path>
+          </svg>
+          Export Backup (.json)
+        </button>
+      </div>
+      <input type="file" id="importBackupInput" accept=".json" class="hidden" />
+    </div>
+  `;
+
+  Modal.render({
+    title: "🎯 Performance Card",
+    content,
+    CloseLabel: "Close",
+    ConfirmLabel: "Reset",
+    onLoad: () => {
+      setTimeout(() => {
+        const exportBtn = document.getElementById("exportBackupBtn");
+        const importBtn = document.getElementById("importBackupBtn");
+        const importInput = document.getElementById("importBackupInput");
+        
+        importBtn.addEventListener("click", () => {
+          importInput.click(); // ← Triggers the file picker
+        });
+      
+        exportBtn.addEventListener("click", () => {
+          const stateCopy = { ...Core.state, openTrades: [] };
+          const dataStr = JSON.stringify(stateCopy, null, 2);
+          const blob = new Blob([dataStr], { type: "application/json" });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `trading-backup-${new Date().toISOString().split("T")[0]}.json`;
+          a.click();
+          URL.revokeObjectURL(url);
+        });
+      
+        importInput.addEventListener("change", (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+      
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            try {
+              const imported = JSON.parse(event.target.result);
+              if (!imported || typeof imported !== "object" || !imported.trades) {
+                alert("Invalid backup file.");
+                return;
+              }
+
+              Object.assign(Core.state, imported);
+              Core.state.openTrades = [];
+              saveStateToLocalStorage();
+
+              Stats.update(Core.state);
+              Chart.draw(Core.state);
+              document.querySelector('dialog[open] footer button:first-child').onclick();
+            } catch (err) {
+              alert("❌ Failed to import backup.");
+            }
+          };
+      
+          reader.readAsText(file);
+        });
+      }, 50); // slight delay to ensure DOM is mounted
+    },
+    onConfirm: () => {
+      Core.clearStorage();
+      
+      // Get the input value and update the balance
+      Core.state.balance = Core.state.startBalance;
+      Core.state.trades = [];
+
+      // Update the balance display
+      document.getElementById('balance').querySelector('span').textContent = Core.state.balance.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+
+      saveStateToLocalStorage();
+    }
+  });
+};
+document.getElementById('balance').onclick = () => {
+  Modal.render({
+    title: `Reset Your Balance`,
+    content: `
+      <p class="text-sm text-center mb-4 text-yellow-500">🕹️ Start a new run — all previous trades will vanish!</p>
+      <input id="balanceInput" type="number" min="1" step="1" placeholder="1,000" value="${Core.state.startBalance}">
+    `,
+    onLoad() {
+      // Add event listener for the 'Enter' key
+      document.getElementById('balanceInput').focus();
+      document.getElementById('balanceInput').onkeydown = function(e) {
+        if (e.key === 'Enter') {
+          // Trigger a click on the Confirm button
+          this.closest('dialog').querySelector('footer button[data-modal=confirm]').click();
+          e.preventDefault();
+        }
+      };
+    },
+    onConfirm() {
+      Core.clearStorage();
+      
+      // Get the input value and update the balance
+      const newBalance = parseInt(document.getElementById('balanceInput').value, 10);
+      if (!isNaN(newBalance)) {
+        Core.state.startBalance = newBalance;
+        Core.state.balance = newBalance;
+        Core.state.trades = [];
+
+        // Update the balance display
+        document.getElementById('balance').querySelector('span').textContent = Core.state.balance.toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
+
+        saveStateToLocalStorage();
+      }
+    }
+  });
+}
+document.getElementById("buy").onclick = () => {
+  Trades.place("buy", Core.state);
+};
+const wagerButton = document.getElementById('wager');
+wagerButton.onclick = () => {
+  Modal.render({
+    title: `Set Your Wager`,
+    content: `
+      <div class="text-sm text-center text-gray-300 space-y-4">
+        <div>
+          <label class="block mb-1">
+            <input type="radio" name="wagerType" value="dollar" ${!Core.state.wagerIsPercent ? "checked" : ""}>
+            💵 Dollar Amount
+          </label>
+          <input
+            id="wagerInputDollar"
+            type="number"
+            min="1"
+            step="1"
+            placeholder="250"
+            value="${Core.state.wager}"
+            class="w-full p-2 border border-gray-600 rounded text-center"
+          >
+        </div>
+
+        <div>
+          <label class="block mb-1">
+            <input type="radio" name="wagerType" value="percent" ${Core.state.wagerIsPercent ? "checked" : ""}>
+            📈 Percent of Balance
+          </label>
+          <input
+            id="wagerInputPercent"
+            type="number"
+            min="0.1"
+            max="100"
+            step="0.1"
+            placeholder="1"
+            value="${Core.state.wagerPercent}"
+            class="w-full p-2 border border-gray-600 rounded text-center"
+          >
+        </div>
+      </div>
+    `,
+    onLoad() {
+      const dollarInput = document.getElementById("wagerInputDollar");
+      const percentInput = document.getElementById("wagerInputPercent");
+      const radios = document.querySelectorAll("input[name=wagerType]");
+
+      const updateInputs = () => {
+        const selected = document.querySelector("input[name=wagerType]:checked").value;
+        dollarInput.disabled = selected !== "dollar";
+        percentInput.disabled = selected !== "percent";
+      };
+
+      radios.forEach(r => r.addEventListener("change", updateInputs));
+      updateInputs();
+
+      // Optional: Enter to confirm
+      [dollarInput, percentInput].forEach(input => {
+        input.onkeydown = (e) => {
+          if (e.key === 'Enter') {
+            const confirmBtn = document.querySelector("dialog footer button:last-child");
+            if (confirmBtn) confirmBtn.click();
+            e.preventDefault();
+          }
+        };
+      });
+    },
+    onConfirm() {
+      const wagerType = document.querySelector("input[name=wagerType]:checked").value;
+
+      if (wagerType === "dollar") {
+        const value = parseFloat(document.getElementById("wagerInputDollar").value);
+        if (!isNaN(value) && value > 0) {
+          Core.state.wagerIsPercent = false;
+          Core.state.wager = value;
+        } else {
+          showTradeMessage("❌ Please enter a valid dollar amount.");
+          return;
+        }
+      } else {
+        const value = parseFloat(document.getElementById("wagerInputPercent").value);
+        if (!isNaN(value) && value > 0 && value <= 100) {
+          Core.state.wagerIsPercent = true;
+          Core.state.wagerPercent = value;
+        } else {
+          showTradeMessage("❌ Please enter a valid percent (0.1 – 100).");
+          return;
+        }
+      }
+
+      saveStateToLocalStorage();
+    }
+  });
+};
+document.getElementById('duration').onclick = () => {
+  Modal.render({
+    title: `Set Trade Duration`,
+    content: `
+      <div class="text-center">
+        <div class="grid grid-cols-3 gap-2">
+          <input class="duration-input" id="durationHours" type="number" min="0" placeholder="00" value="${Core.state.duration.hour}" class="p-2 border border-gray-600 rounded">
+          <input class="duration-input" id="durationMinutes" type="number" min="0" max="59" placeholder="00" value="${Core.state.duration.minute}" class="p-2 border border-gray-600 rounded">
+          <input class="duration-input" id="durationSeconds" type="number" min="1" max="59" placeholder="00" value="${Core.state.duration.second}" class="p-2 border border-gray-600 rounded">
+        </div>
+        <div class="grid grid-cols-3 gap-2 text-sm text-gray-400">
+          <span>Hours</span>
+          <span>Minutes</span>
+          <span>Seconds</span>
+        </div>
+      </div>
+    `,
+    onLoad() {
+      const confirmBtn = document.querySelector('dialog footer button:last-child');
+      const inputs = document.querySelectorAll('.duration-input');
+
+      function updateConfirmState() {
+        const h = parseInt(document.getElementById('durationHours').value) || 0;
+        const m = parseInt(document.getElementById('durationMinutes').value) || 0;
+        const s = parseInt(document.getElementById('durationSeconds').value) || 0;
+        confirmBtn.disabled = (h === 0 && m === 0 && s === 0);
+      }
+
+      inputs.forEach(input => input.addEventListener('input', updateConfirmState));
+      updateConfirmState(); // Initial state
+    },
+    onConfirm() {
+      const h = parseInt(document.getElementById('durationHours').value) || 0;
+      const m = parseInt(document.getElementById('durationMinutes').value) || 0;
+      const s = parseInt(document.getElementById('durationSeconds').value) || 0;
+      if (h === 0 && m === 0 && s === 0) return;
+
+      Core.state.duration = { hour: h, minute: m, second: s };
+
+      // Update display
+      durH.textContent = `${String(h).padStart(2, '0')}h:`;
+      durM.textContent = `${String(m).padStart(2, '0')}m:`;
+      durS.textContent = `${String(s).padStart(2, '0')}s`;
+
+      saveStateToLocalStorage();
+    }
+  });
+};
+document.getElementById("sell").onclick = () => {
+  Trades.place("sell", Core.state);
+};
+
+window.addEventListener('DOMContentLoaded', () => loadStateFromLocalStorage());
