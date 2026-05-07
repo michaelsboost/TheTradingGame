@@ -8,7 +8,7 @@ const { ExpirationPlugin } = workbox.expiration;
 const { clientsClaim, skipWaiting } = workbox.core;
 
 // Define cache name dynamically based on the project name
-const cacheName = 'thetradinggame-cache';
+const cacheName = 'TheTradingGame-cache';
 
 // Force update when a new service worker is available
 self.addEventListener('install', (event) => {

@@ -4,7 +4,7 @@ export default {
   input: 'src/script.js', // entry point to your Javascript
   output: {
     file: 'dist/script.js',
-    format: 'es', // Immediately Invoked Function Expression, suitable for <script> tags
+    format: 'iife', // Immediately Invoked Function Expression, suitable for <script> tags
     name: 'thetradinggame'
   },
   plugins: [

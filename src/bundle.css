@@ -1,67 +1,23 @@
-@import '../libraries/pico.min.css';
-
-  
+@tailwind base;
 @tailwind components;
 @tailwind utilities;
-/* === Root Variables: Define all core colors and design tokens here === */
-:root {
-  --bg-dark: #14152f;       /* Main background dark tone */
-  --bg-darker: #0e0f20;     /* Even darker tone for deep sections */
-  --bg-panel: #1c1d38;      /* Panel/card background */
-  --bg-body: #0f172a;       /* Actual <body> background (was hardcoded) */
 
-  --text-color: #ffffff;    /* Default text color */
-
-  --green: #00c853;         /* Positive/Buy indicator */
-  --red: #ff3d00;           /* Negative/Sell indicator */
-  --yellow: #ffd600;        /* Warning or neutral attention */
-  --blue: #2962ff;          /* Informational tone */
-  --purple: #8b5cf6;        /* Highlight or accent */
-  
-  --card-border: #334155;   /* Border for panels or cards */
-  --card-bg: #1e293b;       /* Background color for trading cards */
-  --border-radius: 12px;    /* Standard radius for rounded corners */
+/* custom styles: futuristic glassmorphism, button animations, range slider */
+html, body {
+  background: #0b0f19;
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
 }
-
-/* === Global Body Styling === */
-body {
-  background-color: var(--bg-body);
-  color: var(--text-color);
-  font-family: 'Inter', sans-serif;
+.chart-wrapper {
+  background: #0a0e17;
+  border-radius: 1.5rem;
+  backdrop-filter: blur(2px);
+  box-shadow: 0 25px 40px -12px rgba(0,0,0,0.7);
 }
-
-/* === Trading Card Panel Styling === */
-.trading-card {
-  background: var(--card-bg);
-  border-radius: var(--border-radius);
-  border: 1px solid var(--card-border);
-}
-
-/* === Chart Container === */
-#chart {
-  height: 400px;
-  width: 100%;
-}
-
-/* === Typography: Arvo Font Variants === */
-/* You can use these as utility classes when specific font styles are needed */
-.arvo-regular {
-  font-family: "Arvo", serif;
-  font-weight: 400;
-  font-style: normal;
-}
-.arvo-bold {
-  font-family: "Arvo", serif;
-  font-weight: 700;
-  font-style: normal;
-}
-.arvo-regular-italic {
-  font-family: "Arvo", serif;
-  font-weight: 400;
-  font-style: italic;
-}
-.arvo-bold-italic {
-  font-family: "Arvo", serif;
-  font-weight: 700;
-  font-style: italic;
-}
+.up-btn:active, .down-btn:active { transform: scale(0.97); }
+input[type=range] { -webkit-appearance: none; background: transparent; }
+input[type=range]::-webkit-slider-runnable-track { height: 6px; background: #1f2a3e; border-radius: 3px; }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #38bdf8; margin-top: -7px; cursor: pointer; box-shadow: 0 0 6px #38bdf8; }
+.glass-panel { background: rgba(12, 18, 28, 0.7); backdrop-filter: blur(8px); border: 1px solid rgba(56, 189, 248, 0.15); }
+select, .edge-value { background-color: #1e293b; border: 1px solid #334155; }
+.mode-active { background: #0f2b3f !important; border-color: #38bdf8 !important; box-shadow: 0 0 8px rgba(56,189,248,0.4); }
+[x-cloak] { display: none !important; }

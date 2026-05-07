@@ -1,99 +1,208 @@
-🎮 The Trading Game — Binary Options Simulator
-============================
+# 🎮 The Trading Game — Binary Options Simulator
 
-![](https://raw.githubusercontent.com/michaelsboost/TheTradingGame/gh-pages/imgs/screenshot.jpeg)
-![](https://raw.githubusercontent.com/michaelsboost/TheTradingGame/gh-pages/imgs/screenshot-performance-card.jpeg)
+![](https://raw.githubusercontent.com/michaelsboost/TheTradingGame/gh-pages/imgs/screenshot.png)
 
 ## 🌟 Overview
-**The Trading Game** is a **binary options trading simulator** that lets you practice high-speed decision-making without risking real money. It’s designed to sharpen your instincts, help you analyze trade performance, and build confidence in your edge.
 
-There’s **no prop firm structure**, **no contract sizing**, and no margin rules — just **pure binary trade logic**: you bet an amount, predict direction, and find out if you're right.
+**The Trading Game** is a fast-paced **binary options simulator** built to sharpen your market instincts through pure directional trading. No brokers, no real money, no accounts — just rapid decision-making, simulated price action, and performance tracking.
 
-> **🛠️ Built Using [kodeWeave](https://michaelsboost.github.io/kodeWeave/)**  
-> Browser-based, fast, and works offline. No install. No sign-up.
+Choose a direction, place your wager, and see if your prediction survives the next candle.
+
+Built for traders who want:
+
+* Fast repetitions
+* Psychological training
+* Risk-free practice
+* Performance analytics
+* Realistic market-style chart behavior
+
+> 🛠️ Built using [kodeWeave](https://michaelsboost.github.io/kodeWeave/)
+> Browser-based. Lightweight. Offline-friendly. No install required.
+
+---
 
 ## 🚀 Launch the App
-🌍 Try it live: [The Trading Game](https://michaelsboost.github.io/TheTradingGame/)
 
-Zero setup. Runs directly in your browser.
+🌍 Live Demo: [The Trading Game](https://michaelsboost.github.io/TheTradingGame/)
 
-## 🛠️ Key Features  
+Runs instantly in your browser.
 
-### **🎯 Binary Options Logic**
-- Fixed payouts — win or lose based on direction
-- Choose duration: 30s, 60s, 90s, etc.
-- Simple entry → expiration logic
-- No contracts or margin calculations — just your wager and outcome
+---
 
-### **📈 Performance Dashboard**
-- Tracks:
-  - Net Winnings
-  - Win Rate
-  - Average Win/Loss
-  - Best/Worst Trade
-  - Average Trade Duration
-  - Max Win/Loss Streaks
-  - Most Common Trade Duration
-- One-click backup + restore with `.json` support
+## ⚡ Core Features
 
-### **🧠 Realistic Chart Simulation**
-- Simulated stock-style price action
-- Reflects a natural market flow for more realistic training
-- Directional trades update in real time until expiration
+### 🎯 Binary Options Trading Logic
 
-### **💾 Local Save System**
-- Progress and stats are saved in your browser
-- No sign-up, no server — 100% private
-- Backup and restore using exportable JSON files
+* Predict **UP** or **DOWN**
+* Fixed payout percentages
+* Adjustable wager sizing
+* Adjustable edge simulation
+* Win/loss outcomes based on probability + payout logic
 
-## 📂 Planned Features (TODO)
- - **📐 Drawing Tools** – Add trendlines, zones, and chart markups
- - **🤖 Strategy Bots** – Train against bots using real trading strategies
- - **📈 Indicator Overlays** – Add momentum, S/R, and volatility tools
- - **📘 Trade Journal View** – Filter and analyze your historical trades
- - **🏆 Leaderboard –** See how your streaks stack up against bots
+---
 
-(No replay system — built to run fast and store data locally)
+### 📈 Dual Chart Modes
 
-## ⚡ **Getting Started**
-### **1️⃣ Install & Run Locally**
-```sh
-# Clone the repository
+#### 🔄 Full Refresh Mode
+
+Every trade generates a completely new chart environment.
+
+Perfect for:
+
+* Pattern recognition practice
+* Rapid adaptation training
+* High-speed scenario exposure
+
+#### ✨ Next Candle Mode
+
+The chart grows candle-by-candle after each trade.
+
+Perfect for:
+
+* Momentum reading
+* Trend continuation practice
+* Sequential market psychology training
+
+---
+
+### 📊 Performance Tracking
+
+Track your trading statistics in real time:
+
+* Balance
+* Net Profit / Loss
+* Win Rate
+* Wins / Losses
+* Expected Edge
+* 300 Trade Sample Tests
+* Equity Curve Simulation
+* Win Rate Progression
+
+Built-in Monte Carlo style testing helps visualize long-term expectancy and variance.
+
+---
+
+### 🧠 Realistic Market Simulation
+
+* Synthetic candlestick generation
+* Dynamic bullish/bearish candle creation
+* Randomized market movement
+* Lightweight Charts integration
+* Smooth real-time chart updates
+
+Designed to feel responsive, fast, and visually intuitive.
+
+---
+
+### 💾 Fully Local & Private
+
+* No accounts
+* No backend
+* No cloud sync
+* No ads
+* No data collection
+
+Everything runs entirely in your browser.
+
+---
+
+## 🧪 300 Trade Sample Testing
+
+Instantly simulate 300 trades using your current settings:
+
+* Test edge consistency
+* Analyze expectancy
+* Visualize drawdowns
+* Study equity curve behavior
+* Observe variance over time
+
+Great for strategy experimentation and psychological conditioning.
+
+---
+
+## 🛠️ Built With
+
+* [Alpine.js](https://alpinejs.dev/)
+* [Lightweight Charts](https://tradingview.github.io/lightweight-charts/)
+* [Tailwind CSS](https://tailwindcss.com/)
+* Vanilla JavaScript
+* [kodeWeave](https://michaelsboost.github.io/kodeWeave/)
+
+---
+
+## ⚡ Getting Started
+
+### 1️⃣ Clone the Repository
+
+```bash
 git clone https://github.com/michaelsboost/TheTradingGame.git
 cd TheTradingGame
-
-# Open index.html in a browser
 ```
 
-### **2️⃣ Dependencies**
-- [Tailwind](https://tailwindcss.com/) + [Pico CSS](https://picocss.com/) for styling
-- Vanilla JS – No frameworks, just pure JavaScript
-- [kodeWeave](https://michaelsboost.github.io/kodeWeave/) – Used for all prototyping and building
+### 2️⃣ Run the App
+
+Simply open:
+
+```bash
+index.html
+```
+
+No build tools. No dependencies to install.
+
+---
 
 ## 🧠 Contributing
-The Trading Game is open for contribution!  
 
-- Fork the repository
-- Create a new branch: (`feature/add-chart-tools`)
-- Submit a Pull Request
+Contributions are welcome.
 
-Contributors welcome!
+### To contribute:
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Submit a pull request
+
+Example branch naming:
+
+```bash
+feature/add-drawing-tools
+```
+
+---
 
 ## 📜 License
-Licensed under the MIT License — free to use, remix, and distribute.
 
-Developed by: [Michael Schwartz](https://michaelsboost.com/)  
-Maintained by: The open-source community
+Licensed under the MIT License.
 
-## **☕ Support This Project**
-If The Trading Game was helpful for you, consider showing your appreciation in the following ways:
+Free to use, modify, remix, and distribute.
 
-- 🎨 Check out my Graphic Design Course: https://michaelsboost.com/graphicdesign  
-- 🛒 Register as a customer on my store: https://michaelsboost.com/store  
-- ☕ Buy me a coffee: http://ko-fi.com/michaelsboost  
-- 👕 Purchase a T-Shirt: https://michaelsboost.com/gear  
-- 🖼️ Buy my art prints: https://deviantart.com/michaelsboost/prints 
-- 💰 Donate via PayPal: https://michaelsboost.com/donate 
-- 💵 Donate via Cash App: https://cash.me/$michaelsboost  
+---
 
-Your support is greatly appreciated and helps fund this & future projects! 🚀
+## 👨‍💻 Developer
+
+Developed by [Michael Schwartz](https://michaelsboost.com/)
+
+Maintained by the open-source community.
+
+---
+
+## ☕ Support This Project
+
+If you enjoy The Trading Game and want to support future development:
+
+* 🎨 Graphic Design Course
+  https://michaelsboost.com/graphicdesign
+* 🛒 Store
+  https://michaelsboost.com/store
+* ☕ Buy Me a Coffee
+  http://ko-fi.com/michaelsboost
+* 👕 Merchandise
+  https://michaelsboost.com/gear
+* 🖼️ Art Prints
+  https://deviantart.com/michaelsboost/prints
+* 💰 PayPal Donations
+  https://michaelsboost.com/donate
+* 💵 Cash App
+  https://cash.me/$michaelsboost
+
+Your support helps fund open-source tools, experiments, and future projects. 🚀
