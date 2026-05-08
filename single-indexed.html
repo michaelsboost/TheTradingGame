@@ -1,493 +1,772 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
-    <!--
-      ====================================================================
-      THE TRADING GAME – Binary Options Simulator
-      ====================================================================
-      Filename: index.html
-      Author:   Trading Game Project
-      Purpose:  Simulate binary options trading with two distinct chart modes
-                - Full Refresh Mode:   Entire random chart after each trade
-                - Next Candle Mode:    Existing chart extends by one candle,
-                                      direction based on your bet outcome.
-
-      This is a front‑only educational / entertainment game. No real money,
-      no backend. Random generator simulates wins/losses according to the
-      user‑defined edge (win probability). Payout multiplier and wager are
-      fully adjustable.
-
-      The entire UI is driven by Alpine.js for reactive state. Lightweight
-      Charts (TradingView library) draws candlestick series.
-
-      All core logic resides inside the `tradingApp()` function.
-      ====================================================================
-    -->
     <title>The Trading Game – Binary Options Simulator (No Risk, Real Strategy)</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="Binary options game built for speed and skill. Predict price moves, place trades, and build your virtual balance — no sign-up, no ads, all action.">
     <meta name="author" content="Michael Schwartz">
-    <!-- Google Fonts + Alpine.js + Tailwind style CDN (Lightweight) -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,700;14..32,900&display=swap" rel="stylesheet">
+    <meta name="theme-color" content="#13171f">
+    <link rel="shortcut icon" type="image/x-icon" href="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjwhLS0gR2VuZXJhdG9yOiBHcmF2aXQuaW8gLS0+Cgo8c3ZnCiAgIHN0eWxlPSJpc29sYXRpb246aXNvbGF0ZSIKICAgdmlld0JveD0iMCAwIDEyOCAxMjgiCiAgIHdpZHRoPSIxMjhwdCIKICAgaGVpZ2h0PSIxMjhwdCIKICAgdmVyc2lvbj0iMS4xIgogICBpZD0ic3ZnMSIKICAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogICB4bWxuczpzdmc9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8ZGVmcwogICAgIGlkPSJkZWZzMSI+CiAgICA8Y2xpcFBhdGgKICAgICAgIGlkPSJfY2xpcFBhdGhfR3hnZUNYYWJOTlROdERsaXIxcGNFQzlUanV4YU5zUmIiPgogICAgICA8cmVjdAogICAgICAgICB3aWR0aD0iMTI4IgogICAgICAgICBoZWlnaHQ9IjEyOCIKICAgICAgICAgaWQ9InJlY3QxIgogICAgICAgICB4PSIwIgogICAgICAgICB5PSIwIiAvPgogICAgPC9jbGlwUGF0aD4KICA8L2RlZnM+CiAgPHJlY3QKICAgICBzdHlsZT0iZmlsbDojMGYxNzJhO2ZpbGwtb3BhY2l0eToxO3N0cm9rZS13aWR0aDoyNS44MDE0O3N0cm9rZS1saW5lY2FwOnJvdW5kO3N0cm9rZS1saW5lam9pbjpyb3VuZDtwYWludC1vcmRlcjpmaWxsIG1hcmtlcnMgc3Ryb2tlIgogICAgIGlkPSJyZWN0MiIKICAgICB3aWR0aD0iMTI4IgogICAgIGhlaWdodD0iMTI4IgogICAgIHg9IjEuMzIzNDg5ZS0yMyIKICAgICB5PSI2LjYxNzQ0NDllLTI0IiAvPgogIDxnCiAgICAgY2xpcC1wYXRoPSJ1cmwoI19jbGlwUGF0aF9HeGdlQ1hhYk5OVE50RGxpcjFwY0VDOVRqdXhhTnNSYikiCiAgICAgaWQ9ImcxIgogICAgIHRyYW5zZm9ybT0ibWF0cml4KDAuODg1ODE2MjQsMCwwLDAuODg1ODE2MjQsNy4zMDc3NjA2LDcuMzA3NzYwNikiPgogICAgPHBhdGgKICAgICAgIGQ9Im0gNTYuNjMzLDY0IGMgMCwtNC4wNjYgMy4zMDEsLTcuMzY3IDcuMzY3LC03LjM2NyA0LjA2NiwwIDcuMzY3LDMuMzAxIDcuMzY3LDcuMzY3IDAsNC4wNjYgLTMuMzAxLDcuMzY3IC03LjM2Nyw3LjM2NyAtNC4wNjYsMCAtNy4zNjcsLTMuMzAxIC03LjM2NywtNy4zNjcgeiBNIDIzLjY5NSwyMy42OTUgUSA0My40MzYsMy45NTQgNTQuNDA0LDU0LjQwNCAzLjk1NCw0My40MzYgMjMuNjk1LDIzLjY5NSBaIG0gODAuNjEsODAuNjEgcSAxOS43NDEsLTE5Ljc0MSAtMzAuNzA5LC0zMC43MDkgMTAuOTY4LDUwLjQ1IDMwLjcwOSwzMC43MDkgeiBtIC04MC42MSwwIFEgNDMuNDM2LDEyNC4wNDYgNTQuNDA0LDczLjU5NiAzLjk1NCw4NC41NjQgMjMuNjk1LDEwNC4zMDUgWiBtIDgwLjYxLC04MC42MSBRIDEyNC4wNDYsNDMuNDM2IDczLjU5Niw1NC40MDQgODQuNTY0LDMuOTU0IDEwNC4zMDUsMjMuNjk1IFogTSAxMjEsNjQgUSAxMjEsOTEuOTE4IDc3LjU3MSw2NCAxMjEsMzYuMDgyIDEyMSw2NCBaIE0gNyw2NCBRIDcsOTEuOTE4IDUwLjQyOSw2NCA3LDM2LjA4MiA3LDY0IFogbSA1Nyw1NyBRIDkxLjkxOCwxMjEgNjQsNzcuNTcxIDM2LjA4MiwxMjEgNjQsMTIxIFogTSA2NCw3IFEgOTEuOTE4LDcgNjQsNTAuNDI5IDM2LjA4Miw3IDY0LDcgWiIKICAgICAgIGZpbGwtcnVsZT0iZXZlbm9kZCIKICAgICAgIGZpbGw9IiNmZmZmZmYiCiAgICAgICBpZD0icGF0aDEiIC8+CiAgPC9nPgo8L3N2Zz4K">
     <link href="https://fonts.googleapis.com/css2?family=Arvo:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" rel="stylesheet">
-    <style>
-      /* custom styles: futuristic glassmorphism, button animations, range slider */
-      html, body {
-        background: #0b0f19;
-        font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
-      }
-      .chart-wrapper {
-        background: #0a0e17;
-        border-radius: 1.5rem;
-        backdrop-filter: blur(2px);
-        box-shadow: 0 25px 40px -12px rgba(0,0,0,0.7);
-      }
-      .up-btn:active, .down-btn:active { transform: scale(0.97); }
-      input[type=range] { -webkit-appearance: none; background: transparent; }
-      input[type=range]::-webkit-slider-runnable-track { height: 6px; background: #1f2a3e; border-radius: 3px; }
-      input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #38bdf8; margin-top: -7px; cursor: pointer; box-shadow: 0 0 6px #38bdf8; }
-      .glass-panel { background: rgba(12, 18, 28, 0.7); backdrop-filter: blur(8px); border: 1px solid rgba(56, 189, 248, 0.15); }
-      select, .edge-value { background-color: #1e293b; border: 1px solid #334155; }
-      .mode-active { background: #0f2b3f !important; border-color: #38bdf8 !important; box-shadow: 0 0 8px rgba(56,189,248,0.4); }
-      [x-cloak] { display: none !important; }
-    </style>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js" defer></script>
-    <script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
+    
+    <style>/* Force full viewport height – needed for localhost chart rendering */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: radial-gradient(circle at 10% 20%, #0a0e17, #05070c);
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.glass-panel {
+  background: rgba(15, 23, 36, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.chart-wrapper {
+  background: #0a0f18;
+  border-radius: 1.8rem;
+  transition: all 0.2s ease;
+}
+
+#trading-chart {
+  min-height: 280px;
+  width: 100%;
+  height: 100%;
+}
+
+.up-btn:active,
+.down-btn:active,
+.skip-btn:active {
+  transform: scale(0.97);
+  transition: transform 0.05s ease;
+}
+
+input[type=range] {
+  -webkit-appearance: none;
+  background: transparent;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+  height: 5px;
+  background: #1f2a44;
+  border-radius: 10px;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  background: #38bdf8;
+  margin-top: -6px;
+  cursor: pointer;
+  box-shadow: 0 0 6px #38bdf8;
+  transition: 0.1s;
+}
+
+.mode-active {
+  background: #0e2a3c !important;
+  border-color: #38bdf8 !important;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.3);
+}
+
+[x-cloak] {
+  display: none !important;
+}
+
+.donate-pulse {
+  transition: all 0.2s ease;
+}
+
+.donate-pulse:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(244, 63, 94, 0.3);
+}
+
+.stat-card {
+  transition: all 0.15s ease;
+}
+
+.stat-card:active {
+  background: rgba(56, 189, 248, 0.1);
+}
+
+/* Fullscreen mobile menu animation */
+.menu-enter-active,
+.menu-leave-active {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.menu-enter-from,
+.menu-leave-to {
+  opacity: 0;
+  transform: scale(0.98);
+}
+
+.menu-enter-to,
+.menu-leave-from {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #141c2c;
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2d3f5e;
+  border-radius: 8px;
+}</style>
   </head>
   <body>
-    <!-- Alpine.js root component: all reactive data and methods live inside "tradingApp()" -->
-    <div x-data="tradingApp()" x-init="initChartAndRandomize()" class="text-gray-200 antialiased flex flex-col h-full w-full px-3 py-3 md:px-5 md:py-4 max-w-7xl mx-auto">
-      <div class="flex flex-col h-full gap-3">
-        
-        <!-- ========== HEADER STATS (Balance, P/L, Win/Loss Ratio, Edge) ========== -->
-        <div class="glass-panel rounded-2xl p-2 md:p-4 shadow-2xl">
-          <div class="overflow-x-auto">
-            <div class="flex items-center justify-between gap-3 min-w-max whitespace-nowrap">
-              <!-- GitHub repo link (logo) -->
-              <a href="https://github.com/michaelsboost/TheTradingGame/" target="_blank" class="shrink-0">
-                <svg class="h-8 md:h-12" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="currentColor"><g><circle cx="64" cy="63.99999999999992" r="7.367346938775501"/><path d=" M 23.695 23.695 Q 43.436 3.954 54.404 54.404 Q 3.954 43.436 23.695 23.695 Z "/><path d=" M 104.305 104.305 Q 124.046 84.564 73.596 73.596 Q 84.564 124.046 104.305 104.305 Z "/><path d=" M 23.695 104.305 Q 43.436 124.046 54.404 73.596 Q 3.954 84.564 23.695 104.305 Z "/><path d=" M 104.305 23.695 Q 124.046 43.436 73.596 54.404 Q 84.564 3.954 104.305 23.695 Z "/><path d=" M 121 64 Q 121 91.918 77.571 64 Q 121 36.082 121 64 Z "/><path d=" M 7 64 Q 7 91.918 50.429 64 Q 7 36.082 7 64 Z "/><path d=" M 64 121 Q 91.918 121 64 77.571 Q 36.082 121 64 121 Z "/><path d=" M 64 7 Q 91.918 7 64 50.429 Q 36.082 7 64 7 Z "/></g></svg>
-              </a>
-              <!-- key metrics -->
-              <div class="flex items-center gap-3 md:gap-6 text-xs md:text-base">
-                <div><div class="uppercase tracking-wider text-sky-300">Balance</div><div class="text-lg md:text-3xl font-black" x-text="`$${balance.toFixed(2)}`"></div></div>
-                <div class="h-6 w-px bg-white/20"></div>
-                <div><div class="uppercase tracking-wider text-sky-300">Net P/L</div><div class="font-bold" :class="(balance - 1000) >= 0 ? 'text-emerald-400' : 'text-rose-400'"><span x-text="(balance - 1000) >= 0 ? '+' : ''"></span><span x-text="(balance - 1000).toFixed(2)"></span></div></div>
-                <div class="h-6 w-px bg-white/20"></div>
-                <div><div class="uppercase tracking-wider text-sky-300">W/L</div><div class="font-mono font-bold"><span x-text="winCount"></span>/<span x-text="loseCount"></span></div></div>
-                <div class="h-6 w-px bg-white/20"></div>
-                <div><div class="uppercase tracking-wider text-sky-300">WR</div><div class="font-mono font-bold" x-text="winRate()"></div></div>
-                <div class="h-6 w-px bg-white/20"></div>
-                <div><div class="uppercase tracking-wider text-sky-300">Edge</div><div class="font-mono font-bold text-yellow-400" x-text="edgePercent + '%'"></div></div>
-              </div>
-              <!-- donation / external link -->
-              <a href="https://michaelsboost.com/donate/" target="_blank" class="shrink-0 text-red-400"><svg class="h-8 md:h-12" viewBox="0 0 24 24" fill="currentColor"><path d="M2 9.137C2 14 6.02 16.591 8.962 18.911C10 19.729 11 20.5 12 20.5s2-.77 3.038-1.59C17.981 16.592 22 14 22 9.138S16.5.825 12 5.501C7.5.825 2 4.274 2 9.137"></path></svg></a>
-            </div>
-          </div>
+<!-- Core trading UI: reactive state management with Alpine.js -->
+<!-- All game logic, chart handling, and local storage persistence is inside tradingApp() -->
+<div x-data="tradingApp()" x-init="initApp()" class="text-gray-200 antialiased flex flex-col h-full w-full px-3 py-3 md:px-6 md:py-5 max-w-7xl mx-auto">
+  <div class="flex flex-col h-full gap-4">
+
+    <!-- ████████  HEADER: GitHub branding, live stats, share/donate menu  ████████ -->
+    <div class="glass-panel rounded-2xl p-3 md:p-4 shadow-2xl transition-all">
+      <div class="flex flex-wrap items-center justify-between gap-3 md:gap-4">
+        <!-- Left: brand icon + GitHub repo link -->
+        <div class="flex items-center gap-3">
+          <a href="https://github.com/michaelsboost/TheTradingGame/" target="_blank" rel="noopener noreferrer" class="shrink-0 transition hover:opacity-80" aria-label="GitHub repository">
+            <svg class="h-8 md:h-10 w-auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="currentColor"><g><circle cx="64" cy="63.99999999999992" r="7.367346938775501"/><path d=" M 23.695 23.695 Q 43.436 3.954 54.404 54.404 Q 3.954 43.436 23.695 23.695 Z "/><path d=" M 104.305 104.305 Q 124.046 84.564 73.596 73.596 Q 84.564 124.046 104.305 104.305 Z "/><path d=" M 23.695 104.305 Q 43.436 124.046 54.404 73.596 Q 3.954 84.564 23.695 104.305 Z "/><path d=" M 104.305 23.695 Q 124.046 43.436 73.596 54.404 Q 84.564 3.954 104.305 23.695 Z "/><path d=" M 121 64 Q 121 91.918 77.571 64 Q 121 36.082 121 64 Z "/><path d=" M 7 64 Q 7 91.918 50.429 64 Q 7 36.082 7 64 Z "/><path d=" M 64 121 Q 91.918 121 64 77.571 Q 36.082 121 64 121 Z "/><path d=" M 64 7 Q 91.918 7 64 50.429 Q 36.082 7 64 7 Z "/></g></svg>
+          </a>
+          <div class="hidden md:block text-sm font-extrabold tracking-wide bg-gradient-to-r from-sky-300 to-blue-400 bg-clip-text text-transparent">TRADING GAME</div>
         </div>
 
-        <!-- ========== WAGER CONTROLS: slider, presets, numeric input ========== -->
-        <div class="glass-panel rounded-2xl p-3 space-y-2">
-          <div class="flex items-center justify-between flex-wrap gap-2"><span class="text-xs font-semibold uppercase tracking-wide text-sky-300">Wager</span><div class="flex gap-1"><button @click="setWager(10)" class="bg-white/10 hover:bg-white/20 px-3 py-1 rounded-lg text-xs font-bold">$10</button><button @click="setWager(25)" class="bg-white/10 hover:bg-white/20 px-3 py-1 rounded-lg text-xs font-bold">$25</button><button @click="setWager(50)" class="bg-white/10 hover:bg-white/20 px-3 py-1 rounded-lg text-xs font-bold">$50</button><button @click="setWager(100)" class="bg-white/10 hover:bg-white/20 px-3 py-1 rounded-lg text-xs font-bold">$100</button></div></div>
-          <div class="flex items-center gap-2"><button @click="adjustWager(-5)" class="bg-gray-800 hover:bg-gray-700 w-8 h-8 rounded-full text-lg font-bold">−</button><div class="flex-1"><input type="range" x-model="wager" min="1" :max="balance" step="1" class="w-full" @input="syncWagerFromSlider"></div><button @click="adjustWager(5)" class="bg-gray-800 hover:bg-gray-700 w-8 h-8 rounded-full text-lg font-bold">+</button><input type="number" x-model="wager" @input="validateWagerFromInput" class="w-20 bg-gray-900 border border-gray-700 rounded-xl px-2 py-1 text-right font-mono text-sm"></div>
+        <!-- MIDDLE: Live stats panel (balance, P/L, win/loss, edge) -->
+        <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 bg-black/30 backdrop-blur-sm rounded-2xl py-1.5 px-4 border border-white/5">
+          <div class="stat-card flex flex-col items-center px-1"><span class="text-[10px] font-semibold uppercase tracking-wider text-sky-300/80">Balance</span><span class="text-xl md:text-2xl font-black" x-text="`$${balance.toFixed(2)}`"></span></div>
+          <div class="hidden md:block w-px h-8 bg-sky-500/20"></div>
+          <div class="stat-card flex flex-col items-center px-1"><span class="text-[10px] font-semibold uppercase tracking-wider text-sky-300/80">Net P/L</span><div class="font-black text-lg md:text-xl" :class="(balance - 1000) >= 0 ? 'text-emerald-400' : 'text-rose-400'"><span x-text="(balance - 1000) >= 0 ? '+' : ''"></span><span x-text="(balance - 1000).toFixed(2)"></span></div></div>
+          <div class="hidden md:block w-px h-8 bg-sky-500/20"></div>
+          <div class="stat-card flex flex-col items-center px-1"><span class="text-[10px] font-semibold uppercase tracking-wider text-sky-300/80">W/L</span><div class="font-mono font-bold text-base md:text-lg" x-text="winCount + '/' + loseCount"></div></div>
+          <div class="hidden md:block w-px h-8 bg-sky-500/20"></div>
+          <div class="stat-card flex flex-col items-center px-1"><span class="text-[10px] font-semibold uppercase tracking-wider text-sky-300/80">Win Rate</span><div class="font-mono font-bold text-base md:text-lg" x-text="winRate()"></div></div>
+          <div class="hidden md:block w-px h-8 bg-sky-500/20"></div>
+          <div class="stat-card flex flex-col items-center px-1"><span class="text-[10px] font-semibold uppercase tracking-wider text-sky-300/80">Edge</span><div class="font-mono font-bold text-yellow-400 text-base md:text-lg" x-text="edgePercent + '%'"></div></div>
         </div>
 
-        <!-- ========== PAYOUT % & EDGE % (win probability) ========== -->
-        <div class="flex gap-3">
-          <div class="glass-panel rounded-2xl p-3 flex-1"><div class="flex items-center justify-between gap-2"><span class="text-xs font-semibold text-sky-300">Payout</span><select x-model="payoutPercent" class="bg-gray-900 border border-gray-700 rounded-xl px-2 py-1 font-mono text-xs"><option value="100">100%</option><option value="92">92%</option><option value="88">88%</option><option value="80">80%</option><option value="70">70%</option><option value="60">60%</option><option value="50">50%</option></select></div><div class="text-[10px] text-gray-400 mt-1">Win → + <span x-text="payoutPercent"></span>%</div></div>
-          <div class="glass-panel rounded-2xl p-3 flex-1"><div class="flex items-center justify-between gap-2"><span class="text-xs font-semibold text-sky-300">Edge (win %)</span><span class="text-xs font-mono bg-black/40 px-2 py-0.5 rounded-full" x-text="edgePercent + '%'"></span></div><input type="range" x-model="edgePercent" min="50" max="90" step="1" class="w-full mt-1"><div class="flex justify-between text-[10px] text-gray-400 mt-1"><span>50% (fair)</span><span>70%</span><span>90% (high edge)</span></div></div>
-        </div>
-
-        <!-- ========== TWO CHART MODES (core gameplay differentiator) ========== -->
-        <div class="grid grid-cols-2 gap-3">
-          <button @click="setChartMode('fullReset')" :class="{'mode-active': chartMode === 'fullReset'}" class="text-xs md:text-sm font-semibold px-3 py-1.5 rounded-xl transition-all bg-gray-800/60 border border-gray-700 hover:border-sky-500">🔄 Full Refresh Mode<br><span class="text-[9px] text-gray-400">new chart each trade</span></button>
-          <button @click="setChartMode('nextCandle')" :class="{'mode-active': chartMode === 'nextCandle'}" class="text-xs md:text-sm font-semibold px-3 py-1.5 rounded-xl transition-all bg-gray-800/60 border border-gray-700 hover:border-sky-500">✨ Next Candle Mode<br><span class="text-[9px] text-gray-400">extend + predict next candle</span></button>
-        </div>
-
-        <!-- LIGHTWEIGHT CHARTS CONTAINER (canvas-based financial chart) -->
-        <div class="chart-wrapper flex-1 min-h-[280px] rounded-2xl overflow-hidden border border-white/10">
-          <div id="trading-chart" style="width: 100%; height: 100%;"></div>
-        </div>
-
-        <!-- TRADE BUTTONS: UP / DOWN (binary directions) -->
-        <div class="grid grid-cols-2 gap-3">
-          <button @click="placeBet('up')" :disabled="!canBet()" class="up-btn bg-gradient-to-br from-emerald-600 to-green-700 hover:from-emerald-500 hover:to-green-600 disabled:opacity-40 disabled:cursor-not-allowed rounded-xl py-3 text-xl font-black shadow-xl">▲ UP ▲</button>
-          <button @click="placeBet('down')" :disabled="!canBet()" class="down-btn bg-gradient-to-br from-rose-700 to-red-800 hover:from-rose-600 hover:to-red-700 disabled:opacity-40 disabled:cursor-not-allowed rounded-xl py-3 text-xl font-black shadow-xl">▼ DOWN ▼</button>
-        </div>
-
-        <!-- RESULT DISPLAY + ACTION BUTTONS (300 trade test, reset) -->
-        <div class="glass-panel rounded-2xl p-3 flex justify-between items-center gap-2 flex-wrap">
-          <div class="flex items-center gap-2 truncate"><div class="w-2 h-2 rounded-full animate-pulse" :class="outcomeType === 'win' ? 'bg-emerald-400' : (outcomeType === 'loss' ? 'bg-rose-500' : 'bg-sky-500')"></div><span class="font-mono text-xs truncate" x-text="outcomeMessage"></span></div>
-          <div class="flex gap-2"><button @click="run300TradeTest()" class="text-xs bg-blue-600/70 hover:bg-blue-500 px-3 py-1 rounded-full">📊 300 Trade Test</button><button @click="resetGame()" class="text-xs bg-white/5 hover:bg-white/15 px-3 py-1 rounded-full">⟳ RESET</button></div>
-        </div>
-        <!-- small footer: current mode & trade count -->
-        <div class="text-center text-gray-500 text-[10px]">
-          <span x-text="chartMode === 'fullReset' ? '⚡ MODE: Full chart refresh after each trade' : '🔮 MODE: Next candle prediction — chart grows with each trade'"></span> &nbsp;|&nbsp; Trades: <span x-text="winCount + loseCount"></span> &nbsp;|&nbsp; Win prob: <span x-text="edgePercent"></span>%
-        </div>
-      </div>
-
-      <!-- MODAL: 300 Trade Test Results (shows equity curve, win rate over time) -->
-      <div x-show="showTestModal" x-cloak class="fixed inset-0 flex items-center justify-center z-50 modal-overlay" style="display: none;" @click.away="showTestModal = false">
-        <div class="bg-gray-900 rounded-2xl max-w-4xl w-full mx-4 p-5 border border-sky-500/30 shadow-2xl max-h-[90vh] overflow-y-auto">
-          <div class="flex justify-between items-center mb-4"><h2 class="text-xl font-bold text-sky-300">📈 300 Trade Sample Test</h2><button @click="showTestModal = false" class="text-gray-400 hover:text-white text-2xl leading-5">&times;</button></div>
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm mb-5">
-            <div class="glass-panel p-2 rounded-xl text-center"><div class="text-gray-400">Final Balance</div><div class="text-xl font-black" x-text="`$${testStats.finalBalance.toFixed(2)}`"></div></div>
-            <div class="glass-panel p-2 rounded-xl text-center"><div class="text-gray-400">Net P/L</div><div class="text-xl font-black" :class="testStats.netPL >= 0 ? 'text-emerald-400' : 'text-rose-400'" x-text="`${testStats.netPL >= 0 ? '+' : ''}$${testStats.netPL.toFixed(2)}`"></div></div>
-            <div class="glass-panel p-2 rounded-xl text-center"><div class="text-gray-400">Wins / Losses</div><div class="text-lg font-mono" x-text="`${testStats.wins} / ${testStats.losses}`"></div></div>
-            <div class="glass-panel p-2 rounded-xl text-center"><div class="text-gray-400">Observed Win Rate</div><div class="text-xl font-black" x-text="testStats.observedWinRate + '%'"></div></div>
-            <div class="glass-panel p-2 rounded-xl text-center"><div class="text-gray-400">Total Wagered</div><div class="text-lg font-mono" x-text="`$${testStats.totalWagered.toFixed(2)}`"></div></div>
-            <div class="glass-panel p-2 rounded-xl text-center"><div class="text-gray-400">Expectancy (per trade)</div><div class="text-lg font-mono" :class="testStats.expectancy >= 0 ? 'text-emerald-400' : 'text-rose-400'" x-text="`$${testStats.expectancy.toFixed(2)}`"></div></div>
-            <div class="glass-panel p-2 rounded-xl text-center col-span-2"><div class="text-gray-400">Edge Used</div><div class="text-lg font-mono text-yellow-400" x-text="testStats.edgeUsed + '%'"></div></div>
-          </div>
-          <!-- Canvas-based charts: equity curve (balance progression) + win rate over time -->
-          <div class="grid md:grid-cols-2 gap-4 mb-4"><div><div class="text-xs uppercase text-sky-300 mb-1">Equity Curve</div><canvas id="equityCanvas" width="500" height="200" style="width:100%; height:auto; background:#0a0e17; border-radius:12px;" class="border border-white/10"></canvas></div><div><div class="text-xs uppercase text-sky-300 mb-1">Win Rate Over Time</div><canvas id="winrateCanvas" width="500" height="200" style="width:100%; height:auto; background:#0a0e17; border-radius:12px;" class="border border-white/10"></canvas></div></div>
-          <div class="text-xs text-gray-400 bg-black/30 p-3 rounded-xl">💡 <strong>Note:</strong> With an edge of <span x-text="testStats.edgeUsed"></span>%, the expected win rate over many trades should approach that value. Short‑term variance always exists — this test shows one possible path of 300 trades.</div>
-          <div class="flex justify-end mt-4"><button @click="showTestModal = false" class="bg-sky-600 hover:bg-sky-500 px-4 py-2 rounded-xl text-sm font-bold">Close</button></div>
+        <!-- RIGHT: share, donate, and fullscreen menu icons -->
+        <div class="flex items-center gap-1 md:gap-2">
+          <!-- Share using Web Share API or copy link -->
+          <button @click="shareApp" class="p-2 rounded-full hover:bg-white/10 transition-all group" aria-label="Share game">
+            <svg class="w-5 h-5 md:w-6 md:h-6 text-sky-300/80 group-hover:text-sky-300 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polygon points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/>
+            </svg>
+          </button>
+          <!-- Donation link - supports the author -->
+          <a href="https://michaelsboost.com/donate" target="_blank" rel="noopener noreferrer" class="donate-pulse flex items-center gap-2 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-400/40 rounded-full pl-2.5 pr-3.5 py-1.5 md:pl-3 md:pr-4 transition-all" aria-label="Support creator">
+            <svg class="w-4 h-4 md:w-5 md:h-5 text-rose-400 fill-current" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+            <span class="text-rose-300 text-xs md:text-sm font-semibold hidden sm:inline-block">Donate</span>
+          </a>
+          <!-- Mobile/desktop menu trigger (three dots) -->
+          <button @click="menuOpen = true" class="p-2 rounded-full hover:bg-white/10 transition-all" aria-label="Open menu">
+            <svg class="w-5 h-5 md:w-6 md:h-6 text-gray-300 hover:text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="5" cy="12" r="1.5" fill="currentColor" stroke="none"/>
+            </svg>
+          </button>
         </div>
       </div>
     </div>
 
-    <!-- Lightweight Charts library + Tailwind helper (external) -->
+    <!-- ========== WAGER CONTROLS ========== -->
+    <!-- Allows manual adjustment, quick preset buttons (10/25/50/100) and +/- stepper -->
+    <div class="glass-panel rounded-2xl p-3 space-y-2">
+      <div class="flex items-center justify-between flex-wrap gap-2"><span class="text-xs font-semibold uppercase tracking-wide text-sky-300">Wager amount</span><div class="flex gap-1"><button @click="setWager(10)" class="bg-white/10 hover:bg-white/20 px-3 py-1 rounded-lg text-xs font-bold">$10</button><button @click="setWager(25)" class="bg-white/10 hover:bg-white/20 px-3 py-1 rounded-lg text-xs font-bold">$25</button><button @click="setWager(50)" class="bg-white/10 hover:bg-white/20 px-3 py-1 rounded-lg text-xs font-bold">$50</button><button @click="setWager(100)" class="bg-white/10 hover:bg-white/20 px-3 py-1 rounded-lg text-xs font-bold">$100</button></div></div>
+      <div class="flex items-center gap-2"><button @click="adjustWager(-5)" class="bg-gray-800 hover:bg-gray-700 w-8 h-8 rounded-full text-lg font-bold">−</button><div class="flex-1"><input type="range" x-model="wager" min="1" :max="balance" step="1" class="w-full" @input="syncWagerFromSlider"></div><button @click="adjustWager(5)" class="bg-gray-800 hover:bg-gray-700 w-8 h-8 rounded-full text-lg font-bold">+</button><input type="number" x-model="wager" @input="validateWagerFromInput" class="w-20 bg-gray-900 border border-gray-700 rounded-xl px-2 py-1 text-right font-mono text-sm"></div>
+    </div>
+
+    <!-- PAYOUT & EDGE (win probability) configuration -->
+    <div class="flex gap-3 flex-wrap md:flex-nowrap">
+      <div class="glass-panel rounded-2xl p-3 flex-1"><div class="flex items-center justify-between gap-2"><span class="text-xs font-semibold text-sky-300">Payout %</span><select x-model="payoutPercent" @change="persistState()" class="bg-gray-900 border border-gray-700 rounded-xl px-2 py-1 font-mono text-xs"><option value="100">100%</option><option value="92">92%</option><option value="88">88%</option><option value="80">80%</option><option value="70">70%</option><option value="60">60%</option><option value="50">50%</option></select></div><div class="text-[10px] text-gray-400 mt-1">Win → + <span x-text="payoutPercent"></span>%</div></div>
+      <!-- Edge = win probability (simulated). The higher the edge, the more likely you win -->
+      <div class="glass-panel rounded-2xl p-3 flex-1"><div class="flex items-center justify-between gap-2"><span class="text-xs font-semibold text-sky-300">Edge (win prob)</span><span class="text-xs font-mono bg-black/40 px-2 py-0.5 rounded-full" x-text="edgePercent + '%'"></span></div><input type="range" x-model="edgePercent" min="50" max="90" step="1" class="w-full mt-1" @change="persistState()"><div class="flex justify-between text-[10px] text-gray-400 mt-1"><span>50% fair</span><span>70%</span><span>90% high edge</span></div></div>
+    </div>
+
+    <!-- CHART MODES: full reset vs next candle (extends chart after each trade) -->
+    <div class="grid grid-cols-2 gap-3">
+      <button @click="setChartMode('fullReset')" :class="{'mode-active': chartMode === 'fullReset'}" class="text-xs md:text-sm font-semibold px-3 py-1.5 rounded-xl transition-all bg-gray-800/60 border border-gray-700 hover:border-sky-500">🔄 Full Refresh<br><span class="text-[9px] text-gray-400">new chart each trade</span></button>
+      <button @click="setChartMode('nextCandle')" :class="{'mode-active': chartMode === 'nextCandle'}" class="text-xs md:text-sm font-semibold px-3 py-1.5 rounded-xl transition-all bg-gray-800/60 border border-gray-700 hover:border-sky-500">✨ Next Candle<br><span class="text-[9px] text-gray-400">extend + predict</span></button>
+    </div>
+
+    <!-- LIVE CHART container: rendered by Lightweight Charts library -->
+    <div class="chart-wrapper flex-1 min-h-[280px] rounded-2xl overflow-hidden border border-white/10 shadow-inner">
+      <div id="trading-chart" style="width: 100%; height: 100%;"></div>
+    </div>
+
+    <!-- TRADE BUTTONS UP/DOWN - main game action -->
+    <div class="grid grid-cols-2 gap-3">
+      <button @click="placeBet('up')" :disabled="!canBet()" class="up-btn bg-gradient-to-br from-emerald-600 to-green-700 hover:from-emerald-500 hover:to-green-600 disabled:opacity-40 disabled:cursor-not-allowed rounded-xl py-3 text-xl font-black shadow-xl transition-all">▲ UP ▲</button>
+      <button @click="placeBet('down')" :disabled="!canBet()" class="down-btn bg-gradient-to-br from-rose-700 to-red-800 hover:from-rose-600 hover:to-red-700 disabled:opacity-40 disabled:cursor-not-allowed rounded-xl py-3 text-xl font-black shadow-xl transition-all">▼ DOWN ▼</button>
+    </div>
+
+    <!-- SKIP (next candle mode) : adds a new candle without risking balance -->
+    <div x-show="chartMode === 'nextCandle'" x-cloak class="w-full">
+      <button @click="skipToNextCandle()" :disabled="!chart || !candlesData.length" class="skip-btn w-full bg-gradient-to-r from-indigo-600 to-purple-700 hover:from-indigo-500 hover:to-purple-600 disabled:opacity-40 disabled:cursor-not-allowed rounded-xl py-2 text-md font-bold shadow-lg transition-all flex items-center justify-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"/></svg> SKIP CANDLE (Random Direction)</button>
+      <div class="text-center text-[10px] text-gray-400 mt-1">Skip adds new candle with random direction — no money risked</div>
+    </div>
+    
+    <!-- RESULT PANEL & QUICK ACTIONS (300 trade test & reset) -->
+    <div class="glass-panel rounded-2xl p-3 flex justify-between items-center gap-2 flex-wrap">
+      <div class="flex items-center gap-2 truncate"><div class="w-2 h-2 rounded-full animate-pulse" :class="outcomeType==='win'?'bg-emerald-400':(outcomeType==='loss'?'bg-rose-500':'bg-sky-500')"></div><span class="font-mono text-xs truncate" x-text="outcomeMessage"></span></div>
+      <div class="flex gap-2"><button @click="run300TradeTest()" class="text-xs bg-blue-600/70 hover:bg-blue-500 px-3 py-1 rounded-full transition">📊 300 Trade Test</button><button @click="resetGame()" class="text-xs bg-white/5 hover:bg-white/15 px-3 py-1 rounded-full transition">⟳ RESET</button></div>
+    </div>
+    
+    <!-- Footer meta info: current mode, trade counter, edge, donate teaser -->
+    <div class="text-center text-gray-500 text-[10px] flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
+      <span x-text="chartMode==='fullReset'?'⚡ MODE: Full chart refresh':'🔮 MODE: Next candle prediction'"></span> | <div>Trades: <span x-text="winCount+loseCount"></span></div> | <div>Edge: <span x-text="edgePercent"></span>%</div> | <a href="https://michaelsboost.com/donate/" target="_blank" class="inline-flex items-center gap-1"><svg class="w-3 h-3 text-rose-400" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>Support the dev → Donate</a>
+    </div>
+  </div>
+
+  <!-- █████  FULLSCREEN MENU (mobile friendly with animations)  █████ -->
+  <div x-show="menuOpen" x-cloak x-transition.opacity.duration.200ms class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl" style="display: none;" @click.away="menuOpen = false">
+    <div class="relative w-full max-w-md bg-gray-900/95 rounded-3xl shadow-2xl border border-sky-500/40 overflow-hidden" @click.stop>
+      <div class="flex justify-between items-center p-5 border-b border-white/10">
+        <h2 class="text-xl font-bold bg-gradient-to-r from-sky-300 to-blue-400 bg-clip-text text-transparent">Menu</h2>
+        <button @click="menuOpen = false" class="text-gray-400 hover:text-white text-2xl w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/10 transition">&times;</button>
+      </div>
+      <div class="p-5 space-y-3">
+        <button @click="resetGame(); menuOpen = false" class="flex w-full items-center justify-between gap-3 bg-white/5 hover:bg-sky-500/20 p-4 rounded-xl transition group">
+          <span class="flex items-center gap-3 text-base font-semibold"><svg class="w-5 h-5 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>Reset Game</span>
+          <span class="text-xs text-gray-400 group-hover:text-sky-300">⟳</span>
+        </button>
+        <button @click="run300TradeTest(); menuOpen = false" class="flex w-full items-center justify-between gap-3 bg-white/5 hover:bg-amber-500/20 p-4 rounded-xl transition group">
+          <span class="flex items-center gap-3 text-base font-semibold"><svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>300 Trade Test</span>
+          <span class="text-xs text-gray-400 group-hover:text-amber-300">📊</span>
+        </button>
+        <a href="https://michaelsboost.com/donate/" target="_blank" rel="noopener noreferrer" class="flex w-full items-center justify-between gap-3 bg-white/5 hover:bg-rose-500/20 p-4 rounded-xl transition group">
+          <span class="flex items-center gap-3 text-base font-semibold"><svg class="w-5 h-5 text-rose-400 fill-current" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>Support the Creator</span>
+          <span class="text-xs text-gray-400 group-hover:text-rose-300">❤️</span>
+        </a>
+        <div class="border-t border-white/10 my-2"></div>
+        <div class="text-[12px] text-gray-400 bg-black/30 p-3 rounded-xl text-center">Edge = win probability | Auto-saved locally</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- █████  300 TRADE TEST MODAL: shows equity curve, observed win rate, performance stats  █████ -->
+  <div x-show="showTestModal" x-cloak class="fixed inset-0 flex items-center justify-center z-50 p-2 sm:p-4" style="display: none;" @click.away="showTestModal = false">
+    <div class="bg-gray-900/95 backdrop-blur-2xl rounded-2xl w-full max-w-4xl border border-sky-500/50 shadow-2xl overflow-y-auto max-h-[90vh] mx-auto">
+      <div class="sticky top-0 z-10 bg-gray-900/90 backdrop-blur-md rounded-t-2xl border-b border-white/10 px-4 py-3 flex justify-between items-center">
+        <h2 class="text-lg sm:text-xl font-bold text-sky-300 flex items-center gap-2">
+          <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+          <span>300 Trade Sample Test</span>
+        </h2>
+        <button @click="showTestModal = false" class="text-gray-400 hover:text-white text-2xl leading-5 w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/10 transition">&times;</button>
+      </div>
+      
+      <div class="p-4 sm:p-5 space-y-5">
+        <!-- Key test metrics cards -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
+          <div class="glass-panel p-2 rounded-xl text-center"><div class="text-gray-400 text-[11px] sm:text-xs">Final Balance</div><div class="text-base sm:text-xl font-black" x-text="`$${testStats.finalBalance.toFixed(2)}`"></div></div>
+          <div class="glass-panel p-2 rounded-xl text-center"><div class="text-gray-400 text-[11px] sm:text-xs">Net P/L</div><div class="text-base sm:text-xl font-black" :class="testStats.netPL >= 0 ? 'text-emerald-400' : 'text-rose-400'" x-text="`${testStats.netPL >= 0 ? '+' : ''}$${testStats.netPL.toFixed(2)}`"></div></div>
+          <div class="glass-panel p-2 rounded-xl text-center"><div class="text-gray-400 text-[11px] sm:text-xs">Wins / Losses</div><div class="text-sm sm:text-lg font-mono font-bold" x-text="`${testStats.wins} / ${testStats.losses}`"></div></div>
+          <div class="glass-panel p-2 rounded-xl text-center"><div class="text-gray-400 text-[11px] sm:text-xs">Obs. Win Rate</div><div class="text-base sm:text-xl font-black" x-text="testStats.observedWinRate + '%'"></div></div>
+          <div class="glass-panel p-2 rounded-xl text-center"><div class="text-gray-400 text-[11px] sm:text-xs">Total Wagered</div><div class="text-sm sm:text-lg font-mono" x-text="`$${testStats.totalWagered.toFixed(2)}`"></div></div>
+          <div class="glass-panel p-2 rounded-xl text-center"><div class="text-gray-400 text-[11px] sm:text-xs">Expectancy / trade</div><div class="text-sm sm:text-lg font-mono" :class="testStats.expectancy >= 0 ? 'text-emerald-400' : 'text-rose-400'" x-text="`$${testStats.expectancy.toFixed(2)}`"></div></div>
+          <div class="glass-panel p-2 rounded-xl text-center col-span-2"><div class="text-gray-400 text-[11px] sm:text-xs">Edge Used</div><div class="text-base sm:text-xl font-mono text-yellow-400" x-text="testStats.edgeUsed + '%'"></div></div>
+        </div>
+        
+        <!-- Canvas charts: equity curve + rolling win rate -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div><div class="text-xs uppercase text-sky-300 mb-1 flex items-center gap-1"><span class="inline-block w-2 h-2 rounded-full bg-sky-400"></span>Equity curve</div><div class="bg-black/30 rounded-xl p-1 border border-white/10"><canvas id="equityCanvas" width="500" height="200" style="width: 100%; height: auto; background:#0a0e17; border-radius: 12px; max-height: 200px;"></canvas></div></div>
+          <div><div class="text-xs uppercase text-sky-300 mb-1 flex items-center gap-1"><span class="inline-block w-2 h-2 rounded-full bg-amber-400"></span>Win rate over time</div><div class="bg-black/30 rounded-xl p-1 border border-white/10"><canvas id="winrateCanvas" width="500" height="200" style="width: 100%; height: auto; background:#0a0e17; border-radius: 12px; max-height: 200px;"></canvas></div></div>
+        </div>
+        
+        <div class="text-xs text-gray-400 bg-black/40 p-3 rounded-xl leading-relaxed">💡 <strong class="text-sky-300">Insight:</strong> With an edge of <span x-text="testStats.edgeUsed"></span>%, the expected win rate over many trades should approach that value. Short‑term variance is normal — this test shows one simulated path of 300 trades.</div>
+        <div class="flex justify-end"><button @click="showTestModal = false" class="bg-sky-600 hover:bg-sky-500 px-5 py-2 rounded-xl text-sm font-bold transition w-full sm:w-auto">Close</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
     <script src="https://michaelsboost.com/TailwindCSSMod/tailwind-mod.min.js"></script>
+    <script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
     <script>
-      /**
-       * tradingApp() – Alpine.js data store
-       * Contains all game logic, chart management, two distinct chart modes.
-       */
-      function tradingApp() {
-        return {
-          // ------ Reactive properties ------
-          balance: 1000.00,
-          wager: 10,
-          winCount: 0,
-          loseCount: 0,
-          payoutPercent: 92,
-          edgePercent: 50,
-          outcomeMessage: '⚡ Choose chart mode (Full Refresh / Next Candle) and tap UP/DOWN',
-          outcomeType: 'idle',
-          chart: null,
-          candleSeries: null,
-          candlesData: [],
-          chartMode: 'fullReset',    // 'fullReset' = brand new random chart after each trade
-                                    // 'nextCandle' = extend chart with a single new candle after trade
-          showTestModal: false,
-          testStats: {
-            startingBalance: 0, finalBalance: 0, netPL: 0, wins: 0, losses: 0,
-            observedWinRate: 0, totalWagered: 0, expectancy: 0, edgeUsed: 50,
-            balanceHistory: [], winRateHistory: []
-          },
-          
-          // *****************************
-          // CHART GENERATION & HELPERS
-          // *****************************
-          
-          /**
-           * generateRandomCandles – creates a synthetic candlestick series
-           */
-          generateRandomCandles(num = 55, startPrice = 100) {
-            let candles = [], prevClose = startPrice;
-            for (let i = 0; i < num; i++) {
-              let changePct = (Math.random() - 0.5) * 0.045;  // random walk up/down
-              let close = +(prevClose * (1 + changePct)).toFixed(4);
-              close = Math.max(close, 0.5);
-              let open = prevClose;
-              let high = +(Math.max(open, close) * (1 + Math.random() * 0.015)).toFixed(4);
-              let low = +(Math.min(open, close) * (1 - Math.random() * 0.012)).toFixed(4);
-              candles.push({ time: i, open: +open.toFixed(4), high, low, close: +close.toFixed(4) });
-              prevClose = close;
-            }
-            return candles;
-          },
-          
-          /**
-           * updateChartFromData – applies current candlesData to the candlestick series
-           * and auto‑fits the chart view.
-           */
-          updateChartFromData() {
-            if (!this.candleSeries) return;
-            this.candleSeries.setData(this.candlesData);
-            if (this.chart) this.chart.timeScale().fitContent();
-          },
-          
-          /**
-           * refreshFullChart – replaces entire dataset with fresh random candles.
-           * Used in 'fullReset' mode after every trade.
-           */
-          refreshFullChart() {
-            this.candlesData = this.generateRandomCandles(55, 95 + Math.random() * 20);
-            this.updateChartFromData();
-          },
-          
-          /**
-           * generateNextCandle – creates a single new candle based on prediction outcome.
-           * This ensures the visual direction matches the win/loss result:
-           *   - Win + predicted UP   → bullish candle (close > open)
-           *   - Win + predicted DOWN → bearish candle
-           *   - Loss + predicted UP  → bearish candle (opposite direction)
-           *   - Loss + predicted DOWN→ bullish candle
-           */
-          generateNextCandle(prediction, isWin, prevClose) {
-            const targetUp = (prediction === 'up' && isWin) || (prediction === 'down' && !isWin);
-            let open = prevClose;
-            let close;
-            let absMovePercent = 0.002 + Math.random() * 0.038; // 0.2% to 3.8% price move
-            if (targetUp) {
-              close = open * (1 + absMovePercent);
-            } else {
-              close = open * (1 - absMovePercent);
-            }
-            close = Math.max(0.25, +close.toFixed(4));
-            let high = +(Math.max(open, close) * (1 + Math.random() * 0.018)).toFixed(4);
-            let low = +(Math.min(open, close) * (1 - Math.random() * 0.014)).toFixed(4);
-            high = Math.max(high, open, close);
-            low = Math.min(low, open, close);
-            const newTime = this.candlesData.length; // sequential index
-            return { time: newTime, open: +open.toFixed(4), high, low, close: +close.toFixed(4) };
-          },
-          
-          /**
-           * setChartMode – switches between 'fullReset' and 'nextCandle'.
-           * Does NOT reset the chart data immediately, but the next bet will use the new mode.
-           */
-          setChartMode(mode) {
-            this.chartMode = mode;
-            this.outcomeMessage = `🎮 Mode switched to ${mode === 'fullReset' ? 'Full Refresh (new chart each trade)' : 'Next Candle (extend chart + predict)'}`;
-            setTimeout(() => { if (this.chart) this.chart.timeScale().fitContent(); }, 10);
-          },
-          
-          // *****************************
-          // CORE TRADING ENGINE
-          // *****************************
-          
-          /**
-           * placeBet – executes a binary trade based on current mode.
-           * Steps:
-           *   1. Validate balance & wager.
-           *   2. Determine win/loss using edgePercent (random probability).
-           *   3. Update balance and counters (winCount/loseCount).
-           *   4. Update chart according to active mode:
-           *      - 'fullReset': completely new random chart series.
-           *      - 'nextCandle': extend existing chart with ONE candle whose direction visually reflects outcome.
-           *   5. Display outcome message.
-           */
-          placeBet(prediction) {
-            if (!this.canBet()) {
-              this.outcomeMessage = '❌ Insufficient balance or invalid wager';
-              this.outcomeType = 'idle';
-              return;
-            }
-            const wageredAmount = this.wager;
-            // Random outcome weighted by edgePercent (win probability)
-            const isWin = Math.random() < (this.edgePercent / 100);
-            const multiplier = this.payoutPercent / 100;
-            
-            let winAmount = 0;
-            if (isWin) {
-              winAmount = wageredAmount * multiplier;
-              this.balance += winAmount;
-              this.winCount++;
-            } else {
-              this.balance -= wageredAmount;
-              this.loseCount++;
-            }
-            
-            // ---------- CHART MODE SPECIFIC HANDLING ----------
-            if (this.chartMode === 'fullReset') {
-              // Mode 1: discard old chart, generate fully new candles (fresh random walk)
-              this.candlesData = this.generateRandomCandles(55, 95 + Math.random() * 20);
-              this.updateChartFromData();
-              if (isWin) {
-                this.outcomeMessage = `🎉 WIN +$${winAmount.toFixed(2)} (${this.payoutPercent}% payout) → $${this.balance.toFixed(2)} [Full Refresh Mode]`;
-              } else {
-                this.outcomeMessage = `📉 LOSS -$${wageredAmount.toFixed(2)} → $${this.balance.toFixed(2)} [Full Refresh Mode]`;
-              }
-            } 
-            else if (this.chartMode === 'nextCandle') {
-              // Mode 2: dynamic growth – chart must exist, if empty generate base series
-              if (!this.candlesData.length) {
-                this.candlesData = this.generateRandomCandles(55, 100);
-              }
-              const prevCandle = this.candlesData[this.candlesData.length - 1];
-              const prevClose = prevCandle.close;
-              // Create a candle that visually matches the prediction outcome (bullish/bearish)
-              const newCandle = this.generateNextCandle(prediction, isWin, prevClose);
-              this.candlesData.push(newCandle);
-              this.updateChartFromData();
-              
-              if (isWin) {
-                this.outcomeMessage = `🎉 WIN +$${winAmount.toFixed(2)} (${this.payoutPercent}% payout) → $${this.balance.toFixed(2)} | Next candle ${prediction === 'up' ? '📈 BULLISH' : '📉 BEARISH'} (matched your ${prediction} call)`;
-              } else {
-                this.outcomeMessage = `📉 LOSS -$${wageredAmount.toFixed(2)} → $${this.balance.toFixed(2)} | Next candle went ${prediction === 'up' ? '🔻 BEARISH' : '📈 BULLISH'} (opposite to your ${prediction} call)`;
-              }
-            }
-            
-            this.outcomeType = isWin ? 'win' : 'loss';
-            
-            // Safe guard: wager cannot exceed remaining balance
-            if (this.wager > this.balance && this.balance > 0) this.wager = Math.max(1, Math.floor(this.balance));
-            if (this.balance <= 0) this.outcomeMessage += ' 💀 GAME OVER — press RESET';
-          },
-          
-          /**
-           * canBet – checks if balance > 0, wager within balance and chart loaded.
-           */
-          canBet() {
-            return this.balance > 0 && this.wager > 0 && this.wager <= this.balance && this.chart !== null;
-          },
-          
-          // ------ Wager helpers ------
-          adjustWager(delta) { let newVal = this.wager + delta; if (newVal < 1) newVal = 1; if (newVal > this.balance) newVal = this.balance; this.wager = Math.floor(newVal); },
-          syncWagerFromSlider(e) { let val = parseFloat(e.target.value); if (isNaN(val)) val = 1; val = Math.min(this.balance, Math.max(1, val)); this.wager = Math.floor(val); },
-          validateWagerFromInput() { let val = parseFloat(this.wager); if (isNaN(val)) val = 1; val = Math.min(this.balance, Math.max(1, val)); this.wager = Math.floor(val); },
-          setWager(amount) { this.wager = Math.min(this.balance, Math.max(1, amount)); },
-          winRate() { const total = this.winCount + this.loseCount; return total === 0 ? '0%' : ((this.winCount / total) * 100).toFixed(1) + '%'; },
-          
-          /**
-           * resetGame – restores all default values, generates fresh chart based on current mode.
-           */
-          resetGame() {
-            this.balance = 1000;
-            this.winCount = 0;
-            this.loseCount = 0;
-            this.wager = 10;
-            this.payoutPercent = 92;
-            this.edgePercent = 50;
-            // Reset chart using current mode (both modes get fresh random chart on reset)
-            this.candlesData = this.generateRandomCandles(55, 100);
-            this.updateChartFromData();
-            this.outcomeMessage = '🔄 Game fully reset. Edge = 50%. Mode: ' + (this.chartMode === 'fullReset' ? 'Full Refresh' : 'Next Candle');
-            this.outcomeType = 'idle';
-            if (this.wager > this.balance) this.wager = this.balance;
-          },
-          
-          // *****************************
-          // CHART INITIALIZATION & RESIZE
-          // *****************************
-          initChartAndRandomize() {
-            setTimeout(() => {
-              const container = document.getElementById('trading-chart');
-              if (!container) return;
-              this.chart = LightweightCharts.createChart(container, {
-                layout: { background: { color: '#0a0e17' }, textColor: '#d1d5db', fontSize: 10 },
-                grid: { vertLines: { color: '#1f2a3e' }, horzLines: { color: '#1f2a3e' } },
-                crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
-                rightPriceScale: { borderColor: '#2a3a55' },
-                timeScale: { borderColor: '#2a3a55', timeVisible: true },
-                width: container.clientWidth,
-                height: container.clientHeight,
-              });
-              this.candleSeries = this.chart.addCandlestickSeries({
-                upColor: '#26a69a', downColor: '#ef5350',
-                borderDownColor: '#ef5350', borderUpColor: '#26a69a',
-                wickDownColor: '#ef5350', wickUpColor: '#26a69a',
-              });
-              this.candlesData = this.generateRandomCandles(55, 100);
-              this.candleSeries.setData(this.candlesData);
-              this.chart.timeScale().fitContent();
-              window.addEventListener('resize', () => this.resizeChart());
-              new ResizeObserver(() => this.resizeChart()).observe(container);
-              this.outcomeMessage = '🔥 Ready! Select chart mode and trade.';
-            }, 30);
-          },
-          
-          resizeChart() {
-            if (this.chart) {
-              const container = document.getElementById('trading-chart');
-              if (container) {
-                this.chart.applyOptions({ width: container.clientWidth, height: container.clientHeight });
-                this.chart.timeScale().fitContent();
-              }
-            }
-          },
-          
-          // *****************************
-          // 300-TRADE SIMULATION & CANVAS DRAWING
-          // *****************************
-          /**
-           * run300TradeTest – runs a Monte Carlo style simulation of 300 trades
-           * using the current wager, payout, and edge. Does NOT alter actual game state,
-           * but shows statistical outcomes, equity curve and win rate evolution.
-           */
-          run300TradeTest() {
-            const startBalance = this.balance;
-            let currentBalance = startBalance;
-            let wins = 0, losses = 0;
-            const balanceHistory = [startBalance];
-            const winRateHistory = [0];
-            const wagerAmount = this.wager;
-            const payoutMult = this.payoutPercent / 100;
-            const winProb = this.edgePercent / 100;
-            const totalTrades = 300;
-            for (let i = 1; i <= totalTrades; i++) {
-              const isWinSim = Math.random() < winProb;
-              if (isWinSim) { currentBalance += wagerAmount * payoutMult; wins++; } 
-              else { currentBalance -= wagerAmount; losses++; }
-              balanceHistory.push(currentBalance);
-              winRateHistory.push((wins / i) * 100);
-            }
-            const finalBalance = currentBalance;
-            const netPL = finalBalance - startBalance;
-            const observedWinRate = (wins / totalTrades) * 100;
-            const totalWagered = wagerAmount * totalTrades;
-            const expectancy = netPL / totalTrades;
-            this.testStats = {
-              startingBalance: startBalance, finalBalance, netPL, wins, losses,
-              observedWinRate: observedWinRate.toFixed(2), totalWagered, expectancy,
-              edgeUsed: this.edgePercent, balanceHistory, winRateHistory
-            };
-            this.showTestModal = true;
-            // Wait for DOM rendering then draw canvas charts
-            setTimeout(() => { this.drawEquityCurve(); this.drawWinRateCurve(); }, 50);
-          },
-          
-          drawEquityCurve() {
-            const canvas = document.getElementById('equityCanvas');
-            if (!canvas) return;
-            const ctx = canvas.getContext('2d');
-            const w = canvas.clientWidth, h = canvas.clientHeight;
-            canvas.width = w; canvas.height = h;
-            const data = this.testStats.balanceHistory;
-            if (!data?.length) return;
-            const minVal = Math.min(...data), maxVal = Math.max(...data), range = maxVal - minVal || 1;
-            const stepX = w / (data.length - 1);
-            ctx.clearRect(0, 0, w, h);
-            ctx.beginPath(); ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 2;
-            for (let i = 0; i < data.length; i++) {
-              const x = i * stepX, y = h - ((data[i] - minVal) / range) * h;
-              if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-            }
-            ctx.stroke();
-            ctx.fillStyle = '#a0aec0'; ctx.font = '8px monospace';
-            ctx.fillText(`Start: $${this.testStats.startingBalance.toFixed(0)}`, 5, 15);
-            ctx.fillStyle = '#38bdf8'; ctx.fillText(`End: $${this.testStats.finalBalance.toFixed(0)}`, w-65, h-5);
-          },
-          
-          drawWinRateCurve() {
-            const canvas = document.getElementById('winrateCanvas');
-            if (!canvas) return;
-            const ctx = canvas.getContext('2d');
-            const w = canvas.clientWidth, h = canvas.clientHeight;
-            canvas.width = w; canvas.height = h;
-            const data = this.testStats.winRateHistory;
-            if (!data?.length) return;
-            const stepX = w / (data.length - 1);
-            ctx.clearRect(0, 0, w, h);
-            ctx.beginPath(); ctx.strokeStyle = '#f59e0b'; ctx.lineWidth = 2;
-            for (let i = 0; i < data.length; i++) {
-              const x = i * stepX, y = h - (data[i] / 100) * h;
-              if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-            }
-            ctx.stroke();
-            ctx.beginPath(); ctx.strokeStyle = '#4ade80'; ctx.lineWidth = 1; ctx.setLineDash([5, 5]);
-            const yEdge = h - (this.testStats.edgeUsed / 100) * h;
-            ctx.moveTo(0, yEdge); ctx.lineTo(w, yEdge); ctx.stroke();
-            ctx.setLineDash([]);
-            ctx.fillStyle = '#a0aec0'; ctx.font = '8px monospace';
-            ctx.fillText(`Edge ${this.testStats.edgeUsed}%`, w-55, yEdge-2);
-            ctx.fillStyle = '#f59e0b'; ctx.fillText(`Final: ${this.testStats.observedWinRate}%`, w-65, 15);
-          }
-        };
+// --------------------------------------------------------------
+//  TRADING APP CORE LOGIC (Alpine.js component)
+//  - Manages balance, trades, chart rendering, local storage.
+//  - Two chart modes: 'fullReset' (new random candles each bet)
+//    and 'nextCandle' (predict direction, extend the chart).
+//  - Edge = simulated win probability (50% to 90%), payout% configurable.
+//  - 300‑trade backtest modal with equity/win‑rate visualization.
+// --------------------------------------------------------------
+function tradingApp() {
+  return {
+    // Reactive game state
+    balance: 1000.00,
+    wager: 10,
+    winCount: 0,
+    loseCount: 0,
+    payoutPercent: 92,
+    edgePercent: 50,
+    outcomeMessage: '⚡ Ready — choose direction',
+    outcomeType: 'idle',
+    chart: null,
+    candleSeries: null,
+    candlesData: [],
+    chartMode: 'fullReset',
+    showTestModal: false,
+    menuOpen: false,
+    STORAGE_KEY: 'TradingGameState',
+    testStats: {
+      startingBalance: 0,
+      finalBalance: 0,
+      netPL: 0,
+      wins: 0,
+      losses: 0,
+      observedWinRate: 0,
+      totalWagered: 0,
+      expectancy: 0,
+      edgeUsed: 50,
+      balanceHistory: [],
+      winRateHistory: []
+    },
+    
+    // ------------------------------------ PERSISTENCE ------------------------------------
+    persistState() {
+      try {
+        localStorage.setItem(this.STORAGE_KEY, JSON.stringify({
+          balance: this.balance,
+          wager: this.wager,
+          winCount: this.winCount,
+          loseCount: this.loseCount,
+          payoutPercent: this.payoutPercent,
+          edgePercent: this.edgePercent,
+          chartMode: this.chartMode,
+          candlesData: this.candlesData,
+          outcomeMessage: this.outcomeMessage,
+          outcomeType: this.outcomeType
+        }));
+      } catch(e) {}
+    },
+    
+    loadStateFromStorage() {
+      let raw = localStorage.getItem(this.STORAGE_KEY);
+      if(!raw) return false;
+      try {
+        let s = JSON.parse(raw);
+        if(typeof s.balance === 'number') this.balance = s.balance;
+        if(typeof s.wager === 'number') this.wager = s.wager;
+        if(typeof s.winCount === 'number') this.winCount = s.winCount;
+        if(typeof s.loseCount === 'number') this.loseCount = s.loseCount;
+        if(typeof s.payoutPercent === 'number') this.payoutPercent = s.payoutPercent;
+        if(typeof s.edgePercent === 'number') this.edgePercent = s.edgePercent;
+        if(s.chartMode === 'fullReset' || s.chartMode === 'nextCandle') this.chartMode = s.chartMode;
+        if(Array.isArray(s.candlesData) && s.candlesData.length) this.candlesData = s.candlesData;
+        if(typeof s.outcomeMessage === 'string') this.outcomeMessage = s.outcomeMessage;
+        if(['win', 'loss', 'idle'].includes(s.outcomeType)) this.outcomeType = s.outcomeType;
+        if(this.wager > this.balance && this.balance > 0) this.wager = Math.max(1, Math.floor(this.balance));
+        return true;
+      } catch(e) {
+        return false;
       }
+    },
+    
+    // ------------------------------------ CHART DATA GENERATION ------------------------------------
+    generateRandomCandles(num = 55, startPrice = 100) {
+      let candles = [];
+      let prev = startPrice;
+      for(let i = 0; i < num; i++) {
+        let change = (Math.random() - 0.5) * 0.045;
+        let close = +(prev * (1 + change)).toFixed(4);
+        close = Math.max(close, 0.5);
+        let high = +(Math.max(prev, close) * (1 + Math.random() * 0.015)).toFixed(4);
+        let low = +(Math.min(prev, close) * (1 - Math.random() * 0.012)).toFixed(4);
+        candles.push({
+          time: i,
+          open: +prev.toFixed(4),
+          high: high,
+          low: low,
+          close: close
+        });
+        prev = close;
+      }
+      return candles;
+    },
+    
+    updateChartFromData() {
+      if(this.candleSeries) {
+        if(!this.candlesData.length) this.candlesData = this.generateRandomCandles(55, 100);
+        this.candleSeries.setData(this.candlesData);
+        if(this.chart) this.chart.timeScale().fitContent();
+      }
+    },
+    
+    // For "Next Candle" mode: generate one candle based on prediction & win outcome
+    generateNextCandle(prediction, isWin, prevClose) {
+      let targetUp = (prediction === 'up' && isWin) || (prediction === 'down' && !isWin);
+      let move = 0.002 + Math.random() * 0.038;
+      let close = targetUp ? prevClose * (1 + move) : prevClose * (1 - move);
+      close = Math.max(0.25, +close.toFixed(4));
+      let high = +(Math.max(prevClose, close) * (1 + Math.random() * 0.018)).toFixed(4);
+      let low = +(Math.min(prevClose, close) * (1 - Math.random() * 0.014)).toFixed(4);
+      return {
+        time: this.candlesData.length,
+        open: +prevClose.toFixed(4),
+        high: high,
+        low: low,
+        close: close
+      };
+    },
+    
+    generateRandomCandle(prevClose) {
+      let up = Math.random() < 0.5;
+      let move = 0.002 + Math.random() * 0.042;
+      let close = up ? prevClose * (1 + move) : prevClose * (1 - move);
+      close = Math.max(0.25, +close.toFixed(4));
+      let high = +(Math.max(prevClose, close) * (1 + Math.random() * 0.018)).toFixed(4);
+      let low = +(Math.min(prevClose, close) * (1 - Math.random() * 0.014)).toFixed(4);
+      return {
+        time: this.candlesData.length,
+        open: +prevClose.toFixed(4),
+        high: high,
+        low: low,
+        close: close
+      };
+    },
+    
+    skipToNextCandle() {
+      if(this.chartMode !== 'nextCandle') {
+        this.outcomeMessage = 'Skip only in Next Candle Mode';
+        return;
+      }
+      if(!this.candlesData.length) this.candlesData = this.generateRandomCandles(20, 100);
+      let last = this.candlesData[this.candlesData.length - 1];
+      let newCandle = this.generateRandomCandle(last.close);
+      this.candlesData.push(newCandle);
+      this.updateChartFromData();
+      this.outcomeMessage = `⏩ Skipped → ${newCandle.close > newCandle.open ? '📈 BULLISH' : '📉 BEARISH'} (no balance change)`;
+      this.outcomeType = 'idle';
+      this.persistState();
+    },
+    
+    // Chart mode switching
+    setChartMode(mode) {
+      this.chartMode = mode;
+      this.outcomeMessage = `Mode: ${mode === 'fullReset' ? 'Full Refresh' : 'Next Candle'}`;
+      if(this.chart) this.chart.timeScale().fitContent();
+      this.persistState();
+    },
+    
+    // ------------------------------------ CORE TRADING LOGIC ------------------------------------
+    placeBet(prediction) {
+      if(!this.canBet()) {
+        this.outcomeMessage = '❌ Insufficient balance';
+        return;
+      }
+      let wagerAmt = this.wager;
+      let isWin = Math.random() < (this.edgePercent / 100);   // Edge = probability of winning
+      let multiplier = this.payoutPercent / 100;
+      let winAmount = 0;
+      if(isWin) {
+        winAmount = wagerAmt * multiplier;
+        this.balance += winAmount;
+        this.winCount++;
+      } else {
+        this.balance -= wagerAmt;
+        this.loseCount++;
+      }
+      
+      // Update chart based on selected mode
+      if(this.chartMode === 'fullReset') {
+        this.candlesData = this.generateRandomCandles(55, 95 + Math.random() * 20);
+        this.updateChartFromData();
+        this.outcomeMessage = isWin ? `🎉 WIN +$${winAmount.toFixed(2)} → $${this.balance.toFixed(2)}` : `📉 LOSS -$${wagerAmt.toFixed(2)} → $${this.balance.toFixed(2)}`;
+      } else {
+        let prevClose = this.candlesData[this.candlesData.length - 1].close;
+        let newCandle = this.generateNextCandle(prediction, isWin, prevClose);
+        this.candlesData.push(newCandle);
+        this.updateChartFromData();
+        this.outcomeMessage = isWin ? `🎉 WIN +$${winAmount.toFixed(2)} → $${this.balance.toFixed(2)}` : `📉 LOSS -$${wagerAmt.toFixed(2)} → $${this.balance.toFixed(2)}`;
+      }
+      this.outcomeType = isWin ? 'win' : 'loss';
+      if(this.wager > this.balance && this.balance > 0) this.wager = Math.max(1, Math.floor(this.balance));
+      if(this.balance <= 0) this.outcomeMessage += ' 💀 GAME OVER — press RESET';
+      this.persistState();
+    },
+    
+    canBet() {
+      return this.balance > 0 && this.wager > 0 && this.wager <= this.balance && this.chart !== null;
+    },
+    
+    // Wager helpers
+    adjustWager(delta) {
+      let v = this.wager + delta;
+      if(v < 1) v = 1;
+      if(v > this.balance) v = this.balance;
+      this.wager = Math.floor(v);
+      this.persistState();
+    },
+    
+    syncWagerFromSlider(e) {
+      let v = parseFloat(e.target.value);
+      if(isNaN(v)) v = 1;
+      v = Math.min(this.balance, Math.max(1, v));
+      this.wager = Math.floor(v);
+      this.persistState();
+    },
+    
+    validateWagerFromInput() {
+      let v = parseFloat(this.wager);
+      if(isNaN(v)) v = 1;
+      v = Math.min(this.balance, Math.max(1, v));
+      this.wager = Math.floor(v);
+      this.persistState();
+    },
+    
+    setWager(amount) {
+      this.wager = Math.min(this.balance, Math.max(1, amount));
+      this.persistState();
+    },
+    
+    winRate() {
+      let t = this.winCount + this.loseCount;
+      return t === 0 ? '0%' : ((this.winCount / t) * 100).toFixed(1) + '%';
+    },
+    
+    resetGame() {
+      this.balance = 1000;
+      this.winCount = 0;
+      this.loseCount = 0;
+      this.wager = 10;
+      this.payoutPercent = 92;
+      this.edgePercent = 50;
+      this.candlesData = this.generateRandomCandles(55, 100);
+      this.outcomeMessage = '🔄 Game reset. Edge=50%';
+      this.outcomeType = 'idle';
+      this.updateChartFromData();
+      this.persistState();
+    },
+    
+    // ------------------------------------ CHART INIT (Lightweight Charts) ------------------------------------
+    initChartAndLoad() {
+      let container = document.getElementById('trading-chart');
+      if(!container) return;
+      this.chart = LightweightCharts.createChart(container, {
+        layout: {
+          background: { color: '#0a0e17' },
+          textColor: '#d1d5db',
+          fontSize: 10
+        },
+        grid: {
+          vertLines: { color: '#1f2a3e' },
+          horzLines: { color: '#1f2a3e' }
+        },
+        rightPriceScale: { borderColor: '#2a3a55' },
+        timeScale: { borderColor: '#2a3a55', timeVisible: true },
+        width: container.clientWidth,
+        height: container.clientHeight
+      });
+      this.candleSeries = this.chart.addCandlestickSeries({
+        upColor: '#26a69a',
+        downColor: '#ef5350',
+        borderDownColor: '#ef5350',
+        borderUpColor: '#26a69a',
+        wickDownColor: '#ef5350',
+        wickUpColor: '#26a69a'
+      });
+      let hasSaved = this.loadStateFromStorage();
+      if(!hasSaved || !this.candlesData.length) this.candlesData = this.generateRandomCandles(55, 100);
+      this.updateChartFromData();
+      if(this.wager > this.balance && this.balance > 0) this.wager = Math.max(1, Math.floor(this.balance));
+      window.addEventListener('resize', () => this.resizeChart());
+      new ResizeObserver(() => this.resizeChart()).observe(container);
+    },
+    
+    resizeChart() {
+      if(this.chart) {
+        let container = document.getElementById('trading-chart');
+        if(container) {
+          this.chart.applyOptions({
+            width: container.clientWidth,
+            height: container.clientHeight
+          });
+          this.chart.timeScale().fitContent();
+        }
+      }
+    },
+    
+    // Hotkey handler
+    handleHotkey(e) {
+      // Prevent when typing in input fields or when modals are open
+      const activeTag = document.activeElement?.tagName;
+      if (activeTag === 'INPUT' || activeTag === 'TEXTAREA' || activeTag === 'SELECT') return;
+      if (this.menuOpen || this.showTestModal) return;
+    
+      const key = e.key;
+    
+      // UP actions: ArrowUp OR 'b' (Buy)
+      if (key === 'ArrowUp' || key === 'b' || key === 'B') {
+        e.preventDefault();
+        if (this.canBet()) this.placeBet('up');
+      }
+      // DOWN actions: ArrowDown OR 's' (Sell)
+      else if (key === 'ArrowDown' || key === 's' || key === 'S') {
+        e.preventDefault();
+        if (this.canBet()) this.placeBet('down');
+      }
+      // SKIP candle: Space bar (only available in 'nextCandle' mode)
+      else if (key === ' ' || key === 'Space') {
+        e.preventDefault();  // prevents page scrolling
+        if (this.chartMode === 'nextCandle' && this.chart && this.candlesData.length) {
+          this.skipToNextCandle();
+        }
+      }
+    },
+
+    // Remove listener on page unload (cleanup)
+    cleanupHotkeys() {
+      window.removeEventListener('keydown', this.handleHotkey);
+    },
+    
+    initApp() {
+      this.initChartAndLoad();
+      window.addEventListener('keydown', (e) => this.handleHotkey(e));
+      window.addEventListener('unload', (e) => this.cleanupHotkeys());
+      requestAnimationFrame(() => {
+        this.resizeChart();
+        if(this.chart) this.chart.timeScale().fitContent();
+      });
+    },
+    
+    shareApp() {
+      if(navigator.share) {
+        navigator.share({
+          title: 'The Trading Game',
+          text: 'Binary options simulator',
+          url: window.location.href
+        });
+      } else {
+        navigator.clipboard.writeText(window.location.href);
+        this.outcomeMessage = '🔗 Link copied!';
+        setTimeout(() => {
+          if(this.outcomeMessage === '🔗 Link copied!') this.outcomeMessage = '⚡ Game ready';
+        }, 1500);
+      }
+    },
+    
+    // ------------------------------------ 300-TRADE BACKTEST SIMULATOR ------------------------------------
+    run300TradeTest() {
+      let balance = this.balance;
+      let wins = 0, losses = 0;
+      let hist = [balance];
+      let wrHist = [0];
+      let wager = this.wager;
+      let mult = this.payoutPercent / 100;
+      let prob = this.edgePercent / 100;
+      for(let i = 1; i <= 300; i++) {
+        if(Math.random() < prob) {
+          balance += wager * mult;
+          wins++;
+        } else {
+          balance -= wager;
+          losses++;
+        }
+        hist.push(balance);
+        wrHist.push((wins / i) * 100);
+      }
+      this.testStats = {
+        startingBalance: this.balance,
+        finalBalance: balance,
+        netPL: balance - this.balance,
+        wins: wins,
+        losses: losses,
+        observedWinRate: ((wins / 300) * 100).toFixed(2),
+        totalWagered: wager * 300,
+        expectancy: (balance - this.balance) / 300,
+        edgeUsed: this.edgePercent,
+        balanceHistory: hist,
+        winRateHistory: wrHist
+      };
+      this.showTestModal = true;
+      setTimeout(() => {
+        this.drawEquityCurve();
+        this.drawWinRateCurve();
+      }, 80);
+    },
+    
+    // Draw equity line on canvas
+    drawEquityCurve() {
+      let canvas = document.getElementById('equityCanvas');
+      if(!canvas) return;
+      let ctx = canvas.getContext('2d');
+      let w = canvas.clientWidth;
+      let h = canvas.clientHeight;
+      canvas.width = w;
+      canvas.height = h;
+      let data = this.testStats.balanceHistory;
+      if(!data.length) return;
+      let minV = Math.min(...data);
+      let maxV = Math.max(...data);
+      let range = maxV - minV || 1;
+      let stepX = w / (data.length - 1);
+      ctx.clearRect(0, 0, w, h);
+      ctx.beginPath();
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 2;
+      for(let i = 0; i < data.length; i++) {
+        let x = i * stepX;
+        let y = h - ((data[i] - minV) / range) * h;
+        if(i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+    },
+    
+    // Draw rolling win rate with reference edge line
+    drawWinRateCurve() {
+      let canvas = document.getElementById('winrateCanvas');
+      if(!canvas) return;
+      let ctx = canvas.getContext('2d');
+      let w = canvas.clientWidth;
+      let h = canvas.clientHeight;
+      canvas.width = w;
+      canvas.height = h;
+      let data = this.testStats.winRateHistory;
+      if(!data.length) return;
+      let stepX = w / (data.length - 1);
+      ctx.clearRect(0, 0, w, h);
+      ctx.beginPath();
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 2;
+      for(let i = 0; i < data.length; i++) {
+        let x = i * stepX;
+        let y = h - (data[i] / 100) * h;
+        if(i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.strokeStyle = '#4ade80';
+      ctx.setLineDash([5, 5]);
+      let edgeY = h - (this.testStats.edgeUsed / 100) * h;
+      ctx.moveTo(0, edgeY);
+      ctx.lineTo(w, edgeY);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+  };
+}
     </script>
   </body>
 </html>

@@ -1,6 +1,6 @@
 # 🎮 The Trading Game — Binary Options Simulator
 
-![](https://raw.githubusercontent.com/michaelsboost/TheTradingGame/gh-pages/imgs/screenshot.png)
+![](https://raw.githubusercontent.com/michaelsboost/TheTradingGame/gh-pages/imgs/screenshot.jpeg)
 
 ## 🌟 Overview
 

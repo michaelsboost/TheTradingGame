@@ -28,92 +28,165 @@
   </head>
   <body>
 
-<div x-data="tradingApp()" x-init="initChartAndRandomize()" class="text-gray-200 antialiased flex flex-col h-full w-full px-3 py-3 md:px-5 md:py-4 max-w-7xl mx-auto">
-  <div class="flex flex-col h-full gap-3">
-    
-    <!-- ========== HEADER STATS (Balance, P/L, Win/Loss Ratio, Edge) ========== -->
-    <div class="glass-panel rounded-2xl p-2 md:p-4 shadow-2xl">
-      <div class="overflow-x-auto">
-        <div class="flex items-center justify-between gap-3 min-w-max whitespace-nowrap">
-          <!-- GitHub repo link (logo) -->
-          <a href="https://github.com/michaelsboost/TheTradingGame/" target="_blank" class="shrink-0">
-            <svg class="h-8 md:h-12" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="currentColor"><g><circle cx="64" cy="63.99999999999992" r="7.367346938775501"></circle><path d=" M 23.695 23.695 Q 43.436 3.954 54.404 54.404 Q 3.954 43.436 23.695 23.695 Z "></path><path d=" M 104.305 104.305 Q 124.046 84.564 73.596 73.596 Q 84.564 124.046 104.305 104.305 Z "></path><path d=" M 23.695 104.305 Q 43.436 124.046 54.404 73.596 Q 3.954 84.564 23.695 104.305 Z "></path><path d=" M 104.305 23.695 Q 124.046 43.436 73.596 54.404 Q 84.564 3.954 104.305 23.695 Z "></path><path d=" M 121 64 Q 121 91.918 77.571 64 Q 121 36.082 121 64 Z "></path><path d=" M 7 64 Q 7 91.918 50.429 64 Q 7 36.082 7 64 Z "></path><path d=" M 64 121 Q 91.918 121 64 77.571 Q 36.082 121 64 121 Z "></path><path d=" M 64 7 Q 91.918 7 64 50.429 Q 36.082 7 64 7 Z "></path></g></svg>
+<div x-data="tradingApp()" x-init="initApp()" class="text-gray-200 antialiased flex flex-col h-full w-full px-3 py-3 md:px-6 md:py-5 max-w-7xl mx-auto">
+  <div class="flex flex-col h-full gap-4">
+
+    <!-- ████████  HEADER: GitHub branding, live stats, share/donate menu  ████████ -->
+    <div class="glass-panel rounded-2xl p-3 md:p-4 shadow-2xl transition-all">
+      <div class="flex flex-wrap items-center justify-between gap-3 md:gap-4">
+        <!-- Left: brand icon + GitHub repo link -->
+        <div class="flex items-center gap-3">
+          <a href="https://github.com/michaelsboost/TheTradingGame/" target="_blank" rel="noopener noreferrer" class="shrink-0 transition hover:opacity-80" aria-label="GitHub repository">
+            <svg class="h-8 md:h-10 w-auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="currentColor"><g><circle cx="64" cy="63.99999999999992" r="7.367346938775501"></circle><path d=" M 23.695 23.695 Q 43.436 3.954 54.404 54.404 Q 3.954 43.436 23.695 23.695 Z "></path><path d=" M 104.305 104.305 Q 124.046 84.564 73.596 73.596 Q 84.564 124.046 104.305 104.305 Z "></path><path d=" M 23.695 104.305 Q 43.436 124.046 54.404 73.596 Q 3.954 84.564 23.695 104.305 Z "></path><path d=" M 104.305 23.695 Q 124.046 43.436 73.596 54.404 Q 84.564 3.954 104.305 23.695 Z "></path><path d=" M 121 64 Q 121 91.918 77.571 64 Q 121 36.082 121 64 Z "></path><path d=" M 7 64 Q 7 91.918 50.429 64 Q 7 36.082 7 64 Z "></path><path d=" M 64 121 Q 91.918 121 64 77.571 Q 36.082 121 64 121 Z "></path><path d=" M 64 7 Q 91.918 7 64 50.429 Q 36.082 7 64 7 Z "></path></g></svg>
           </a>
-          <!-- key metrics -->
-          <div class="flex items-center gap-3 md:gap-6 text-xs md:text-base">
-            <div><div class="uppercase tracking-wider text-sky-300">Balance</div><div class="text-lg md:text-3xl font-black" x-text="`$${balance.toFixed(2)}`"></div></div>
-            <div class="h-6 w-px bg-white/20"></div>
-            <div><div class="uppercase tracking-wider text-sky-300">Net P/L</div><div class="font-bold" :class="(balance - 1000) &gt;= 0 ? 'text-emerald-400' : 'text-rose-400'"><span x-text="(balance - 1000) &gt;= 0 ? '+' : ''"></span><span x-text="(balance - 1000).toFixed(2)"></span></div></div>
-            <div class="h-6 w-px bg-white/20"></div>
-            <div><div class="uppercase tracking-wider text-sky-300">W/L</div><div class="font-mono font-bold"><span x-text="winCount"></span>/<span x-text="loseCount"></span></div></div>
-            <div class="h-6 w-px bg-white/20"></div>
-            <div><div class="uppercase tracking-wider text-sky-300">WR</div><div class="font-mono font-bold" x-text="winRate()"></div></div>
-            <div class="h-6 w-px bg-white/20"></div>
-            <div><div class="uppercase tracking-wider text-sky-300">Edge</div><div class="font-mono font-bold text-yellow-400" x-text="edgePercent + '%'"></div></div>
-          </div>
-          <!-- donation / external link -->
-          <a href="https://michaelsboost.com/donate/" target="_blank" class="shrink-0 text-red-400"><svg class="h-8 md:h-12" viewBox="0 0 24 24" fill="currentColor"><path d="M2 9.137C2 14 6.02 16.591 8.962 18.911C10 19.729 11 20.5 12 20.5s2-.77 3.038-1.59C17.981 16.592 22 14 22 9.138S16.5.825 12 5.501C7.5.825 2 4.274 2 9.137"></path></svg></a>
+          <div class="hidden md:block text-sm font-extrabold tracking-wide bg-gradient-to-r from-sky-300 to-blue-400 bg-clip-text text-transparent">TRADING GAME</div>
+        </div>
+
+        <!-- MIDDLE: Live stats panel (balance, P/L, win/loss, edge) -->
+        <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 bg-black/30 backdrop-blur-sm rounded-2xl py-1.5 px-4 border border-white/5">
+          <div class="stat-card flex flex-col items-center px-1"><span class="text-[10px] font-semibold uppercase tracking-wider text-sky-300/80">Balance</span><span class="text-xl md:text-2xl font-black" x-text="`$${balance.toFixed(2)}`"></span></div>
+          <div class="hidden md:block w-px h-8 bg-sky-500/20"></div>
+          <div class="stat-card flex flex-col items-center px-1"><span class="text-[10px] font-semibold uppercase tracking-wider text-sky-300/80">Net P/L</span><div class="font-black text-lg md:text-xl" :class="(balance - 1000) &gt;= 0 ? 'text-emerald-400' : 'text-rose-400'"><span x-text="(balance - 1000) &gt;= 0 ? '+' : ''"></span><span x-text="(balance - 1000).toFixed(2)"></span></div></div>
+          <div class="hidden md:block w-px h-8 bg-sky-500/20"></div>
+          <div class="stat-card flex flex-col items-center px-1"><span class="text-[10px] font-semibold uppercase tracking-wider text-sky-300/80">W/L</span><div class="font-mono font-bold text-base md:text-lg" x-text="winCount + '/' + loseCount"></div></div>
+          <div class="hidden md:block w-px h-8 bg-sky-500/20"></div>
+          <div class="stat-card flex flex-col items-center px-1"><span class="text-[10px] font-semibold uppercase tracking-wider text-sky-300/80">Win Rate</span><div class="font-mono font-bold text-base md:text-lg" x-text="winRate()"></div></div>
+          <div class="hidden md:block w-px h-8 bg-sky-500/20"></div>
+          <div class="stat-card flex flex-col items-center px-1"><span class="text-[10px] font-semibold uppercase tracking-wider text-sky-300/80">Edge</span><div class="font-mono font-bold text-yellow-400 text-base md:text-lg" x-text="edgePercent + '%'"></div></div>
+        </div>
+
+        <!-- RIGHT: share, donate, and fullscreen menu icons -->
+        <div class="flex items-center gap-1 md:gap-2">
+          <!-- Share using Web Share API or copy link -->
+          <button @click="shareApp" class="p-2 rounded-full hover:bg-white/10 transition-all group" aria-label="Share game">
+            <svg class="w-5 h-5 md:w-6 md:h-6 text-sky-300/80 group-hover:text-sky-300 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polygon points="16 6 12 2 8 6"></polygon><line x1="12" y1="2" x2="12" y2="15"></line>
+            </svg>
+          </button>
+          <!-- Donation link - supports the author -->
+          <a href="https://michaelsboost.com/donate" target="_blank" rel="noopener noreferrer" class="donate-pulse flex items-center gap-2 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-400/40 rounded-full pl-2.5 pr-3.5 py-1.5 md:pl-3 md:pr-4 transition-all" aria-label="Support creator">
+            <svg class="w-4 h-4 md:w-5 md:h-5 text-rose-400 fill-current" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
+            </svg>
+            <span class="text-rose-300 text-xs md:text-sm font-semibold hidden sm:inline-block">Donate</span>
+          </a>
+          <!-- Mobile/desktop menu trigger (three dots) -->
+          <button @click="menuOpen = true" class="p-2 rounded-full hover:bg-white/10 transition-all" aria-label="Open menu">
+            <svg class="w-5 h-5 md:w-6 md:h-6 text-gray-300 hover:text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.5" fill="currentColor" stroke="none"></circle><circle cx="5" cy="12" r="1.5" fill="currentColor" stroke="none"></circle>
+            </svg>
+          </button>
         </div>
       </div>
     </div>
 
-    <!-- ========== WAGER CONTROLS: slider, presets, numeric input ========== -->
+    <!-- ========== WAGER CONTROLS ========== -->
+    <!-- Allows manual adjustment, quick preset buttons (10/25/50/100) and +/- stepper -->
     <div class="glass-panel rounded-2xl p-3 space-y-2">
-      <div class="flex items-center justify-between flex-wrap gap-2"><span class="text-xs font-semibold uppercase tracking-wide text-sky-300">Wager</span><div class="flex gap-1"><button @click="setWager(10)" class="bg-white/10 hover:bg-white/20 px-3 py-1 rounded-lg text-xs font-bold">$10</button><button @click="setWager(25)" class="bg-white/10 hover:bg-white/20 px-3 py-1 rounded-lg text-xs font-bold">$25</button><button @click="setWager(50)" class="bg-white/10 hover:bg-white/20 px-3 py-1 rounded-lg text-xs font-bold">$50</button><button @click="setWager(100)" class="bg-white/10 hover:bg-white/20 px-3 py-1 rounded-lg text-xs font-bold">$100</button></div></div>
+      <div class="flex items-center justify-between flex-wrap gap-2"><span class="text-xs font-semibold uppercase tracking-wide text-sky-300">Wager amount</span><div class="flex gap-1"><button @click="setWager(10)" class="bg-white/10 hover:bg-white/20 px-3 py-1 rounded-lg text-xs font-bold">$10</button><button @click="setWager(25)" class="bg-white/10 hover:bg-white/20 px-3 py-1 rounded-lg text-xs font-bold">$25</button><button @click="setWager(50)" class="bg-white/10 hover:bg-white/20 px-3 py-1 rounded-lg text-xs font-bold">$50</button><button @click="setWager(100)" class="bg-white/10 hover:bg-white/20 px-3 py-1 rounded-lg text-xs font-bold">$100</button></div></div>
       <div class="flex items-center gap-2"><button @click="adjustWager(-5)" class="bg-gray-800 hover:bg-gray-700 w-8 h-8 rounded-full text-lg font-bold">−</button><div class="flex-1"><input type="range" x-model="wager" min="1" :max="balance" step="1" class="w-full" @input="syncWagerFromSlider"></div><button @click="adjustWager(5)" class="bg-gray-800 hover:bg-gray-700 w-8 h-8 rounded-full text-lg font-bold">+</button><input type="number" x-model="wager" @input="validateWagerFromInput" class="w-20 bg-gray-900 border border-gray-700 rounded-xl px-2 py-1 text-right font-mono text-sm"></div>
     </div>
 
-    <!-- ========== PAYOUT % & EDGE % (win probability) ========== -->
-    <div class="flex gap-3">
-      <div class="glass-panel rounded-2xl p-3 flex-1"><div class="flex items-center justify-between gap-2"><span class="text-xs font-semibold text-sky-300">Payout</span><select x-model="payoutPercent" class="bg-gray-900 border border-gray-700 rounded-xl px-2 py-1 font-mono text-xs"><option value="100">100%</option><option value="92">92%</option><option value="88">88%</option><option value="80">80%</option><option value="70">70%</option><option value="60">60%</option><option value="50">50%</option></select></div><div class="text-[10px] text-gray-400 mt-1">Win → + <span x-text="payoutPercent"></span>%</div></div>
-      <div class="glass-panel rounded-2xl p-3 flex-1"><div class="flex items-center justify-between gap-2"><span class="text-xs font-semibold text-sky-300">Edge (win %)</span><span class="text-xs font-mono bg-black/40 px-2 py-0.5 rounded-full" x-text="edgePercent + '%'"></span></div><input type="range" x-model="edgePercent" min="50" max="90" step="1" class="w-full mt-1"><div class="flex justify-between text-[10px] text-gray-400 mt-1"><span>50% (fair)</span><span>70%</span><span>90% (high edge)</span></div></div>
+    <!-- PAYOUT & EDGE (win probability) configuration -->
+    <div class="flex gap-3 flex-wrap md:flex-nowrap">
+      <div class="glass-panel rounded-2xl p-3 flex-1"><div class="flex items-center justify-between gap-2"><span class="text-xs font-semibold text-sky-300">Payout %</span><select x-model="payoutPercent" @change="persistState()" class="bg-gray-900 border border-gray-700 rounded-xl px-2 py-1 font-mono text-xs"><option value="100">100%</option><option value="92">92%</option><option value="88">88%</option><option value="80">80%</option><option value="70">70%</option><option value="60">60%</option><option value="50">50%</option></select></div><div class="text-[10px] text-gray-400 mt-1">Win → + <span x-text="payoutPercent"></span>%</div></div>
+      <!-- Edge = win probability (simulated). The higher the edge, the more likely you win -->
+      <div class="glass-panel rounded-2xl p-3 flex-1"><div class="flex items-center justify-between gap-2"><span class="text-xs font-semibold text-sky-300">Edge (win prob)</span><span class="text-xs font-mono bg-black/40 px-2 py-0.5 rounded-full" x-text="edgePercent + '%'"></span></div><input type="range" x-model="edgePercent" min="50" max="90" step="1" class="w-full mt-1" @change="persistState()"><div class="flex justify-between text-[10px] text-gray-400 mt-1"><span>50% fair</span><span>70%</span><span>90% high edge</span></div></div>
     </div>
 
-    <!-- ========== TWO CHART MODES (core gameplay differentiator) ========== -->
+    <!-- CHART MODES: full reset vs next candle (extends chart after each trade) -->
     <div class="grid grid-cols-2 gap-3">
-      <button @click="setChartMode('fullReset')" :class="{'mode-active': chartMode === 'fullReset'}" class="text-xs md:text-sm font-semibold px-3 py-1.5 rounded-xl transition-all bg-gray-800/60 border border-gray-700 hover:border-sky-500">🔄 Full Refresh Mode<br><span class="text-[9px] text-gray-400">new chart each trade</span></button>
-      <button @click="setChartMode('nextCandle')" :class="{'mode-active': chartMode === 'nextCandle'}" class="text-xs md:text-sm font-semibold px-3 py-1.5 rounded-xl transition-all bg-gray-800/60 border border-gray-700 hover:border-sky-500">✨ Next Candle Mode<br><span class="text-[9px] text-gray-400">extend + predict next candle</span></button>
+      <button @click="setChartMode('fullReset')" :class="{'mode-active': chartMode === 'fullReset'}" class="text-xs md:text-sm font-semibold px-3 py-1.5 rounded-xl transition-all bg-gray-800/60 border border-gray-700 hover:border-sky-500">🔄 Full Refresh<br><span class="text-[9px] text-gray-400">new chart each trade</span></button>
+      <button @click="setChartMode('nextCandle')" :class="{'mode-active': chartMode === 'nextCandle'}" class="text-xs md:text-sm font-semibold px-3 py-1.5 rounded-xl transition-all bg-gray-800/60 border border-gray-700 hover:border-sky-500">✨ Next Candle<br><span class="text-[9px] text-gray-400">extend + predict</span></button>
     </div>
 
-    <!-- LIGHTWEIGHT CHARTS CONTAINER (canvas-based financial chart) -->
-    <div class="chart-wrapper flex-1 min-h-[280px] rounded-2xl overflow-hidden border border-white/10">
+    <!-- LIVE CHART container: rendered by Lightweight Charts library -->
+    <div class="chart-wrapper flex-1 min-h-[280px] rounded-2xl overflow-hidden border border-white/10 shadow-inner">
       <div id="trading-chart" style="width: 100%; height: 100%;"></div>
     </div>
 
-    <!-- TRADE BUTTONS: UP / DOWN (binary directions) -->
+    <!-- TRADE BUTTONS UP/DOWN - main game action -->
     <div class="grid grid-cols-2 gap-3">
-      <button @click="placeBet('up')" :disabled="!canBet()" class="up-btn bg-gradient-to-br from-emerald-600 to-green-700 hover:from-emerald-500 hover:to-green-600 disabled:opacity-40 disabled:cursor-not-allowed rounded-xl py-3 text-xl font-black shadow-xl">▲ UP ▲</button>
-      <button @click="placeBet('down')" :disabled="!canBet()" class="down-btn bg-gradient-to-br from-rose-700 to-red-800 hover:from-rose-600 hover:to-red-700 disabled:opacity-40 disabled:cursor-not-allowed rounded-xl py-3 text-xl font-black shadow-xl">▼ DOWN ▼</button>
+      <button @click="placeBet('up')" :disabled="!canBet()" class="up-btn bg-gradient-to-br from-emerald-600 to-green-700 hover:from-emerald-500 hover:to-green-600 disabled:opacity-40 disabled:cursor-not-allowed rounded-xl py-3 text-xl font-black shadow-xl transition-all">▲ UP ▲</button>
+      <button @click="placeBet('down')" :disabled="!canBet()" class="down-btn bg-gradient-to-br from-rose-700 to-red-800 hover:from-rose-600 hover:to-red-700 disabled:opacity-40 disabled:cursor-not-allowed rounded-xl py-3 text-xl font-black shadow-xl transition-all">▼ DOWN ▼</button>
     </div>
 
-    <!-- RESULT DISPLAY + ACTION BUTTONS (300 trade test, reset) -->
-    <div class="glass-panel rounded-2xl p-3 flex justify-between items-center gap-2 flex-wrap">
-      <div class="flex items-center gap-2 truncate"><div class="w-2 h-2 rounded-full animate-pulse" :class="outcomeType === 'win' ? 'bg-emerald-400' : (outcomeType === 'loss' ? 'bg-rose-500' : 'bg-sky-500')"></div><span class="font-mono text-xs truncate" x-text="outcomeMessage"></span></div>
-      <div class="flex gap-2"><button @click="run300TradeTest()" class="text-xs bg-blue-600/70 hover:bg-blue-500 px-3 py-1 rounded-full">📊 300 Trade Test</button><button @click="resetGame()" class="text-xs bg-white/5 hover:bg-white/15 px-3 py-1 rounded-full">⟳ RESET</button></div>
+    <!-- SKIP (next candle mode) : adds a new candle without risking balance -->
+    <div x-show="chartMode === 'nextCandle'" x-cloak="" class="w-full">
+      <button @click="skipToNextCandle()" :disabled="!chart || !candlesData.length" class="skip-btn w-full bg-gradient-to-r from-indigo-600 to-purple-700 hover:from-indigo-500 hover:to-purple-600 disabled:opacity-40 disabled:cursor-not-allowed rounded-xl py-2 text-md font-bold shadow-lg transition-all flex items-center justify-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path></svg> SKIP CANDLE (Random Direction)</button>
+      <div class="text-center text-[10px] text-gray-400 mt-1">Skip adds new candle with random direction — no money risked</div>
     </div>
-    <!-- small footer: current mode & trade count -->
-    <div class="text-center text-gray-500 text-[10px]">
-      <span x-text="chartMode === 'fullReset' ? '⚡ MODE: Full chart refresh after each trade' : '🔮 MODE: Next candle prediction — chart grows with each trade'"></span> &nbsp;|&nbsp; Trades: <span x-text="winCount + loseCount"></span> &nbsp;|&nbsp; Win prob: <span x-text="edgePercent"></span>%
+    
+    <!-- RESULT PANEL & QUICK ACTIONS (300 trade test & reset) -->
+    <div class="glass-panel rounded-2xl p-3 flex justify-between items-center gap-2 flex-wrap">
+      <div class="flex items-center gap-2 truncate"><div class="w-2 h-2 rounded-full animate-pulse" :class="outcomeType==='win'?'bg-emerald-400':(outcomeType==='loss'?'bg-rose-500':'bg-sky-500')"></div><span class="font-mono text-xs truncate" x-text="outcomeMessage"></span></div>
+      <div class="flex gap-2"><button @click="run300TradeTest()" class="text-xs bg-blue-600/70 hover:bg-blue-500 px-3 py-1 rounded-full transition">📊 300 Trade Test</button><button @click="resetGame()" class="text-xs bg-white/5 hover:bg-white/15 px-3 py-1 rounded-full transition">⟳ RESET</button></div>
+    </div>
+    
+    <!-- Footer meta info: current mode, trade counter, edge, donate teaser -->
+    <div class="text-center text-gray-500 text-[10px] flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
+      <span x-text="chartMode==='fullReset'?'⚡ MODE: Full chart refresh':'🔮 MODE: Next candle prediction'"></span> | <div>Trades: <span x-text="winCount+loseCount"></span></div> | <div>Edge: <span x-text="edgePercent"></span>%</div> | <a href="https://michaelsboost.com/donate/" target="_blank" class="inline-flex items-center gap-1"><svg class="w-3 h-3 text-rose-400" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>Support the dev → Donate</a>
     </div>
   </div>
 
-  <!-- MODAL: 300 Trade Test Results (shows equity curve, win rate over time) -->
-  <div x-show="showTestModal" x-cloak="" class="fixed inset-0 flex items-center justify-center z-50 modal-overlay" style="display: none;" @click.away="showTestModal = false">
-    <div class="bg-gray-900 rounded-2xl max-w-4xl w-full mx-4 p-5 border border-sky-500/30 shadow-2xl max-h-[90vh] overflow-y-auto">
-      <div class="flex justify-between items-center mb-4"><h2 class="text-xl font-bold text-sky-300">📈 300 Trade Sample Test</h2><button @click="showTestModal = false" class="text-gray-400 hover:text-white text-2xl leading-5">×</button></div>
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm mb-5">
-        <div class="glass-panel p-2 rounded-xl text-center"><div class="text-gray-400">Final Balance</div><div class="text-xl font-black" x-text="`$${testStats.finalBalance.toFixed(2)}`"></div></div>
-        <div class="glass-panel p-2 rounded-xl text-center"><div class="text-gray-400">Net P/L</div><div class="text-xl font-black" :class="testStats.netPL &gt;= 0 ? 'text-emerald-400' : 'text-rose-400'" x-text="`${testStats.netPL &gt;= 0 ? '+' : ''}$${testStats.netPL.toFixed(2)}`"></div></div>
-        <div class="glass-panel p-2 rounded-xl text-center"><div class="text-gray-400">Wins / Losses</div><div class="text-lg font-mono" x-text="`${testStats.wins} / ${testStats.losses}`"></div></div>
-        <div class="glass-panel p-2 rounded-xl text-center"><div class="text-gray-400">Observed Win Rate</div><div class="text-xl font-black" x-text="testStats.observedWinRate + '%'"></div></div>
-        <div class="glass-panel p-2 rounded-xl text-center"><div class="text-gray-400">Total Wagered</div><div class="text-lg font-mono" x-text="`$${testStats.totalWagered.toFixed(2)}`"></div></div>
-        <div class="glass-panel p-2 rounded-xl text-center"><div class="text-gray-400">Expectancy (per trade)</div><div class="text-lg font-mono" :class="testStats.expectancy &gt;= 0 ? 'text-emerald-400' : 'text-rose-400'" x-text="`$${testStats.expectancy.toFixed(2)}`"></div></div>
-        <div class="glass-panel p-2 rounded-xl text-center col-span-2"><div class="text-gray-400">Edge Used</div><div class="text-lg font-mono text-yellow-400" x-text="testStats.edgeUsed + '%'"></div></div>
+  <!-- █████  FULLSCREEN MENU (mobile friendly with animations)  █████ -->
+  <div x-show="menuOpen" x-cloak="" x-transition.opacity.duration.200ms="" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl" style="display: none;" @click.away="menuOpen = false">
+    <div class="relative w-full max-w-md bg-gray-900/95 rounded-3xl shadow-2xl border border-sky-500/40 overflow-hidden" @click.stop="">
+      <div class="flex justify-between items-center p-5 border-b border-white/10">
+        <h2 class="text-xl font-bold bg-gradient-to-r from-sky-300 to-blue-400 bg-clip-text text-transparent">Menu</h2>
+        <button @click="menuOpen = false" class="text-gray-400 hover:text-white text-2xl w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/10 transition">×</button>
       </div>
-      <!-- Canvas-based charts: equity curve (balance progression) + win rate over time -->
-      <div class="grid md:grid-cols-2 gap-4 mb-4"><div><div class="text-xs uppercase text-sky-300 mb-1">Equity Curve</div><canvas id="equityCanvas" width="500" height="200" style="width:100%; height:auto; background:#0a0e17; border-radius:12px;" class="border border-white/10"></canvas></div><div><div class="text-xs uppercase text-sky-300 mb-1">Win Rate Over Time</div><canvas id="winrateCanvas" width="500" height="200" style="width:100%; height:auto; background:#0a0e17; border-radius:12px;" class="border border-white/10"></canvas></div></div>
-      <div class="text-xs text-gray-400 bg-black/30 p-3 rounded-xl">💡 <strong>Note:</strong> With an edge of <span x-text="testStats.edgeUsed"></span>%, the expected win rate over many trades should approach that value. Short‑term variance always exists — this test shows one possible path of 300 trades.</div>
-      <div class="flex justify-end mt-4"><button @click="showTestModal = false" class="bg-sky-600 hover:bg-sky-500 px-4 py-2 rounded-xl text-sm font-bold">Close</button></div>
+      <div class="p-5 space-y-3">
+        <button @click="resetGame(); menuOpen = false" class="flex w-full items-center justify-between gap-3 bg-white/5 hover:bg-sky-500/20 p-4 rounded-xl transition group">
+          <span class="flex items-center gap-3 text-base font-semibold"><svg class="w-5 h-5 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>Reset Game</span>
+          <span class="text-xs text-gray-400 group-hover:text-sky-300">⟳</span>
+        </button>
+        <button @click="run300TradeTest(); menuOpen = false" class="flex w-full items-center justify-between gap-3 bg-white/5 hover:bg-amber-500/20 p-4 rounded-xl transition group">
+          <span class="flex items-center gap-3 text-base font-semibold"><svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>300 Trade Test</span>
+          <span class="text-xs text-gray-400 group-hover:text-amber-300">📊</span>
+        </button>
+        <a href="https://michaelsboost.com/donate/" target="_blank" rel="noopener noreferrer" class="flex w-full items-center justify-between gap-3 bg-white/5 hover:bg-rose-500/20 p-4 rounded-xl transition group">
+          <span class="flex items-center gap-3 text-base font-semibold"><svg class="w-5 h-5 text-rose-400 fill-current" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>Support the Creator</span>
+          <span class="text-xs text-gray-400 group-hover:text-rose-300">❤️</span>
+        </a>
+        <div class="border-t border-white/10 my-2"></div>
+        <div class="text-[12px] text-gray-400 bg-black/30 p-3 rounded-xl text-center">Edge = win probability | Auto-saved locally</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- █████  300 TRADE TEST MODAL: shows equity curve, observed win rate, performance stats  █████ -->
+  <div x-show="showTestModal" x-cloak="" class="fixed inset-0 flex items-center justify-center z-50 p-2 sm:p-4" style="display: none;" @click.away="showTestModal = false">
+    <div class="bg-gray-900/95 backdrop-blur-2xl rounded-2xl w-full max-w-4xl border border-sky-500/50 shadow-2xl overflow-y-auto max-h-[90vh] mx-auto">
+      <div class="sticky top-0 z-10 bg-gray-900/90 backdrop-blur-md rounded-t-2xl border-b border-white/10 px-4 py-3 flex justify-between items-center">
+        <h2 class="text-lg sm:text-xl font-bold text-sky-300 flex items-center gap-2">
+          <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+          <span>300 Trade Sample Test</span>
+        </h2>
+        <button @click="showTestModal = false" class="text-gray-400 hover:text-white text-2xl leading-5 w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/10 transition">×</button>
+      </div>
+      
+      <div class="p-4 sm:p-5 space-y-5">
+        <!-- Key test metrics cards -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
+          <div class="glass-panel p-2 rounded-xl text-center"><div class="text-gray-400 text-[11px] sm:text-xs">Final Balance</div><div class="text-base sm:text-xl font-black" x-text="`$${testStats.finalBalance.toFixed(2)}`"></div></div>
+          <div class="glass-panel p-2 rounded-xl text-center"><div class="text-gray-400 text-[11px] sm:text-xs">Net P/L</div><div class="text-base sm:text-xl font-black" :class="testStats.netPL &gt;= 0 ? 'text-emerald-400' : 'text-rose-400'" x-text="`${testStats.netPL &gt;= 0 ? '+' : ''}$${testStats.netPL.toFixed(2)}`"></div></div>
+          <div class="glass-panel p-2 rounded-xl text-center"><div class="text-gray-400 text-[11px] sm:text-xs">Wins / Losses</div><div class="text-sm sm:text-lg font-mono font-bold" x-text="`${testStats.wins} / ${testStats.losses}`"></div></div>
+          <div class="glass-panel p-2 rounded-xl text-center"><div class="text-gray-400 text-[11px] sm:text-xs">Obs. Win Rate</div><div class="text-base sm:text-xl font-black" x-text="testStats.observedWinRate + '%'"></div></div>
+          <div class="glass-panel p-2 rounded-xl text-center"><div class="text-gray-400 text-[11px] sm:text-xs">Total Wagered</div><div class="text-sm sm:text-lg font-mono" x-text="`$${testStats.totalWagered.toFixed(2)}`"></div></div>
+          <div class="glass-panel p-2 rounded-xl text-center"><div class="text-gray-400 text-[11px] sm:text-xs">Expectancy / trade</div><div class="text-sm sm:text-lg font-mono" :class="testStats.expectancy &gt;= 0 ? 'text-emerald-400' : 'text-rose-400'" x-text="`$${testStats.expectancy.toFixed(2)}`"></div></div>
+          <div class="glass-panel p-2 rounded-xl text-center col-span-2"><div class="text-gray-400 text-[11px] sm:text-xs">Edge Used</div><div class="text-base sm:text-xl font-mono text-yellow-400" x-text="testStats.edgeUsed + '%'"></div></div>
+        </div>
+        
+        <!-- Canvas charts: equity curve + rolling win rate -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div><div class="text-xs uppercase text-sky-300 mb-1 flex items-center gap-1"><span class="inline-block w-2 h-2 rounded-full bg-sky-400"></span>Equity curve</div><div class="bg-black/30 rounded-xl p-1 border border-white/10"><canvas id="equityCanvas" width="500" height="200" style="width: 100%; height: auto; background:#0a0e17; border-radius: 12px; max-height: 200px;"></canvas></div></div>
+          <div><div class="text-xs uppercase text-sky-300 mb-1 flex items-center gap-1"><span class="inline-block w-2 h-2 rounded-full bg-amber-400"></span>Win rate over time</div><div class="bg-black/30 rounded-xl p-1 border border-white/10"><canvas id="winrateCanvas" width="500" height="200" style="width: 100%; height: auto; background:#0a0e17; border-radius: 12px; max-height: 200px;"></canvas></div></div>
+        </div>
+        
+        <div class="text-xs text-gray-400 bg-black/40 p-3 rounded-xl leading-relaxed">💡 <strong class="text-sky-300">Insight:</strong> With an edge of <span x-text="testStats.edgeUsed"></span>%, the expected win rate over many trades should approach that value. Short‑term variance is normal — this test shows one simulated path of 300 trades.</div>
+        <div class="flex justify-end"><button @click="showTestModal = false" class="bg-sky-600 hover:bg-sky-500 px-5 py-2 rounded-xl text-sm font-bold transition w-full sm:w-auto">Close</button></div>
+      </div>
     </div>
   </div>
 </div>
