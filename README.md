@@ -2,6 +2,8 @@
 
 ![](https://raw.githubusercontent.com/michaelsboost/TheTradingGame/gh-pages/imgs/screenshot.jpeg)
 
+[![MIT License](https://img.shields.io/github/license/michaelsboost/TheTradingGame)](LICENSE) [![GitHub Stars](https://img.shields.io/github/stars/michaelsboost/TheTradingGame)](https://github.com/michaelsboost/TheTradingGame/stargazers) [![GitHub Issues](https://img.shields.io/github/issues/michaelsboost/TheTradingGame)](https://github.com/michaelsboost/TheTradingGame/issues)
+
 ## 🌟 Overview
 
 **The Trading Game** is a fast-paced **binary options simulator** built to sharpen your market instincts through pure directional trading. No brokers, no real money, no accounts — just rapid decision-making, simulated price action, and performance tracking.
