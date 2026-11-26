@@ -1,1 +1,5 @@
-<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path></svg>
+<svg viewBox="0 0 100 85" aria-hidden="true" focusable="false">
+              <circle cx="36" cy="32" r="24" fill="#2563eb" stroke="#60a5fa" stroke-width="2"></circle>
+              <circle cx="64" cy="54" r="24" fill="#14532d" stroke="#4ade80" stroke-width="2"></circle><text x="36" y="42" font-size="29" font-weight="bold" text-anchor="middle" fill="#bfdbfe">€</text><text x="64" y="64" font-size="29" font-weight="bold" text-anchor="middle" fill="#86efac">$</text>
+              <path d="M65 13H82L76 7M82 13L76 19M35 74H18L24 68M18 74L24 80" stroke="#94a3b8" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>

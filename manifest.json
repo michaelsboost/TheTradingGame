@@ -1,12 +1,12 @@
 {
-  "theme_color": "#05070c",
-  "background_color": "#05070c",
+  "theme_color": "#d9e0e5",
+  "background_color": "#d9e0e5",
   "display": "standalone",
   "start_url": "./index.html",
   "lang": "en-US",
   "name": "The Trading Game",
   "short_name": "The Trading Game",
-  "description": "Binary options game built for speed and skill. Predict price moves, place trades, and build your virtual balance — no sign-up, no ads, all action.",
+  "description": "An open-source Monte Carlo educational tool for understanding trading expectancy, risk and possible long-term outcomes.",
   "icons": [
     {
       "src": "./imgs/logo-192x192.png",

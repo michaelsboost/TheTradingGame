@@ -1,1 +1,8 @@
-<svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+<svg viewBox="0 0 100 85" aria-hidden="true" focusable="false">
+              <circle cx="50" cy="43" r="34" fill="#f59e0b" opacity=".13"></circle>
+              <circle cx="50" cy="43" r="27" fill="#f59e0b"></circle>
+              <circle cx="50" cy="43" r="22" stroke="#fcd34d" stroke-width="1.5" fill="none"></circle>
+              <g transform="rotate(12 50 43)" stroke="#fff" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M39 31H52Q64 31 61 38Q60 43 52 43H43M52 43Q66 43 64 51Q63 56 52 56H39M43 31V56M47 25V31M54 25V31M47 56V62M54 56V62"></path>
+              </g>
+            </svg>

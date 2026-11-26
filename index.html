@@ -1,195 +1,287 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
   <head>
-    <title>The Trading Game – Binary Options Simulator (No Risk, Real Strategy)</title>
+    <title>The Trading Game — Test Your Strategy</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, interactive-widget=resizes-content">
-    <meta name="description" content="Binary options game built for speed and skill. Predict price moves, place trades, and build your virtual balance — no sign-up, no ads, all action.">
+    <meta name="description" content="An open-source Monte Carlo educational tool for understanding trading expectancy, risk and possible long-term outcomes.">
     <meta name="author" content="Michael Schwartz">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="The Trading Game – Binary Options Simulator (No Risk, Real Strategy)">
-    <meta name="theme-color" content="#13171f">
-    <meta name="apple-mobile-web-app-title" content="The Trading Game – Binary Options Simulator (No Risk, Real Strategy)">
+    <meta name="application-name" content="The Trading Game — Test Your Strategy">
+    <meta name="theme-color" content="#d9e0e5">
+    <meta name="apple-mobile-web-app-title" content="The Trading Game — Test Your Strategy">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="msapplication-starturl" content="./index.html">
-    <meta name="msapplication-navbutton-color" content="#13171f">
+    <meta name="msapplication-navbutton-color" content="#d9e0e5">
     <meta property="og:url" content="https://michaelsboost.com/TheTradingGame" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="The Trading Game – Binary Options Simulator (No Risk, Real Strategy)" />
-    <meta property="og:description" content="Binary options game built for speed and skill. Predict price moves, place trades, and build your virtual balance — no sign-up, no ads, all action." />
+    <meta property="og:title" content="The Trading Game — Test Your Strategy" />
+    <meta property="og:description" content="An open-source Monte Carlo educational tool for understanding trading expectancy, risk and possible long-term outcomes." />
     <link rel="manifest" href="manifest.json">
     <link rel="shortcut icon" type="image/x-icon" href="imgs/logo.svg">
     <link rel="icon" type="image/svg+xml" href="imgs/logo.svg" />
     <link rel="apple-touch-icon" href="imgs/logo.svg">
-    <link href="https://fonts.googleapis.com/css2?family=Arvo:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="dist/bundle.css">
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js" defer></script>
-    <script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
+    
   </head>
   <body>
-    <div x-data="tradingApp()" x-init="initApp()" class="text-gray-200 antialiased flex flex-col h-full w-full px-3 py-3 md:px-6 md:py-5 max-w-7xl mx-auto">
-      <div class="flex flex-col h-full gap-4">
-
-        <!-- ████████  HEADER: GitHub branding, live stats, share/donate menu  ████████ -->
-        <div class="glass-panel rounded-2xl p-3 md:p-4 shadow-2xl transition-all">
-          <div class="flex flex-wrap items-center justify-between gap-3 md:gap-4">
-            <!-- Left: brand icon + GitHub repo link -->
-            <div class="flex items-center gap-3">
-              <a href="https://github.com/michaelsboost/TheTradingGame/" target="_blank" rel="noopener noreferrer" class="shrink-0 transition hover:opacity-80" aria-label="GitHub repository">
-                <svg class="h-8 md:h-10 w-auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="currentColor"><g><circle cx="64" cy="63.99999999999992" r="7.367346938775501"></circle><path d=" M 23.695 23.695 Q 43.436 3.954 54.404 54.404 Q 3.954 43.436 23.695 23.695 Z "></path><path d=" M 104.305 104.305 Q 124.046 84.564 73.596 73.596 Q 84.564 124.046 104.305 104.305 Z "></path><path d=" M 23.695 104.305 Q 43.436 124.046 54.404 73.596 Q 3.954 84.564 23.695 104.305 Z "></path><path d=" M 104.305 23.695 Q 124.046 43.436 73.596 54.404 Q 84.564 3.954 104.305 23.695 Z "></path><path d=" M 121 64 Q 121 91.918 77.571 64 Q 121 36.082 121 64 Z "></path><path d=" M 7 64 Q 7 91.918 50.429 64 Q 7 36.082 7 64 Z "></path><path d=" M 64 121 Q 91.918 121 64 77.571 Q 36.082 121 64 121 Z "></path><path d=" M 64 7 Q 91.918 7 64 50.429 Q 36.082 7 64 7 Z "></path></g></svg>
-              </a>
-              <div class="hidden md:block text-sm font-extrabold tracking-wide bg-gradient-to-r from-sky-300 to-blue-400 bg-clip-text text-transparent">TRADING GAME</div>
-            </div>
-
-            <!-- MIDDLE: Live stats panel (balance, P/L, win/loss, edge) -->
-            <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 bg-black/30 backdrop-blur-sm rounded-2xl py-1.5 px-4 border border-white/5">
-              <div class="stat-card flex flex-col items-center px-1"><span class="text-[10px] font-semibold uppercase tracking-wider text-sky-300/80">Balance</span><span class="text-xl md:text-2xl font-black" x-text="`$${balance.toFixed(2)}`"></span></div>
-              <div class="hidden md:block w-px h-8 bg-sky-500/20"></div>
-              <div class="stat-card flex flex-col items-center px-1"><span class="text-[10px] font-semibold uppercase tracking-wider text-sky-300/80">Net P/L</span><div class="font-black text-lg md:text-xl" :class="(balance - 1000) &gt;= 0 ? 'text-emerald-400' : 'text-rose-400'"><span x-text="(balance - 1000) &gt;= 0 ? '+' : ''"></span><span x-text="(balance - 1000).toFixed(2)"></span></div></div>
-              <div class="hidden md:block w-px h-8 bg-sky-500/20"></div>
-              <div class="stat-card flex flex-col items-center px-1"><span class="text-[10px] font-semibold uppercase tracking-wider text-sky-300/80">W/L</span><div class="font-mono font-bold text-base md:text-lg" x-text="winCount + '/' + loseCount"></div></div>
-              <div class="hidden md:block w-px h-8 bg-sky-500/20"></div>
-              <div class="stat-card flex flex-col items-center px-1"><span class="text-[10px] font-semibold uppercase tracking-wider text-sky-300/80">Win Rate</span><div class="font-mono font-bold text-base md:text-lg" x-text="winRate()"></div></div>
-              <div class="hidden md:block w-px h-8 bg-sky-500/20"></div>
-              <div class="stat-card flex flex-col items-center px-1"><span class="text-[10px] font-semibold uppercase tracking-wider text-sky-300/80">Edge</span><div class="font-mono font-bold text-yellow-400 text-base md:text-lg" x-text="edgePercent + '%'"></div></div>
-            </div>
-
-            <!-- RIGHT: share, donate, and fullscreen menu icons -->
-            <div class="flex items-center gap-1 md:gap-2">
-              <!-- Share using Web Share API or copy link -->
-              <button @click="shareApp" class="p-2 rounded-full hover:bg-white/10 transition-all group" aria-label="Share game">
-                <svg class="w-5 h-5 md:w-6 md:h-6 text-sky-300/80 group-hover:text-sky-300 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polygon points="16 6 12 2 8 6"></polygon><line x1="12" y1="2" x2="12" y2="15"></line>
-                </svg>
-              </button>
-              <!-- Donation link - supports the author -->
-              <a href="https://michaelsboost.com/donate" target="_blank" rel="noopener noreferrer" class="donate-pulse flex items-center gap-2 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-400/40 rounded-full pl-2.5 pr-3.5 py-1.5 md:pl-3 md:pr-4 transition-all" aria-label="Support creator">
-                <svg class="w-4 h-4 md:w-5 md:h-5 text-rose-400 fill-current" viewBox="0 0 24 24" fill="currentColor" stroke="none">
-                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
-                </svg>
-                <span class="text-rose-300 text-xs md:text-sm font-semibold hidden sm:inline-block">Donate</span>
-              </a>
-              <!-- Mobile/desktop menu trigger (three dots) -->
-              <button @click="menuOpen = true" class="p-2 rounded-full hover:bg-white/10 transition-all" aria-label="Open menu">
-                <svg class="w-5 h-5 md:w-6 md:h-6 text-gray-300 hover:text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                  <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.5" fill="currentColor" stroke="none"></circle><circle cx="5" cy="12" r="1.5" fill="currentColor" stroke="none"></circle>
-                </svg>
-              </button>
-            </div>
+    
+<main>
+  <header>
+    <div><small>MONTE CARLO STRATEGY TESTER</small>
+      <h1>The Trading Game</h1>
+      <p class="tagline">Trading isn’t a game. Preparation matters.</p>
+      <p>Understand your edge, manage your risk, and explore possible long-term
+        outcomes before risking real money.</p>
+    </div><a class="source-icon" href="https://github.com/michaelsboost/TheTradingGame/" aria-label="View source code on GitHub" title="View source code on GitHub"><svg viewBox="0 0 24 24" width="21" height="21" fill="currentColor" aria-hidden="true">
+        <path d="M12 .75a11.25 11.25 0 0 0-3.56 21.92c.56.1.77-.24.77-.54v-2.1c-3.13.68-3.79-1.33-3.79-1.33-.51-1.3-1.25-1.65-1.25-1.65-1.02-.7.08-.69.08-.69 1.13.08 1.72 1.16 1.72 1.16 1 1.72 2.63 1.22 3.27.93.1-.73.39-1.22.71-1.5-2.5-.29-5.13-1.25-5.13-5.56 0-1.23.44-2.23 1.16-3.02-.12-.28-.5-1.43.11-2.98 0 0 .95-.3 3.1 1.15a10.8 10.8 0 0 1 5.64 0c2.15-1.46 3.1-1.15 3.1-1.15.61 1.55.23 2.7.11 2.98.72.79 1.16 1.79 1.16 3.02 0 4.32-2.63 5.27-5.14 5.55.4.35.76 1.03.76 2.08v3.11c0 .3.2.65.77.54A11.25 11.25 0 0 0 12 .75Z"></path>
+        </svg></a>
+  </header>
+  <aside class="scope-note"><strong><svg class="ui-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+        <circle cx="12" cy="12" r="9"></circle>
+        <path d="M12 11v5M12 7h.01"></path></svg> Test the math, not the
+      market.</strong>
+    <p>This simulator uses assumptions you provide. It does not identify trade
+      setups, verify your edge, or predict future returns.</p><a href="#learn">What should I learn before trading?</a>
+  </aside>
+  <div class="workspace">
+    <aside class="strategy-panel" aria-label="Strategy settings">
+      <section>
+        <h2>1. Pick your market</h2>
+        <div class="choices"><button id="binary"><svg viewBox="0 0 100 85" aria-hidden="true" focusable="false">
+              <rect x="14" y="8" width="72" height="72" rx="19" fill="#60a5fa" opacity=".09"></rect>
+              <path d="M30 60V23M20 34L30 23 40 34" stroke="#22c55e" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path d="M70 23V60M60 49L70 60 80 49" stroke="#f43f5e" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+              <circle cx="50" cy="42" r="12" fill="#151c2c" stroke="#94a3b8" stroke-width="2"></circle>
+              <path d="M50 35V42L55 45" stroke="#f1f5f9" stroke-width="2" fill="none" stroke-linecap="round"></path></svg><strong>Binary
+              options</strong><small>Fixed payout</small></button><button id="futures" class="selected"><svg viewBox="0 0 100 85" aria-hidden="true" focusable="false">
+              <rect x="14" y="8" width="72" height="72" rx="19" fill="#22c55e" opacity=".09"></rect>
+              <path d="M31 34V69" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round"></path>
+              <rect x="25" y="42" width="12" height="19" rx="2" fill="#22c55e"></rect>
+              <path d="M48 22V59" stroke="#f43f5e" stroke-width="2.5" stroke-linecap="round"></path>
+              <rect x="42" y="30" width="12" height="21" rx="2" fill="#f43f5e"></rect>
+              <path d="M65 11V54" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round"></path>
+              <rect x="59" y="19" width="12" height="27" rx="2" fill="#22c55e"></rect></svg><strong>Futures</strong><small>Contracts
+              &amp; exits</small></button><button id="forex"><svg viewBox="0 0 100 85" aria-hidden="true" focusable="false">
+              <circle cx="36" cy="32" r="24" fill="#2563eb" stroke="#60a5fa" stroke-width="2"></circle>
+              <circle cx="64" cy="54" r="24" fill="#14532d" stroke="#4ade80" stroke-width="2"></circle><text x="36" y="42" font-size="29" font-weight="bold" text-anchor="middle" fill="#bfdbfe">€</text><text x="64" y="64" font-size="29" font-weight="bold" text-anchor="middle" fill="#86efac">$</text>
+              <path d="M65 13H82L76 7M82 13L76 19M35 74H18L24 68M18 74L24 80" stroke="#94a3b8" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg><strong>Forex</strong><small>Currency
+              pairs</small></button><button id="options"><svg viewBox="0 0 100 85" aria-hidden="true" focusable="false">
+              <rect x="14" y="8" width="72" height="72" rx="19" fill="#a78bfa" opacity=".09"></rect>
+              <path d="M21 16V68H82" fill="none" stroke="#64748b" stroke-width="2"></path>
+              <path d="M24 52H48L79 19" fill="none" stroke="#a78bfa" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path d="M24 22L51 52H79" fill="none" stroke="#60a5fa" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+              <circle cx="49" cy="52" r="4" fill="#f1f5f9"></circle>
+              </svg><strong>Options</strong><small>Calls &amp;
+              puts</small></button><button id="stocks"><svg viewBox="0 0 100 85" aria-hidden="true" focusable="false">
+              <rect x="14" y="8" width="72" height="72" rx="19" fill="#22c55e" opacity=".09"></rect>
+              <rect x="23" y="51" width="10" height="18" rx="2" fill="#22c55e" opacity="0.3"></rect>
+              <rect x="38" y="41" width="10" height="28" rx="2" fill="#22c55e" opacity="0.5"></rect>
+              <rect x="53" y="31" width="10" height="38" rx="2" fill="#22c55e" opacity="0.7"></rect>
+              <rect x="68" y="20" width="10" height="49" rx="2" fill="#22c55e" opacity="0.9"></rect>
+              <path d="M22 43L39 31 53 36 78 12M65 12H78V25" stroke="#4ade80" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg><strong>Stocks</strong><small>Shares &amp;
+              ETFs</small></button><button id="crypto"><svg viewBox="0 0 100 85" aria-hidden="true" focusable="false">
+              <circle cx="50" cy="43" r="34" fill="#f59e0b" opacity=".13"></circle>
+              <circle cx="50" cy="43" r="27" fill="#f59e0b"></circle>
+              <circle cx="50" cy="43" r="22" stroke="#fcd34d" stroke-width="1.5" fill="none"></circle>
+              <g transform="rotate(12 50 43)" stroke="#fff" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M39 31H52Q64 31 61 38Q60 43 52 43H43M52 43Q66 43 64 51Q63 56 52 56H39M43 31V56M47 25V31M54 25V31M47 56V62M54 56V62"></path>
+              </g>
+            </svg><strong>Crypto</strong><small>Spot assets</small></button>
+        </div>
+      </section>
+      <section>
+        <div class="settings-heading">
+          <h2>2. Set up your strategy</h2><button id="restore" type="button"><svg class="ui-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <path d="M3 12a9 9 0 1 1 3 6.7M3 4v8h8"></path></svg> Restore
+            defaults</button>
+        </div>
+        <div class="fields"><label>Starting money ($)<input id="capital" type="number" min="1" value="5000"></label><label>How much do you
+            risk?<select id="sizing">
+              <option value="percent">Percent of current balance</option>
+              <option value="fixed">Fixed dollars</option>
+              <option value="contracts">Fixed contracts (futures)</option>
+            </select></label><label id="riskLabel">Risk per trade<input id="risk" type="number" min="0.01" value="1" step="any"></label><label id="winLabel">How often do you win?
+            <output id="winOut">53.2%</output><input id="win" type="range" min="0" max="100" value="53.2" step="0.1"></label></div>
+        <div id="meter" class="meter"><i></i>
+          <div class="meter-blocks" aria-hidden="true">
+            <b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b>
+          </div>
+          <div class="meter-labels"><span id="winsLabel"></span><span id="lossesLabel"></span></div>
+        </div>
+        <div id="binaryFields" class="fields"><label>Currency pair<input id="binaryPair" value="EUR/USD"></label><label>Profit payout
+            (%)<input id="payout" type="number" min="1" max="100" value="92"></label><label>Minimum stake ($)<input id="minimum" type="number" min="0.01" value="1" step="any"></label></div>
+        <div id="futureFields" hidden="">
+          <div class="fields"><label>Contract<select id="contract">
+                <option value="MNQ">MNQ · Micro Nasdaq</option>
+                <option value="NQ">NQ · Nasdaq</option>
+                <option value="MES">MES · Micro S&amp;P</option>
+                <option value="ES">ES · S&amp;P</option>
+                <option value="MYM">MYM · Micro Dow</option>
+                <option value="YM">YM · Dow</option>
+                <option value="MGC">MGC · Micro Gold</option>
+                <option value="GC">GC · Gold</option>
+                <option value="MCL">MCL · Micro Oil</option>
+                <option value="CL">CL · Oil</option>
+              </select></label><label>Exit style<select id="exit">
+                <option value="fixed">Fixed stop &amp; target</option>
+                <option value="trail">Trailing stop</option>
+                <option value="profit">Trailing profit exit</option>
+                <option value="both">Both trailing exits</option>
+              </select></label><label>Stop loss (ticks)<input id="stop" type="number" min="1" value="80"></label><label id="targetLabel">Take profit (ticks)<input id="target" type="number" min="1" value="80"></label><label id="trailLabel" hidden="">Profit pullback (ticks)<input id="trail" type="number" min="1" value="10"></label><label id="biasLabel" hidden="">Chance
+              next tick favors you (%)<input id="bias" type="number" min="0" max="100" value="50" step="0.1"></label></div>
+          <details>
+            <summary>Broker costs &amp; assumptions</summary>
+            <div class="fields"><label>Round-trip fees / contract ($)<input id="fees" type="number" min="0" value="1.5" step="any"></label><label>Total adverse slippage (ticks)<input id="slip" type="number" min="0" value="2"></label><label>Margin / contract ($)<input id="margin" type="number" min="1" value="100"></label><label>Maximum ticks held (trailing)<input id="duration" type="number" min="1" max="2000" value="100"></label></div>
+            <p>Example costs and margin only. Enter your broker’s actual values.
+              Stops are not guaranteed in real markets.</p>
+          </details>
+        </div>
+        <div id="otherFields" hidden="">
+          <div class="fields"><label>Instrument<input id="instrument" value="EUR/USD"></label><label id="unitLabel">Unit value
+              ($)<input id="unitValue" type="number" min="0.000001" step="any" value="0.1"></label><label id="priceLabel">Position cost / unit
+              ($)<input id="unitPrice" type="number" min="0.000001" step="any" value="1000"></label><label id="otherStopLabel">Stop loss<input id="otherStop" type="number" min="0.000001" step="any" value="20"></label><label id="otherTargetLabel">Take
+              profit<input id="otherTarget" type="number" min="0.000001" step="any" value="20"></label><label>Minimum position
+              increment<input id="increment" type="number" min="0.000001" step="any" value="1"></label><label id="directionLabel">Position<select id="direction">
+                <option>Long</option>
+                <option>Short</option>
+              </select></label></div>
+          <details>
+            <summary>Costs &amp; assumptions</summary>
+            <div class="fields"><label>Round-trip cost / unit ($)<input id="otherCost" type="number" min="0" step="any" value="0.15"></label><label>Leverage (1 = cash)<input id="leverage" type="number" min="1" step="any" value="30"></label></div>
+            <p id="marketNote"></p>
+          </details>
+        </div>
+        <p class="default-note">Defaults illustrate a small positive expectancy
+          after assumed costs, not a verified trading edge.</p>
+        <div class="payoff" id="payoff">
+          <div><span class="good"><svg class="ui-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                <path d="m4 17 6-6 4 4 6-8M14 7h6v6"></path></svg> If you
+              win</span><strong id="winMoney"></strong></div>
+          <div><span class="bad"><svg class="ui-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                <path d="m4 7 6 6 4-4 6 8M14 17h6v-6"></path></svg> If you
+              lose</span><strong id="lossMoney"></strong></div>
+        </div>
+        <div class="preview" id="preview"></div>
+        <div class="preview" id="riskInfo"></div>
+      </section>
+      <section>
+        <h2>3. Test your strategy</h2>
+        <div class="fields"><label>Trades per outcome<select id="trades">
+              <option>100</option>
+              <option>500</option>
+              <option selected="">1000</option>
+              <option>10000</option>
+            </select></label><label>Possible outcomes<select id="runs">
+              <option>100</option>
+              <option>1000</option>
+              <option selected="">5000</option>
+            </select></label></div>
+        <details>
+          <summary>More settings</summary>
+          <div class="fields"><label>Stop testing at balance ($)<input id="floor" type="number" min="0" value="0"></label><label>Random
+              seed<input id="seed" type="number" value="42" step="1"></label>
+          </div>
+        </details><button id="run" class="primary"><svg class="ui-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <path d="m8 5 12 7-12 7Z"></path></svg> Test my strategy</button>
+        <p id="status" role="status"></p>
+      </section>
+    </aside>
+    <div class="analysis-panel">
+      <section class="overview">
+        <h2>Strategy overview</h2>
+        <div class="overview-grid" id="liveStats"></div>
+        <div id="edgeVisual" class="edge-visual">
+          <h3>Win rate vs. break-even</h3>
+          <div class="edge-track">
+            <div id="edgeZones"></div><i id="edgeMarker"></i>
+          </div>
+          <div class="edge-labels"><span class="bad">Negative
+              expectancy</span><span class="good">Positive expectancy</span>
           </div>
         </div>
-
-        <!-- ========== WAGER CONTROLS ========== -->
-        <!-- Allows manual adjustment, quick preset buttons (10/25/50/100) and +/- stepper -->
-        <div class="glass-panel rounded-2xl p-3 space-y-2">
-          <div class="flex items-center justify-between flex-wrap gap-2"><span class="text-xs font-semibold uppercase tracking-wide text-sky-300">Wager amount</span><div class="flex gap-1"><button @click="setWager(10)" class="bg-white/10 hover:bg-white/20 px-3 py-1 rounded-lg text-xs font-bold">$10</button><button @click="setWager(25)" class="bg-white/10 hover:bg-white/20 px-3 py-1 rounded-lg text-xs font-bold">$25</button><button @click="setWager(50)" class="bg-white/10 hover:bg-white/20 px-3 py-1 rounded-lg text-xs font-bold">$50</button><button @click="setWager(100)" class="bg-white/10 hover:bg-white/20 px-3 py-1 rounded-lg text-xs font-bold">$100</button></div></div>
-          <div class="flex items-center gap-2"><button @click="adjustWager(-5)" class="bg-gray-800 hover:bg-gray-700 w-8 h-8 rounded-full text-lg font-bold">−</button><div class="flex-1"><input type="range" x-model="wager" min="1" :max="balance" step="1" class="w-full" @input="syncWagerFromSlider"></div><button @click="adjustWager(5)" class="bg-gray-800 hover:bg-gray-700 w-8 h-8 rounded-full text-lg font-bold">+</button><input type="number" x-model="wager" @input="validateWagerFromInput" class="w-20 bg-gray-900 border border-gray-700 rounded-xl px-2 py-1 text-right font-mono text-sm"></div>
-        </div>
-
-        <!-- PAYOUT & EDGE (win probability) configuration -->
-        <div class="flex gap-3 flex-wrap md:flex-nowrap">
-          <div class="glass-panel rounded-2xl p-3 flex-1"><div class="flex items-center justify-between gap-2"><span class="text-xs font-semibold text-sky-300">Payout %</span><select x-model="payoutPercent" @change="persistState()" class="bg-gray-900 border border-gray-700 rounded-xl px-2 py-1 font-mono text-xs"><option value="100">100%</option><option value="92">92%</option><option value="88">88%</option><option value="80">80%</option><option value="70">70%</option><option value="60">60%</option><option value="50">50%</option></select></div><div class="text-[10px] text-gray-400 mt-1">Win → + <span x-text="payoutPercent"></span>%</div></div>
-          <!-- Edge = win probability (simulated). The higher the edge, the more likely you win -->
-          <div class="glass-panel rounded-2xl p-3 flex-1"><div class="flex items-center justify-between gap-2"><span class="text-xs font-semibold text-sky-300">Edge (win prob)</span><span class="text-xs font-mono bg-black/40 px-2 py-0.5 rounded-full" x-text="edgePercent + '%'"></span></div><input type="range" x-model="edgePercent" min="50" max="90" step="1" class="w-full mt-1" @change="persistState()"><div class="flex justify-between text-[10px] text-gray-400 mt-1"><span>50% fair</span><span>70%</span><span>90% high edge</span></div></div>
-        </div>
-
-        <!-- CHART MODES: full reset vs next candle (extends chart after each trade) -->
-        <div class="grid grid-cols-2 gap-3">
-          <button @click="setChartMode('fullReset')" :class="{'mode-active': chartMode === 'fullReset'}" class="text-xs md:text-sm font-semibold px-3 py-1.5 rounded-xl transition-all bg-gray-800/60 border border-gray-700 hover:border-sky-500">🔄 Full Refresh<br><span class="text-[9px] text-gray-400">new chart each trade</span></button>
-          <button @click="setChartMode('nextCandle')" :class="{'mode-active': chartMode === 'nextCandle'}" class="text-xs md:text-sm font-semibold px-3 py-1.5 rounded-xl transition-all bg-gray-800/60 border border-gray-700 hover:border-sky-500">✨ Next Candle<br><span class="text-[9px] text-gray-400">extend + predict</span></button>
-        </div>
-
-        <!-- LIVE CHART container: rendered by Lightweight Charts library -->
-        <div class="chart-wrapper flex-1 min-h-[280px] rounded-2xl overflow-hidden border border-white/10 shadow-inner">
-          <div id="trading-chart" style="width: 100%; height: 100%;"></div>
-        </div>
-
-        <!-- TRADE BUTTONS UP/DOWN - main game action -->
-        <div class="grid grid-cols-2 gap-3">
-          <button @click="placeBet('up')" :disabled="!canBet()" class="up-btn bg-gradient-to-br from-emerald-600 to-green-700 hover:from-emerald-500 hover:to-green-600 disabled:opacity-40 disabled:cursor-not-allowed rounded-xl py-3 text-xl font-black shadow-xl transition-all">▲ UP ▲</button>
-          <button @click="placeBet('down')" :disabled="!canBet()" class="down-btn bg-gradient-to-br from-rose-700 to-red-800 hover:from-rose-600 hover:to-red-700 disabled:opacity-40 disabled:cursor-not-allowed rounded-xl py-3 text-xl font-black shadow-xl transition-all">▼ DOWN ▼</button>
-        </div>
-
-        <!-- SKIP (next candle mode) : adds a new candle without risking balance -->
-        <div x-show="chartMode === 'nextCandle'" x-cloak="" class="w-full">
-          <button @click="skipToNextCandle()" :disabled="!chart || !candlesData.length" class="skip-btn w-full bg-gradient-to-r from-indigo-600 to-purple-700 hover:from-indigo-500 hover:to-purple-600 disabled:opacity-40 disabled:cursor-not-allowed rounded-xl py-2 text-md font-bold shadow-lg transition-all flex items-center justify-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path></svg> SKIP CANDLE (Random Direction)</button>
-          <div class="text-center text-[10px] text-gray-400 mt-1">Skip adds new candle with random direction — no money risked</div>
-        </div>
-        
-        <!-- RESULT PANEL & QUICK ACTIONS (300 trade test & reset) -->
-        <div class="glass-panel rounded-2xl p-3 flex justify-between items-center gap-2 flex-wrap">
-          <div class="flex items-center gap-2 truncate"><div class="w-2 h-2 rounded-full animate-pulse" :class="outcomeType==='win'?'bg-emerald-400':(outcomeType==='loss'?'bg-rose-500':'bg-sky-500')"></div><span class="font-mono text-xs truncate" x-text="outcomeMessage"></span></div>
-          <div class="flex gap-2"><button @click="run300TradeTest()" class="text-xs bg-blue-600/70 hover:bg-blue-500 px-3 py-1 rounded-full transition">📊 300 Trade Test</button><button @click="resetGame()" class="text-xs bg-white/5 hover:bg-white/15 px-3 py-1 rounded-full transition">⟳ RESET</button></div>
-        </div>
-        
-        <!-- Footer meta info: current mode, trade counter, edge, donate teaser -->
-        <div class="text-center text-gray-500 text-[10px] flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
-          <span x-text="chartMode==='fullReset'?'⚡ MODE: Full chart refresh':'🔮 MODE: Next candle prediction'"></span> | <div>Trades: <span x-text="winCount+loseCount"></span></div> | <div>Edge: <span x-text="edgePercent"></span>%</div> | <a href="https://michaelsboost.com/donate/" target="_blank" class="inline-flex items-center gap-1"><svg class="w-3 h-3 text-rose-400" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>Support the dev → Donate</a>
-        </div>
-      </div>
-
-      <!-- █████  FULLSCREEN MENU (mobile friendly with animations)  █████ -->
-      <div x-show="menuOpen" x-cloak="" x-transition.opacity.duration.200ms="" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl" style="display: none;" @click.away="menuOpen = false">
-        <div class="relative w-full max-w-md bg-gray-900/95 rounded-3xl shadow-2xl border border-sky-500/40 overflow-hidden" @click.stop="">
-          <div class="flex justify-between items-center p-5 border-b border-white/10">
-            <h2 class="text-xl font-bold bg-gradient-to-r from-sky-300 to-blue-400 bg-clip-text text-transparent">Menu</h2>
-            <button @click="menuOpen = false" class="text-gray-400 hover:text-white text-2xl w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/10 transition">×</button>
-          </div>
-          <div class="p-5 space-y-3">
-            <button @click="resetGame(); menuOpen = false" class="flex w-full items-center justify-between gap-3 bg-white/5 hover:bg-sky-500/20 p-4 rounded-xl transition group">
-              <span class="flex items-center gap-3 text-base font-semibold"><svg class="w-5 h-5 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>Reset Game</span>
-              <span class="text-xs text-gray-400 group-hover:text-sky-300">⟳</span>
-            </button>
-            <button @click="run300TradeTest(); menuOpen = false" class="flex w-full items-center justify-between gap-3 bg-white/5 hover:bg-amber-500/20 p-4 rounded-xl transition group">
-              <span class="flex items-center gap-3 text-base font-semibold"><svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>300 Trade Test</span>
-              <span class="text-xs text-gray-400 group-hover:text-amber-300">📊</span>
-            </button>
-            <a href="https://michaelsboost.com/donate/" target="_blank" rel="noopener noreferrer" class="flex w-full items-center justify-between gap-3 bg-white/5 hover:bg-rose-500/20 p-4 rounded-xl transition group">
-              <span class="flex items-center gap-3 text-base font-semibold"><svg class="w-5 h-5 text-rose-400 fill-current" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>Support the Creator</span>
-              <span class="text-xs text-gray-400 group-hover:text-rose-300">❤️</span>
-            </a>
-            <div class="border-t border-white/10 my-2"></div>
-            <div class="text-[12px] text-gray-400 bg-black/30 p-3 rounded-xl text-center">Edge = win probability | Auto-saved locally</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- █████  300 TRADE TEST MODAL: shows equity curve, observed win rate, performance stats  █████ -->
-      <div x-show="showTestModal" x-cloak="" class="fixed inset-0 flex items-center justify-center z-50 p-2 sm:p-4" style="display: none;" @click.away="showTestModal = false">
-        <div class="bg-gray-900/95 backdrop-blur-2xl rounded-2xl w-full max-w-4xl border border-sky-500/50 shadow-2xl overflow-y-auto max-h-[90vh] mx-auto">
-          <div class="sticky top-0 z-10 bg-gray-900/90 backdrop-blur-md rounded-t-2xl border-b border-white/10 px-4 py-3 flex justify-between items-center">
-            <h2 class="text-lg sm:text-xl font-bold text-sky-300 flex items-center gap-2">
-              <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-              <span>300 Trade Sample Test</span>
-            </h2>
-            <button @click="showTestModal = false" class="text-gray-400 hover:text-white text-2xl leading-5 w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/10 transition">×</button>
-          </div>
-          
-          <div class="p-4 sm:p-5 space-y-5">
-            <!-- Key test metrics cards -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
-              <div class="glass-panel p-2 rounded-xl text-center"><div class="text-gray-400 text-[11px] sm:text-xs">Final Balance</div><div class="text-base sm:text-xl font-black" x-text="`$${testStats.finalBalance.toFixed(2)}`"></div></div>
-              <div class="glass-panel p-2 rounded-xl text-center"><div class="text-gray-400 text-[11px] sm:text-xs">Net P/L</div><div class="text-base sm:text-xl font-black" :class="testStats.netPL &gt;= 0 ? 'text-emerald-400' : 'text-rose-400'" x-text="`${testStats.netPL &gt;= 0 ? '+' : ''}$${testStats.netPL.toFixed(2)}`"></div></div>
-              <div class="glass-panel p-2 rounded-xl text-center"><div class="text-gray-400 text-[11px] sm:text-xs">Wins / Losses</div><div class="text-sm sm:text-lg font-mono font-bold" x-text="`${testStats.wins} / ${testStats.losses}`"></div></div>
-              <div class="glass-panel p-2 rounded-xl text-center"><div class="text-gray-400 text-[11px] sm:text-xs">Obs. Win Rate</div><div class="text-base sm:text-xl font-black" x-text="testStats.observedWinRate + '%'"></div></div>
-              <div class="glass-panel p-2 rounded-xl text-center"><div class="text-gray-400 text-[11px] sm:text-xs">Total Wagered</div><div class="text-sm sm:text-lg font-mono" x-text="`$${testStats.totalWagered.toFixed(2)}`"></div></div>
-              <div class="glass-panel p-2 rounded-xl text-center"><div class="text-gray-400 text-[11px] sm:text-xs">Expectancy / trade</div><div class="text-sm sm:text-lg font-mono" :class="testStats.expectancy &gt;= 0 ? 'text-emerald-400' : 'text-rose-400'" x-text="`$${testStats.expectancy.toFixed(2)}`"></div></div>
-              <div class="glass-panel p-2 rounded-xl text-center col-span-2"><div class="text-gray-400 text-[11px] sm:text-xs">Edge Used</div><div class="text-base sm:text-xl font-mono text-yellow-400" x-text="testStats.edgeUsed + '%'"></div></div>
-            </div>
-            
-            <!-- Canvas charts: equity curve + rolling win rate -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div><div class="text-xs uppercase text-sky-300 mb-1 flex items-center gap-1"><span class="inline-block w-2 h-2 rounded-full bg-sky-400"></span>Equity curve</div><div class="bg-black/30 rounded-xl p-1 border border-white/10"><canvas id="equityCanvas" width="500" height="200" style="width: 100%; height: auto; background:#0a0e17; border-radius: 12px; max-height: 200px;"></canvas></div></div>
-              <div><div class="text-xs uppercase text-sky-300 mb-1 flex items-center gap-1"><span class="inline-block w-2 h-2 rounded-full bg-amber-400"></span>Win rate over time</div><div class="bg-black/30 rounded-xl p-1 border border-white/10"><canvas id="winrateCanvas" width="500" height="200" style="width: 100%; height: auto; background:#0a0e17; border-radius: 12px; max-height: 200px;"></canvas></div></div>
-            </div>
-            
-            <div class="text-xs text-gray-400 bg-black/40 p-3 rounded-xl leading-relaxed">💡 <strong class="text-sky-300">Insight:</strong> With an edge of <span x-text="testStats.edgeUsed"></span>%, the expected win rate over many trades should approach that value. Short‑term variance is normal — this test shows one simulated path of 300 trades.</div>
-            <div class="flex justify-end"><button @click="showTestModal = false" class="bg-sky-600 hover:bg-sky-500 px-5 py-2 rounded-xl text-sm font-bold transition w-full sm:w-auto">Close</button></div>
-          </div>
-        </div>
-      </div>
+        <div id="liveExplanation" class="preview"></div>
+      </section>
+      <section id="emptyResults" class="empty-results"><svg viewBox="0 0 320 130" aria-hidden="true">
+          <path d="M15 25H305M15 65H305M15 105H305" stroke="#283347" stroke-dasharray="4 5"></path>
+          <path d="M15 65L65 60L115 72L165 48L215 56L305 22M15 65L65 70L115 58L165 85L215 78L305 110" fill="none" stroke="#64748b" stroke-width="2"></path></svg>
+        <h2>Explore possible outcomes</h2>
+        <p>Test your strategy to see account growth, drawdowns and the impact of
+          risk.</p><small>Illustration only · no simulation has run yet</small>
+      </section>
+      <section id="results" hidden="" aria-live="polite">
+        <h2 id="verdict"></h2>
+        <p id="insight"></p>
+        <div class="stats" id="stats"></div>
+        <h3>Your money over time</h3>
+        <p>Shaded area: middle 90% of outcomes. Blue: median. Dashed: starting
+          money.</p><canvas id="equity" aria-label="Equity percentile chart"></canvas>
+        <h3>Where did accounts finish?</h3><canvas id="hist" aria-label="Final balance histogram"></canvas>
+        <h3>Same outcomes, different risk</h3>
+        <p>Compare half, normal and double your risk budget using the same trade
+          outcomes.</p>
+        <p><span class="good">● Half risk</span> · <span style="color:#60a5fa">●
+            Normal risk</span> · <span class="bad">● Double risk</span></p>
+        <canvas id="compare" aria-label="Position sizing comparison"></canvas>
+        <details>
+          <summary>Advanced details</summary>
+          <div id="advanced"></div>
+        </details>
+      </section>
     </div>
+  </div>
+  <section id="learn" class="learn">
+    <h2><svg class="ui-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+        <path d="M12 6c-3-3-6-3-9-2v15c3-1 6-1 9 2 3-3 6-3 9-2V4c-3-1-6-1-9 2Zm0 0v15"></path>
+        </svg> Know before you trade</h2>
+    <p>Real trading involves real money. Use this tool to explore risk,
+      expectancy, losing streaks and possible account outcomes—not as a signal
+      to trade.</p>
+    <details>
+      <summary>What this tool can teach you</summary>
+      <p>Explore how win rate, reward-to-risk, position sizing, trading costs
+        and random sequences of wins and losses affect your account over time.
+      </p>
+    </details>
+    <details>
+      <summary>What you still need to research</summary>
+      <ul>
+        <li>Market structure, price action, chart patterns and indicators</li>
+        <li>Volume, liquidity, momentum and volatility</li>
+        <li>Economic releases, news and market conditions</li>
+        <li>Entry and exit rules, backtesting and forward testing</li>
+        <li>Trading psychology, discipline, order execution and broker
+          requirements</li>
+      </ul>
+      <p>Use evidence from your own testing to estimate win rate and costs.
+        Practice in a demo account before considering live trading.</p>
+    </details>
+    <p class="scope-note">Positive simulated expectancy does not guarantee
+      profitability. Real outcomes can differ because of changing markets, gaps,
+      slippage, fees and execution. Leveraged futures can result in losses
+      beyond your deposit. Never risk money you cannot afford to lose.</p>
+  </section>
+  <footer class="project-footer"><strong>The Trading Game</strong>
+    <p>A free, open-source educational tool by <a href="https://michaelsboost.com/">Michael Schwartz</a>. Built to help
+      traders understand risk and make more informed decisions.</p>
+    <nav aria-label="Project links"><a href="https://github.com/michaelsboost/TheTradingGame/"><svg viewBox="0 0 24 24" width="21" height="21" fill="currentColor" aria-hidden="true">
+          <path d="M12 .75a11.25 11.25 0 0 0-3.56 21.92c.56.1.77-.24.77-.54v-2.1c-3.13.68-3.79-1.33-3.79-1.33-.51-1.3-1.25-1.65-1.25-1.65-1.02-.7.08-.69.08-.69 1.13.08 1.72 1.16 1.72 1.16 1 1.72 2.63 1.22 3.27.93.1-.73.39-1.22.71-1.5-2.5-.29-5.13-1.25-5.13-5.56 0-1.23.44-2.23 1.16-3.02-.12-.28-.5-1.43.11-2.98 0 0 .95-.3 3.1 1.15a10.8 10.8 0 0 1 5.64 0c2.15-1.46 3.1-1.15 3.1-1.15.61 1.55.23 2.7.11 2.98.72.79 1.16 1.79 1.16 3.02 0 4.32-2.63 5.27-5.14 5.55.4.35.76 1.03.76 2.08v3.11c0 .3.2.65.77.54A11.25 11.25 0 0 0 12 .75Z"></path>
+          </svg> Source code</a><a href="https://michaelsboost.com/donate"><svg class="ui-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+          <path d="M20.8 8.6c0 4.2-8.8 10-8.8 10s-8.8-5.8-8.8-10a4.6 4.6 0 0 1 8.8-2 4.6 4.6 0 0 1 8.8 2Z"></path>
+          </svg> Support the project</a><a href="https://michaelsboost.com/finance"><svg class="ui-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+          <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+          <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+          <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+          <rect x="14" y="14" width="7" height="7" rx="1"></rect></svg> More
+        projects</a></nav>
+    <p><small>Version 2.0.0 · Educational use only. Not financial advice. No
+        live prices or payouts.</small></p>
+  </footer>
+</main>
+
 
     <script src="dist/script.js"></script>
     <script src="https://storage.googleapis.com/workbox-cdn/releases/6.4.1/workbox-sw.js"></script>

@@ -1,3 +1,6 @@
-<svg class="w-4 h-4 md:w-5 md:h-5 text-rose-400 fill-current" viewBox="0 0 24 24" fill="currentColor" stroke="none">
-              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
-            </svg>
+<svg viewBox="0 0 100 85" aria-hidden="true" focusable="false">
+              <rect x="14" y="8" width="72" height="72" rx="19" fill="#60a5fa" opacity=".09"></rect>
+              <path d="M30 60V23M20 34L30 23 40 34" stroke="#22c55e" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path d="M70 23V60M60 49L70 60 80 49" stroke="#f43f5e" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+              <circle cx="50" cy="42" r="12" fill="#151c2c" stroke="#94a3b8" stroke-width="2"></circle>
+              <path d="M50 35V42L55 45" stroke="#f1f5f9" stroke-width="2" fill="none" stroke-linecap="round"></path></svg>
